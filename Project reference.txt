@@ -1,0 +1,532 @@
+# Portfolio Reference Document — Ganesh UX/UI Designer Portfolio
+> **Purpose:** This file is a complete reference for the portfolio project. Use it whenever making any changes so you have full context without re-reading the code.
+
+---
+
+## 1. Project Overview
+
+| Property | Value |
+|---|---|
+| **Owner** | Ganesh Muniganti |
+| **Role showcased** | UX/UI Designer |
+| **Tech Stack** | Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v3, Framer Motion, GSAP, Lenis |
+| **Root directory** | `/Users/munigantiganesh/Desktop/Portfolio-1` |
+| **Dev command** | `npm run dev` (runs Next.js dev server) |
+| **Build command** | `npm run build` |
+| **Port** | Default `http://localhost:3000` |
+
+---
+
+## 2. Full File Tree
+
+```
+Portfolio-1/
+├── public/
+│   └── resume.pdf                   # Resume file (currently 1 byte — placeholder)
+├── src/
+│   ├── app/
+│   │   ├── globals.css              # All CSS custom properties, utility classes, animations
+│   │   ├── layout.tsx               # Root layout — fonts, metadata, ThemeProvider, Navbar, Footer
+│   │   ├── page.tsx                 # Home page — assembles Hero, Work, About, Contact sections
+│   │   └── work/
+│   │       ├── [slug]/              # Dynamic route for generic case studies
+│   │       │   ├── page.tsx         # SSG page — generates params, metadata, renders CaseStudyClient
+│   │       │   └── CaseStudyClient.tsx  # Full case study page UI (client component)
+│   │       └── phonepe-ux-redesign/ # Dedicated folder (redirected from [slug])
+│   ├── components/
+│   │   ├── layout/
+│   │   │   ├── Navbar.tsx           # Floating pill navbar with dark/light toggle, mobile menu
+│   │   │   └── Footer.tsx           # Simple footer — logo, copyright, social icons, back-to-top
+│   │   ├── sections/
+│   │   │   ├── Hero.tsx             # Full-screen hero with animated profile card, badges, CTAs
+│   │   │   ├── Work.tsx             # Project cards grid, pulls from projects data
+│   │   │   ├── About.tsx            # Bio, stats, experience timeline, skills grid, toolbox
+│   │   │   └── Contact.tsx          # Email card, social links, location/timezone info
+│   │   ├── ui/
+│   │   │   ├── CommandMenu.tsx      # ⌘K command palette — navigation, copy email, theme toggle
+│   │   │   ├── CustomCursor.tsx     # Custom cursor with dot + ring, hover expand effect
+│   │   │   ├── MagneticButton.tsx   # Wrapper that makes children magnetically follow cursor
+│   │   │   ├── ScrollProgress.tsx   # Top progress bar that fills as user scrolls
+│   │   │   └── SectionWrapper.tsx   # Generic section wrapper (minimal, padding utility)
+│   │   └── providers/
+│   │       ├── ThemeProvider.tsx    # Wraps next-themes + lazy-loads CustomCursor & CommandMenu
+│   │       └── LenisProvider.tsx    # Smooth scroll via Lenis (NOT currently active in layout)
+│   ├── data/
+│   │   └── projects.ts              # ALL project data — source of truth for portfolio projects
+│   └── lib/
+│       └── utils.ts                 # cn() (clsx+tailwind-merge) + formatReadingTime()
+├── next.config.ts                   # Next.js config — image domains, optimizePackageImports
+├── tailwind.config.ts               # Full Tailwind theme extension
+├── postcss.config.js                # Standard PostCSS
+├── tsconfig.json                    # TypeScript config, @/ alias = src/
+├── .eslintrc.json                   # ESLint (next/core-web-vitals)
+└── package.json                     # Dependencies & scripts
+```
+
+---
+
+## 3. Tech Stack & Dependencies
+
+### Runtime Dependencies
+| Package | Version | Purpose |
+|---|---|---|
+| `next` | 15.3.3 | App framework (App Router) |
+| `react` / `react-dom` | ^19.0.0 | UI library |
+| `framer-motion` | ^11.18.2 | Animations (entrance, scroll, hover) |
+| `gsap` | ^3.12.7 | Installed but not actively used yet |
+| `lenis` | ^1.3.4 | Smooth scrolling (LenisProvider exists but NOT mounted in layout) |
+| `next-themes` | ^0.4.6 | Dark/light mode |
+| `lucide-react` | ^0.511.0 | Icon library |
+| `clsx` | ^2.1.1 | Class utility |
+| `tailwind-merge` | ^3.3.0 | Merge Tailwind classes safely |
+
+### Dev Dependencies
+| Package | Purpose |
+|---|---|
+| `tailwindcss` ^3.4.17 | CSS utility framework |
+| `typescript` ^5 | Type safety |
+| `autoprefixer` | CSS vendor prefixes |
+| `eslint` + `eslint-config-next` | Linting |
+
+---
+
+## 4. Design System
+
+### CSS Custom Properties (Theme Tokens)
+Defined in `globals.css` — applied via `var(--name)` throughout JSX.
+
+| Token | Light Value | Dark Value | Usage |
+|---|---|---|---|
+| `--bg` | `#FAFAFA` | `#0A0A0A` | Page background |
+| `--text-primary` | `#111111` | `#FAFAFA` | Main text |
+| `--text-secondary` | `#666666` | `#888888` | Subtitles, labels |
+| `--border` | `#EAEAEA` | `#1F1F1F` | Borders, dividers |
+| `--accent` | `#8B5CF6` (violet) | `#A78BFA` | Primary accent color |
+| `--accent-light` | `#A78BFA` | `#C4B5FD` | Lighter accent |
+| `--accent-dark` | `#7C3AED` | `#8B5CF6` | Darker accent (hover) |
+| `--card-bg` | `#FFFFFF` | `#111111` | Card backgrounds |
+| `--shadow` | soft rgba(0,0,0,0.08) | rgba(0,0,0,0.3) | Box shadows |
+
+**Dark mode:** Applied via `.dark` class on `<html>` (controlled by next-themes with `attribute="class"`).
+
+### Typography
+Three Google fonts loaded via `next/font/google` in `layout.tsx`:
+
+| Font | CSS Variable | Tailwind Class | Usage |
+|---|---|---|---|
+| Inter | `--font-inter` | `font-inter` | Body text, default |
+| Inter Tight | `--font-inter-tight` | `font-inter-tight` | Headings, bold display |
+| JetBrains Mono | `--font-jetbrains` | `font-mono` | Code, labels, tools |
+
+### Custom Font Sizes (Tailwind Extension)
+| Class | Size | Notes |
+|---|---|---|
+| `text-hero-desktop` | 72px | H1 on desktop |
+| `text-hero-tablet` | 48px | H1 on tablet |
+| `text-hero-mobile` | 36px | H1 on mobile |
+| `text-section-desktop` | 48px | Section headings |
+| `text-section-mobile` | 32px | Section headings mobile |
+| `text-body-desktop` | 18px | Body text desktop |
+| `text-body-mobile` | 16px | Body text mobile |
+
+### Custom Colors (Tailwind Extension)
+| Token | Value |
+|---|---|
+| `accent` | `#8B5CF6` |
+| `accent-light` | `#A78BFA` |
+| `accent-dark` | `#7C3AED` |
+| `dark-bg` | `#0A0A0A` |
+| `dark-surface` | `#111111` |
+| `dark-border` | `#1F1F1F` |
+
+### Custom Box Shadows
+| Class | Value |
+|---|---|
+| `shadow-soft` | `0 2px 40px rgba(0,0,0,0.06)` |
+| `shadow-card` | `0 4px 24px rgba(0,0,0,0.08)` |
+| `shadow-card-hover` | `0 16px 48px rgba(0,0,0,0.12)` |
+| `shadow-glow` | `0 0 40px rgba(139,92,246,0.15)` |
+| `shadow-glow-strong` | `0 0 60px rgba(139,92,246,0.25)` |
+
+### Key CSS Utility Classes (globals.css)
+| Class | Description |
+|---|---|
+| `.container-custom` | Max-width 1200px, centered, responsive padding (24px → 40px → 60px) |
+| `.section-py` | Section vertical padding (100px desktop, 64px mobile) |
+| `.glass` | Semi-transparent card (no backdrop-filter for perf — solid bg instead) |
+| `.gradient-text` | Violet→Pink gradient text via background-clip |
+| `.nav-link` | Animated underline on hover/active |
+| `.project-card` | GPU-promoted card with hover shadow transition |
+| `.magnetic-btn` | Will-change: transform for magnetic button effect |
+| `.skeleton` | Shimmer loading skeleton |
+| `.status-dot` | Pulsing green availability dot |
+| `.scroll-indicator` | Bouncing chevron animation |
+| `.profile-ring` | Spinning conic gradient ring around profile card |
+| `.float-card` | Floating up/down CSS animation (6s) |
+| `.blur-reveal` | Blur-to-clear entrance animation |
+| `.grain` | Film grain texture overlay |
+| `.cmd-backdrop` | Blurred backdrop for command menu |
+
+---
+
+## 5. Pages & Routes
+
+### `/` — Home Page
+**File:** `src/app/page.tsx`
+- Renders sections in order: `<Hero>`, divider, `<Work>`, divider, `<About>`, divider, `<Contact>`
+- Has a `.grain` overlay at the bottom
+- All sections use `id` attributes for scroll navigation: `#home`, `#work`, `#about`, `#contact`
+
+### `/work/[slug]` — Generic Case Study
+**Files:** `src/app/work/[slug]/page.tsx` + `CaseStudyClient.tsx`
+- Statically generated at build (`generateStaticParams`)
+- PhonePe slug is excluded here (it has a dedicated route)
+- Pulls project data from `projects.ts` by slug
+- Renders: Hero banner → Impact metrics bar → Case study sections → Key learnings → Next project CTA
+
+### `/work/phonepe-ux-redesign` — Dedicated PhonePe Page
+**Location:** `src/app/work/phonepe-ux-redesign/`
+- Exists as a dedicated folder (the `[slug]` route redirects there)
+- ⚠️ Note: The contents of this folder were not listed — it likely has its own `page.tsx`
+
+---
+
+## 6. Sections Breakdown
+
+### Hero (`src/components/sections/Hero.tsx`)
+**What it contains:**
+- Left column: "Available for new projects" badge, H1 "Hello, I'm **Ganesh**" (gradient), description, skill pills, 3 CTA buttons, social links with tooltips
+- Right column: Animated `ProfileCard` component with 3D parallax tilt on mousemove, floating gradient avatar with "G" initial, status badge "Open to work", floating stat badges (5+ Years, 20+ Projects, 4.9★ rating)
+- Scroll-to-work indicator with bouncing chevron
+
+**Current hardcoded data:**
+- Email: `ganesh@designer.com`
+- Social links: LinkedIn, Behance, Dribbble, GitHub (all point to generic URLs, not personalized)
+- Skills list: `["UX Research", "Wireframing", "Prototyping", "Design Systems", "Usability Testing"]`
+- Resume: `/resume.pdf` (placeholder — 1 byte currently)
+- Stats: 5+ Years, 20+ Projects, 4.9★
+
+### Work (`src/components/sections/Work.tsx`)
+- Renders all projects from `projects.ts` as `ProjectCard` components
+- Each card: gradient image side + content side (type, title, problem, solution, 2 impact metrics, 3 tools, CTA arrow)
+- Spotlight effect follows mouse cursor per card
+- "View All Projects on Behance" link at bottom → `https://behance.net` (generic)
+
+### About (`src/components/sections/About.tsx`)
+**Left column:**
+- Bio text (3 paragraphs)
+- Stats: 5+ Years, 20+ Projects, 100% Satisfaction
+- Experience timeline:
+  - `2024–Now` → Senior UX Designer @ Freelance
+  - `2022–2024` → Product Designer @ Creatiwise
+  - `2020–2022` → UI/UX Designer @ TechStartup
+
+**Right column:**
+- 6 skill cards: UX Research, Design Systems, Prototyping, Wireframing, Analytics, Mobile Design
+- Toolbox: Figma, FigJam, Maze, Hotjar, Framer, Webflow, Notion, Miro, Principle, ProtoPie
+
+### Contact (`src/components/sections/Contact.tsx`)
+- Heading: "Let's create something **extraordinary together**"
+- Email card: `ganesh@designer.com` — Copy button + Send Email mailto link
+- Info row: India (Remote-first), IST (UTC+5:30), Usually responds in 24h
+- Social links: LinkedIn, Behance, Dribbble, GitHub (all generic URLs)
+
+---
+
+## 7. Layout Components
+
+### Navbar (`src/components/layout/Navbar.tsx`)
+- **Style:** Floating pill, fixed top-4, centered — morphs on scroll (more opaque + shadow)
+- **Nav links:** Home (#home), About (#about), Work (#work), Contact (#contact)
+- **Logo:** "G" gradient square + "Ganesh" text
+- **Right side:** ⌘K hint button, dark/light toggle, Resume button (desktop), hamburger (mobile)
+- **Mobile menu:** AnimatePresence dropdown with same nav links + Resume link
+- **Active section detection:** Scroll listener checks which section is in view
+- **Smooth scrolling:** `scrollIntoView({ behavior: "smooth" })` for hash links
+
+### Footer (`src/components/layout/Footer.tsx`)
+- Left: Logo + "UX/UI Designer" subtitle
+- Center: Copyright `© {year} Ganesh. Built with ♥`
+- Right: LinkedIn, GitHub, Email icons + Back-to-top arrow button
+- Has `.grain` overlay
+
+---
+
+## 8. UI Components
+
+### CommandMenu (`src/components/ui/CommandMenu.tsx`)
+- Opens with `Cmd+K` / `Ctrl+K`
+- Commands organized in 3 categories:
+  - **Navigation:** Go Home, About Ganesh, View Projects, Contact Me
+  - **Actions:** Download Resume, Copy Email
+  - **Preferences:** Toggle Theme
+- Keyboard: Arrow Up/Down to navigate, Enter to execute, Escape to close
+- Lazy-loaded (SSR: false) via dynamic import in ThemeProvider
+
+### CustomCursor (`src/components/ui/CustomCursor.tsx`)
+- Two elements: small accent dot (follows instantly) + larger ring (lerps with 0.15 factor)
+- Expands/fills on hover over interactive elements (a, button, input, etc.)
+- Hidden on touch devices via CSS (`@media (hover: none)`)
+- Lazy-loaded (SSR: false) via dynamic import in ThemeProvider
+- `body { cursor: none }` set in globals.css
+
+### MagneticButton (`src/components/ui/MagneticButton.tsx`)
+- Wraps any children; on mousemove, translates toward cursor by `strength * offset` (default: 0.4)
+- Resets to (0,0) on mouseleave
+- Used for: Email Me, View Projects, Resume, Copy email, Send Email buttons
+
+### ScrollProgress (`src/components/ui/ScrollProgress.tsx`)
+- Fixed top-0 bar, 2px height, z-index 99997
+- Gradient: `#8B5CF6` → `#EC4899` (violet to pink)
+- Uses pure DOM + rAF — no Framer Motion — for perf
+- `scaleX` transform for GPU-composited animation
+- Rendered in root layout AND again in CaseStudyClient (double instance on case study pages — may stack)
+
+### SectionWrapper (`src/components/ui/SectionWrapper.tsx`)
+- Simple wrapper; not currently used in main sections (sections handle their own padding)
+
+---
+
+## 9. Providers
+
+### ThemeProvider (`src/components/providers/ThemeProvider.tsx`)
+- Wraps `next-themes` ThemeProvider with `attribute="class"`, `defaultTheme="light"`, `enableSystem=false`
+- Also renders `<CustomCursor>` and `<CommandMenu>` (both lazy-loaded, SSR false)
+- Applied in root `layout.tsx` wrapping Navbar, main, Footer
+
+### LenisProvider (`src/components/providers/LenisProvider.tsx`)
+- Initializes Lenis smooth scroll (`duration: 1.0`, `smoothWheel: true`)
+- ⚠️ **NOT currently used** — it's not imported or mounted in layout.tsx. It exists but is inactive.
+
+---
+
+## 10. Data — Projects (`src/data/projects.ts`)
+
+### Project Interface
+```typescript
+interface Project {
+  slug: string;        // URL slug
+  title: string;       // Display title
+  type: string;        // Category label (e.g. "Mobile App · UX Research & Design")
+  tagline: string;     // Short description
+  problem: string;     // Problem statement
+  solution: string;    // Solution summary
+  impact: string[];    // Array of 4 metric strings
+  tools: string[];     // Tool names used
+  duration: string;    // e.g. "12 weeks"
+  role: string;        // e.g. "Lead UX Designer"
+  color: string;       // Hex for light mode accent
+  colorDark: string;   // Hex for dark mode accent
+  gradient: string;    // Tailwind gradient classes "from-[] to-[]"
+  heroImage: string;   // Image path (currently placeholder paths)
+  mockupImage: string; // Image path (currently placeholder paths)
+  year: string;        // "2024"
+  sections: CaseStudySection[];  // Ordered case study sections
+}
+
+interface CaseStudySection {
+  title: string;
+  content: string;
+  image?: string;  // Optional
+}
+```
+
+### Current Projects (3 total)
+
+#### 1. PhonePe UX Redesign
+- **Slug:** `phonepe-ux-redesign`
+- **Color:** `#6C47FF` / `#8B5CF6`
+- **Gradient:** violet to lavender
+- **Tools:** Figma, Maze, Hotjar, FigJam, Principle
+- **Duration:** 12 weeks | **Year:** 2024
+- **Impact:** 50% faster discovery, 30% fewer return actions, WCAG AA, 4.6★
+- **Sections:** Overview, Research, Competitive Analysis, Solution, Impact
+- ⚠️ Has a dedicated route at `/work/phonepe-ux-redesign` (not via `[slug]`)
+
+#### 2. Creatiwise Website Redesign
+- **Slug:** `creatiwise-website-redesign`
+- **Color:** `#0EA5E9` / `#38BDF8`
+- **Gradient:** sky blue shades
+- **Tools:** Figma, Webflow, Google Analytics, Hotjar, Notion
+- **Duration:** 8 weeks | **Year:** 2024
+- **Impact:** 29% lower bounce, 42% more inquiries, 2.1× session duration, Top 3 on keywords
+- **Sections:** Overview, Research, Solution, Impact
+
+#### 3. TinyThreads
+- **Slug:** `tinythreads`
+- **Color:** `#F59E0B` / `#FCD34D`
+- **Gradient:** amber to yellow
+- **Tools:** Figma, Protopie, Maze, Swift UI, FigJam
+- **Duration:** 16 weeks | **Year:** 2023
+- **Impact:** 68% less search time, 4.8★ App Store, 3× repeat purchase, App Store Featured
+- **Sections:** Overview, Research, Solution, Impact
+
+---
+
+## 11. Routing Architecture
+
+```
+/ (home)
+  ├── #home      → Hero section
+  ├── #work      → Work section
+  ├── #about     → About section
+  └── #contact   → Contact section
+
+/work/[slug]     → Generic case study (Creatiwise, TinyThreads)
+/work/phonepe-ux-redesign  → Dedicated PhonePe page
+```
+
+All section navigation uses `scrollIntoView` smooth scroll (NOT `<Link>` navigation). The Navbar links are `#hash` anchors converted to `scrollIntoView` calls.
+
+---
+
+## 12. Animation Patterns
+
+### Framer Motion (used in most components)
+- **Entrance:** `initial={{ opacity: 0, y: 20/30/40 }}` → `whileInView={{ opacity: 1, y: 0 }}`
+- **Stagger:** `containerVariants` with `staggerChildren: 0.1` in Hero
+- **Viewport:** `{ once: true, margin: "-60px" }` — triggers once, 60px early
+- **Easing:** `[0.25, 0.1, 0.25, 1]` (custom cubic-bezier) for smooth feel
+- **Scale effects:** Contact email card scales from `0.96`
+- **AnimatePresence:** Used for Navbar mobile menu + CommandMenu modal
+
+### CSS Animations (GPU-optimized, in globals.css)
+| Name | Usage | Duration |
+|---|---|---|
+| `float` | Profile card floating | 6s |
+| `spin` | Profile ring gradient | 12s |
+| `pulse-ring` | Status dot pulse | 2.5s |
+| `scrollBounce` | Scroll indicator | 2s |
+| `shimmer` | Skeleton loading | 1.5s |
+| `grain` | Film grain texture | 8s steps |
+| `blurReveal` | Text reveal | 0.6s |
+
+### Performance Decisions
+- `will-change: transform` on animated elements
+- No `backdrop-filter` on glass cards (replaced with semi-transparent solid bg)
+- Project cards use `box-shadow` changes on hover (not transform) to avoid layout
+- Custom cursor and scroll progress use pure DOM + `requestAnimationFrame`, no React state
+- Framer Motion lazy-loaded; `optimizePackageImports` in next.config.ts
+
+---
+
+## 13. Theming
+
+| Setting | Value |
+|---|---|
+| Library | `next-themes` |
+| Strategy | `attribute="class"` on `<html>` |
+| Default | `light` |
+| System preference | Disabled (`enableSystem: false`) |
+| Toggle | Moon/Sun icon in Navbar + in CommandMenu |
+
+Dark mode classes pattern: `dark:bg-[var(--dark-surface)]` or `dark:text-[var(--accent-light)]`
+
+---
+
+## 14. SEO & Metadata
+
+### Site-level (layout.tsx)
+```
+title: "Ganesh — UX/UI Designer"
+description: "UX/UI Designer crafting intuitive, user-centered digital products..."
+keywords: ["UX Designer", "UI Designer", "Product Designer", "Ganesh", "Portfolio", "Design Systems", "User Research"]
+openGraph: { title, description, type: "website" }
+```
+
+### Case Study pages (work/[slug]/page.tsx)
+```
+title: "{project.title} — Ganesh Portfolio"
+description: project.problem
+```
+
+---
+
+## 15. Common Personalisation Placeholders
+
+These are items in the code that currently use placeholder/generic values and need to be updated with real information:
+
+| Item | Current Value | File to Edit |
+|---|---|---|
+| Email | `ganesh@designer.com` | `Hero.tsx`, `Contact.tsx`, `CommandMenu.tsx`, `Footer.tsx` |
+| LinkedIn URL | `https://linkedin.com` | `Hero.tsx`, `Contact.tsx`, `Footer.tsx` |
+| Behance URL | `https://behance.net` | `Hero.tsx`, `Contact.tsx`, `Work.tsx` |
+| Dribbble URL | `https://dribbble.com` | `Hero.tsx`, `Contact.tsx` |
+| GitHub URL | `https://github.com` | `Hero.tsx`, `Contact.tsx`, `Footer.tsx` |
+| Resume PDF | `/public/resume.pdf` (1 byte) | Replace file in `/public/` |
+| Profile image | Gradient placeholder with "G" | `Hero.tsx` → `ProfileCard` component |
+| Project images | `/images/phonepe-hero.jpg` etc. | Add to `/public/images/`, update `projects.ts` |
+
+---
+
+## 16. Quick-Change Guide
+
+### To add a new project:
+1. Edit `src/data/projects.ts` — add a new object to the `projects` array
+2. Follow the `Project` interface exactly
+3. The Work section and case study route auto-pick it up
+4. Add images to `/public/images/` and update `heroImage`/`mockupImage` paths
+
+### To update personal info:
+- **Name/title/bio text:** `About.tsx` (bio paragraphs, stats, experience)
+- **Skills/toolbox:** `About.tsx` — `skills` array and toolbox list
+- **Hero tagline/description:** `Hero.tsx` — the `<p>` description text
+- **Experience timeline:** `About.tsx` — `experiences` array
+- **Contact info:** `Contact.tsx` — location, timezone, response time text
+
+### To change colors/accent:
+1. `globals.css` → `:root` and `.dark` blocks (CSS variables)
+2. `tailwind.config.ts` → `theme.extend.colors`
+
+### To add a new section:
+1. Create `src/components/sections/NewSection.tsx`
+2. Add `id="new-section"` to the section element
+3. Import and add to `src/app/page.tsx`
+4. Add to Navbar `navLinks` array in `Navbar.tsx`
+5. Add to CommandMenu commands in `CommandMenu.tsx`
+
+### To change fonts:
+1. `src/app/layout.tsx` — change the `next/font/google` import and variable
+2. `globals.css` — update `font-family` on `body`
+3. `tailwind.config.ts` — update `fontFamily` extension
+
+### To enable Lenis smooth scroll:
+1. Import `LenisProvider` in `src/app/layout.tsx`
+2. Wrap `<body>` content with `<LenisProvider>`
+
+### To add a dedicated case study page (like PhonePe):
+1. Create `src/app/work/your-slug/page.tsx`
+2. In `src/app/work/[slug]/page.tsx`, add the slug to the filter or redirect
+
+---
+
+## 17. Known Issues / Notes
+
+1. **Resume PDF is a placeholder** — `/public/resume.pdf` is 1 byte. Upload a real PDF.
+2. **Social links are generic** — All point to root domains (linkedin.com, github.com, etc.), not Ganesh's profiles.
+3. **Project images are missing** — `heroImage`/`mockupImage` paths in `projects.ts` point to `/images/` which doesn't exist in `/public/`. Cards use gradient placeholders currently.
+4. **LenisProvider is unused** — The component exists but is not mounted. Smooth scrolling is currently handled by native `scrollIntoView`.
+5. **ScrollProgress double-mounted** — It's in root `layout.tsx` AND `CaseStudyClient.tsx`. On case study pages, two bars render (stacked). Could cause visual artifact.
+6. **`/work/phonepe-ux-redesign` folder exists** but its page content was not fully inspected.
+7. **GSAP is installed** but not imported anywhere in the current codebase.
+8. **Security warning** — `npm audit` reports 1 moderate + 1 critical vulnerability (related to Next.js 15.3.3). Should upgrade to patched version.
+9. **ESLint deprecation** — `eslint@8` and related packages are deprecated; consider upgrading.
+
+---
+
+## 18. z-index Layers
+
+| Layer | z-index | Element |
+|---|---|---|
+| Custom cursor dot | `99999` | CustomCursor inner dot |
+| Custom cursor ring | `99998` | CustomCursor outer ring |
+| Command menu modal | `99991` | CommandMenu dialog |
+| Command menu backdrop | `99990` | CommandMenu backdrop |
+| Navbar | `9990` | Navbar |
+| Mobile menu | `9989` | Navbar mobile dropdown |
+| Scroll progress | `99997` | ScrollProgress bar |
+| Case study back button | `50` | CaseStudyClient back Link |
+
+---
+
+*Last updated: 2026-06-12 — Full project scan complete.*

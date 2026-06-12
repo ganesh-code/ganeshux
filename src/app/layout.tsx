@@ -15,7 +15,7 @@ if (typeof globalThis !== "undefined" && "localStorage" in globalThis) {
 }
 
 import type { Metadata } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono, Nunito } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
@@ -39,6 +39,13 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
   display: "swap",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  variable: "--font-nunito",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -69,7 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} font-inter antialiased`}
+        className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} ${nunito.variable} font-inter antialiased`}
       >
         <ThemeProvider>
           <ScrollProgress />
