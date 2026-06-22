@@ -1,69 +1,44 @@
-// Avoid Node v25+ experimental localStorage crashing third-party libraries during SSR
-if (typeof globalThis !== "undefined" && "localStorage" in globalThis) {
-  try {
-    delete (globalThis as any).localStorage;
-  } catch (e) {
-    (globalThis as any).localStorage = {
-      getItem: () => null,
-      setItem: () => {},
-      removeItem: () => {},
-      clear: () => {},
-      key: () => null,
-      length: 0,
-    };
-  }
-}
-
 import type { Metadata } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono, Nunito } from "next/font/google";
+import { Plus_Jakarta_Sans, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import ScrollProgress from "@/components/ui/ScrollProgress";
+import BackToTop from "@/components/ui/BackToTop";
 
-
-const inter = Inter({
+const jakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-sans",
   display: "swap",
 });
 
-const interTight = Inter_Tight({
+// Bricolage Grotesque is a variable font — weight must be "variable" to use axes
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-inter-tight",
+  weight: "variable",
+  variable: "--font-display",
   display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
-
-const nunito = Nunito({
-  subsets: ["latin"],
-  variable: "--font-nunito",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
-  title: "Ganesh — UX/UI Designer",
+  title: "Ganesh Muniganti — UX & Product Designer",
   description:
-    "UX/UI Designer crafting intuitive, user-centered digital products across web and mobile platforms. Specializing in UX Research, Wireframing, Prototyping, and Design Systems.",
+    "UX & Product Designer crafting intuitive, user-centered digital products. Specializing in UX Research, Design Systems, Prototyping, and Mobile Design.",
   keywords: [
     "UX Designer",
-    "UI Designer",
     "Product Designer",
-    "Ganesh",
+    "Ganesh Muniganti",
     "Portfolio",
     "Design Systems",
     "User Research",
+    "Figma",
   ],
   openGraph: {
-    title: "Ganesh — UX/UI Designer",
-    description: "Crafting intuitive digital products that users love.",
+    title: "Ganesh Muniganti — UX & Product Designer",
+    description:
+      "Crafting digital products that are both useful and beautiful.",
     type: "website",
   },
 };
@@ -74,18 +49,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} ${nunito.variable} font-inter antialiased`}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${jakartaSans.variable} ${bricolage.variable}`}
+    >
+      <body className="font-sans antialiased">
         <ThemeProvider>
           <ScrollProgress />
           <Navbar />
           <main>{children}</main>
-          <Footer />
+          <BackToTop />
         </ThemeProvider>
       </body>
     </html>
   );
 }
-

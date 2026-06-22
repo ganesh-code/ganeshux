@@ -1,150 +1,185 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Copy, Check, ArrowRight, Linkedin, ExternalLink, Github, MapPin, Clock } from "lucide-react";
+import { Copy, Check, MapPin, Linkedin, Github } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
+
+const EMAIL        = "ganeshmuniganti27@gmail.com";
+const PHONE        = "+91 8185012138";
+const LOCATION     = "Hyderabad, India";
+const AVAILABILITY = "Open to Product Design and UX Opportunities";
+
+const SOCIAL_LINKS = [
+  { label: "LinkedIn", icon: Linkedin, href: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/" },
+  { label: "GitHub",   icon: Github,   href: "https://github.com/ganesh-code/" },
+];
+
+const FADE_UP = {
+  hidden:  { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.55, ease: [0.25, 0.1, 0.25, 1], delay: i * 0.1 },
+  }),
+};
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.muted = true;
+    vid.loop  = true;
+    vid.playsInline = true;
+    vid.play().catch(() => {/* autoplay blocked — video stays hidden */});
+  }, []);
 
   const copyEmail = () => {
-    navigator.clipboard.writeText("ganesh@designer.com");
+    navigator.clipboard.writeText(EMAIL);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
 
   return (
-    <section id="contact" className="section-py">
-      <div className="container-custom">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mx-auto text-center"
-        >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--accent)]/8 border border-[var(--accent)]/20 text-[var(--accent)] text-xs font-semibold uppercase tracking-widest mb-6">
-            <span>✦</span> Get In Touch
-          </span>
-          <h2 className="font-inter-tight font-black text-section-mobile md:text-section-desktop text-[var(--text-primary)] leading-tight tracking-tight mb-4">
-            Let&apos;s create something
-            <br />
-            <span className="gradient-text">extraordinary together</span>
-          </h2>
-          <p className="text-[var(--text-secondary)] text-body-mobile md:text-body-desktop leading-relaxed mb-12 max-w-xl mx-auto">
-            Whether you have a project in mind, a question, or just want to say hello &mdash; my inbox is always open.
-          </p>
+    <section id="contact" className="section relative overflow-hidden">
 
-          {/* Email card */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative rounded-3xl border border-[var(--border)] bg-white dark:bg-[var(--dark-surface)] p-8 md:p-10 mb-8 shadow-soft overflow-hidden"
+      {/* ── BG Video ─────────────────────────────────────────── */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+        style={{ zIndex: 0 }}
+      >
+        <source src="/videos/FooterVide.mp4" type="video/mp4" />
+      </video>
+
+      {/* ── Overlay — dark enough to read, light enough to see video ── */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "linear-gradient(135deg, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.52) 100%)",
+          zIndex: 1,
+        }}
+      />
+
+      {/* ── Content ──────────────────────────────────────────── */}
+      <div className="container relative" style={{ zIndex: 2 }}>
+        <div className="max-w-[580px]">
+
+          <motion.p
+            variants={FADE_UP} initial="hidden" whileInView="visible"
+            viewport={{ once: true }} custom={0}
+            className="text-xs font-semibold uppercase tracking-[0.12em] mb-4"
+            style={{ color: "rgba(255,255,255,0.5)" }}
           >
-            {/* Background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent)]/3 via-transparent to-pink-500/3 pointer-events-none" />
+            Contact
+          </motion.p>
 
-            <div className="relative flex flex-col sm:flex-row items-center gap-6 justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-[var(--accent)]/10 flex items-center justify-center">
-                  <Mail size={22} className="text-[var(--accent)]" />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs text-[var(--text-secondary)] font-medium mb-0.5">Email address</p>
-                  <p className="text-lg font-semibold text-[var(--text-primary)] font-mono">
-                    ganesh@designer.com
-                  </p>
-                </div>
-              </div>
+          <motion.h2
+            variants={FADE_UP} initial="hidden" whileInView="visible"
+            viewport={{ once: true }} custom={1}
+            className="font-display font-bold leading-tight tracking-tight mb-4 text-white"
+            style={{ fontSize: "clamp(32px, 4.5vw, 52px)" }}
+          >
+            Let&apos;s work<br />together.
+          </motion.h2>
 
-              <div className="flex gap-3">
-                <MagneticButton>
-                  <motion.button
-                    onClick={copyEmail}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--border)] text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all bg-[var(--bg)]"
-                    aria-label="Copy email"
-                  >
-                    {copied ? (
-                      <>
-                        <Check size={14} className="text-emerald-500" />
-                        <span className="text-emerald-500">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={14} />
-                        Copy
-                      </>
-                    )}
-                  </motion.button>
-                </MagneticButton>
+          <motion.p
+            variants={FADE_UP} initial="hidden" whileInView="visible"
+            viewport={{ once: true }} custom={2}
+            className="text-base md:text-lg leading-relaxed mb-10"
+            style={{ color: "rgba(255,255,255,0.68)" }}
+          >
+            Have a project in mind? I&apos;m currently available for freelance
+            engagements. Let&apos;s talk.
+          </motion.p>
 
-                <MagneticButton>
-                  <a
-                    href="mailto:ganesh@designer.com"
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--accent)] text-white text-sm font-medium hover:bg-[var(--accent-dark)] transition-all shadow-glow hover:shadow-glow-strong"
-                  >
-                    Send Email
-                    <ArrowRight size={14} />
-                  </a>
-                </MagneticButton>
-              </div>
-            </div>
+          <motion.div
+            variants={FADE_UP} initial="hidden" whileInView="visible"
+            viewport={{ once: true }} custom={3}
+            className="flex flex-col sm:flex-row gap-3 mb-8"
+          >
+            <MagneticButton>
+              <a
+                href={`mailto:${EMAIL}`}
+                className="inline-flex items-center justify-center gap-2
+                           px-5 py-3 rounded-full w-full sm:w-auto
+                           bg-white text-black text-sm font-semibold truncate
+                           hover:opacity-85 transition-opacity duration-200"
+              >
+                <span className="sm:hidden">Send Email</span>
+                <span className="hidden sm:inline">{EMAIL}</span>
+              </a>
+            </MagneticButton>
+
+            <MagneticButton>
+              <button
+                onClick={copyEmail}
+                className="inline-flex items-center justify-center gap-2
+                           px-5 py-3 rounded-full border border-white/30
+                           text-sm font-medium text-white/75
+                           hover:text-white hover:border-white/60
+                           backdrop-blur-sm transition-all duration-200"
+                aria-label="Copy email address"
+              >
+                {copied ? (
+                  <><Check size={14} className="text-emerald-400" /><span className="text-emerald-400">Copied</span></>
+                ) : (
+                  <><Copy size={14} />Copy</>
+                )}
+              </button>
+            </MagneticButton>
           </motion.div>
 
-          {/* Info row */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-6 text-sm text-[var(--text-secondary)] mb-10"
+            variants={FADE_UP} initial="hidden" whileInView="visible"
+            viewport={{ once: true }} custom={4}
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-8 text-sm"
+            style={{ color: "rgba(255,255,255,0.55)" }}
           >
-            <div className="flex items-center gap-2">
-              <MapPin size={14} className="text-[var(--accent)]" />
-              <span>India (Remote-first)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock size={14} className="text-[var(--accent)]" />
-              <span>IST (UTC+5:30)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Usually responds in 24h</span>
-            </div>
+            <span className="flex items-center gap-1.5">
+              <MapPin size={13} style={{ color: "rgba(255,255,255,0.35)" }} />
+              {LOCATION}
+            </span>
+            <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.2)" }} aria-hidden="true">·</span>
+            <span>{PHONE}</span>
+            <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.2)" }} aria-hidden="true">·</span>
+            <span className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              {AVAILABILITY}
+            </span>
           </motion.div>
 
-          {/* Social links */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex items-center justify-center gap-3"
+            variants={FADE_UP} initial="hidden" whileInView="visible"
+            viewport={{ once: true }} custom={5}
+            className="flex items-center gap-4"
           >
-            {[
-              { label: "LinkedIn", icon: Linkedin, href: "https://linkedin.com" },
-              { label: "Behance", icon: ExternalLink, href: "https://behance.net" },
-              { label: "Dribbble", icon: ExternalLink, href: "https://dribbble.com" },
-              { label: "GitHub", icon: Github, href: "https://github.com" },
-            ].map(({ label, icon: Icon, href }) => (
+            {SOCIAL_LINKS.map(({ label, icon: Icon, href }) => (
               <a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all"
                 aria-label={label}
+                className="transition-all duration-200 hover:scale-110"
+                style={{ color: "rgba(255,255,255,0.4)" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
               >
-                <Icon size={13} />
-                {label}
+                <Icon size={18} strokeWidth={1.6} />
               </a>
             ))}
           </motion.div>
-        </motion.div>
+
+        </div>
       </div>
     </section>
   );

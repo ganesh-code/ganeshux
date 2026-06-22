@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "PATH=/opt/homebrew/opt/node@23/bin:$PATH npx next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

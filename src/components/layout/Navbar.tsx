@@ -3,190 +3,250 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X, Command, Download } from "lucide-react";
-import Link from "next/link";
-import MagneticButton from "@/components/ui/MagneticButton";
+import { Moon, Sun, Menu, X } from "lucide-react";
 
-const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Work", href: "#work" },
-  { label: "Contact", href: "#contact" },
+const NAV_LINKS = [
+  { label: "Work",    href: "#work"    },
+  { label: "About",  href: "#about"   },
+  { label: "Contact",href: "#contact" },
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled,  setScrolled]  = useState(false);
+  const [active,    setActive]    = useState("");
+  const [menuOpen,  setMenuOpen]  = useState(false);
+  const [mounted,   setMounted]   = useState(false);
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 40);
-
-      // Active section detection
-      const sections = ["home", "about", "work", "contact"];
-      for (const id of sections.reverse()) {
-        const el = document.getElementById(id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 120) {
-            setActiveSection(id);
-            break;
-          }
-        }
+      // Switch navbar background when the Work section reaches the navbar top.
+      // This keeps the transparent "hero" style for the entire Hero pinned phase,
+      // and only activates frosted glass once Work physically slides in.
+      const workEl = document.getElementById("work");
+      if (workEl) {
+        // 64px ≈ navbar height — trigger just as Work panel reaches the bar
+        setScrolled(workEl.getBoundingClientRect().top <= 64);
+      } else {
+        // Fallback if Work section isn't mounted yet
+        setScrolled(window.scrollY > 80);
       }
+
+      // Active-section tracking (bottom-up)
+      const ids = ["contact", "about", "work"];
+      let current = "";
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 120) { current = id; break; }
+      }
+      setActive(current);
     };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollTo = (href: string) => {
-    const id = href.replace("#", "");
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(href.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
 
+  /* ─── Two explicit colour modes — no CSS variable opacity tricks ─── */
+  // HERO mode  → on top of dark video
+  // SCROLL mode → on top of page content (light or dark theme)
+  const onHero = !scrolled && !menuOpen;
+
   return (
     <>
-      <motion.nav
+      {/* ══════════════════════════ MAIN BAR ══════════════════════════ */}
+      <motion.header
         initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-        className="fixed top-4 left-0 right-0 z-[9990] flex justify-center px-4"
+        animate={{ y: 0,   opacity: 1 }}
+        transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1], delay: 0.05 }}
+        className={`fixed top-0 left-0 right-0 z-[9999] transition-[padding] duration-300 ${
+          scrolled ? "py-3" : "py-5"
+        }`}
+        style={{ isolation: "isolate" }}
       >
-        <motion.div
-          animate={{
-            paddingTop: scrolled ? "10px" : "14px",
-            paddingBottom: scrolled ? "10px" : "14px",
-          }}
-          transition={{ duration: 0.3 }}
-          className={`flex items-center gap-1 sm:gap-2 px-4 sm:px-6 rounded-full transition-all duration-300 ${
-            scrolled
-              ? "bg-white/96 dark:bg-[#111]/96 border border-[var(--border)] shadow-soft"
-              : "bg-white/80 dark:bg-[#111]/80 border border-white/20 dark:border-white/10"
-          }`}
-        >
+        {/* ── Background layer (separate element so blur stays GPU-only) ── */}
+        {scrolled && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 border-b border-black/[0.06] dark:border-white/[0.06]"
+            style={{
+              backdropFilter: "blur(20px) saturate(180%)",
+              WebkitBackdropFilter: "blur(20px) saturate(180%)",
+              backgroundColor: "rgba(255,255,255,0.88)",
+              // Dark mode override — applied via a sibling in JS below
+            }}
+          />
+        )}
+        {/* Dark-mode frosted bg — rendered only when scrolled + dark theme */}
+        {scrolled && mounted && theme === "dark" && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 border-b border-white/[0.07]"
+            style={{
+              backdropFilter: "blur(20px) saturate(180%)",
+              WebkitBackdropFilter: "blur(20px) saturate(180%)",
+              backgroundColor: "rgba(10,10,10,0.90)",
+            }}
+          />
+        )}
+
+        {/* ── Content ─────────────────────────────────────────────────── */}
+        <div className="container relative flex items-center justify-between">
+
           {/* Logo */}
           <button
-            onClick={() => scrollTo("#home")}
-            className="mr-2 sm:mr-4 flex items-center gap-2 group"
-            aria-label="Go to top"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="flex items-center gap-2.5 group"
+            aria-label="Back to top"
           >
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--accent)] to-[#EC4899] flex items-center justify-center text-white text-xs font-bold shadow-glow">
+            <div className="w-7 h-7 rounded-[8px] bg-[var(--accent)] flex items-center justify-center text-white text-xs font-bold font-display shrink-0">
               G
             </div>
-            <span className="hidden sm:block text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+            <span
+              className="text-sm font-semibold transition-colors duration-200"
+              style={{ color: onHero ? "#ffffff" : "var(--text-primary)" }}
+            >
               Ganesh
             </span>
           </button>
 
-          {/* Nav links */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <button
-                key={link.label}
-                onClick={() => scrollTo(link.href)}
-                className={`nav-link px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  activeSection === link.href.replace("#", "")
-                    ? "text-[var(--accent)] bg-[var(--accent)]/8"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
-          </div>
+          {/* Desktop nav links */}
+          <nav className="hidden md:flex items-center gap-0.5" aria-label="Main navigation">
+            {NAV_LINKS.map((link) => {
+              const isActive = active === link.href.replace("#", "");
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => scrollTo(link.href)}
+                  className="relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200"
+                  style={{
+                    color: onHero
+                      ? isActive ? "#ffffff" : "rgba(255,255,255,0.65)"
+                      : isActive ? "var(--text-primary)" : "var(--text-secondary)",
+                    fontWeight: isActive ? 600 : 500,
+                  }}
+                >
+                  {link.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full -z-10"
+                      style={{
+                        background: onHero ? "rgba(255,255,255,0.12)" : "var(--bg-subtle)",
+                        border: onHero
+                          ? "1px solid rgba(255,255,255,0.18)"
+                          : "1px solid var(--border)",
+                      }}
+                      transition={{ type: "spring", stiffness: 380, damping: 34 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
 
           {/* Right actions */}
-          <div className="flex items-center gap-1.5 ml-2 sm:ml-4">
-            {/* ⌘K hint */}
-            <button
-              onClick={() => {
-                const e = new KeyboardEvent("keydown", { key: "k", metaKey: true });
-                document.dispatchEvent(e);
-              }}
-              className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border)] transition-colors"
-              aria-label="Open command menu"
-            >
-              <Command size={12} />
-              <span className="font-mono">K</span>
-            </button>
+          <div className="flex items-center gap-1.5">
 
             {/* Theme toggle */}
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border)] transition-colors"
                 aria-label="Toggle theme"
+                className="w-9 h-9 flex items-center justify-center rounded-full transition-colors duration-200"
+                style={{
+                  color: onHero ? "rgba(255,255,255,0.7)" : "var(--text-secondary)",
+                }}
               >
                 {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
               </button>
             )}
 
             {/* Resume CTA */}
-            <MagneticButton>
-              <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full bg-[var(--text-primary)] text-[var(--bg)] text-sm font-medium hover:bg-[var(--accent)] transition-colors"
-                aria-label="Download resume"
-              >
-                <Download size={13} />
-                Resume
-              </a>
-            </MagneticButton>
+            <a
+              href="https://drive.google.com/file/d/1qN7eYP4iT87dGrI9E_vp_xKh6V7YB9dQ/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
+              style={
+                onHero
+                  ? {
+                      background: "#ffffff",
+                      color: "#0A0A0A",
+                    }
+                  : {
+                      background: "var(--text-primary)",
+                      color: "var(--bg)",
+                    }
+              }
+            >
+              Resume
+            </a>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border)] transition-colors"
-              aria-label="Toggle menu"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-full transition-colors duration-200"
+              style={{
+                color: onHero ? "rgba(255,255,255,0.80)" : "var(--text-secondary)",
+              }}
             >
-              {menuOpen ? <X size={16} /> : <Menu size={16} />}
+              {menuOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
           </div>
-        </motion.div>
-      </motion.nav>
+        </div>
+      </motion.header>
 
-      {/* Mobile menu */}
+      {/* ══════════════════════════ MOBILE OVERLAY ═══════════════════════ */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-20 left-4 right-4 z-[9989] bg-white/98 dark:bg-[#111]/98 rounded-2xl border border-[var(--border)] shadow-card p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-[9998] flex flex-col items-center justify-center gap-8 md:hidden"
+            style={{
+              backdropFilter: "blur(32px) saturate(200%)",
+              WebkitBackdropFilter: "blur(32px) saturate(200%)",
+              backgroundColor:
+                mounted && theme === "dark"
+                  ? "rgba(10,10,10,0.97)"
+                  : "rgba(255,255,255,0.97)",
+            }}
           >
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <button
-                  key={link.label}
-                  onClick={() => scrollTo(link.href)}
-                  className={`text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                    activeSection === link.href.replace("#", "")
-                      ? "text-[var(--accent)] bg-[var(--accent)]/8"
-                      : "text-[var(--text-primary)] hover:bg-[var(--border)]"
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
-              <div className="h-px bg-[var(--border)] my-2" />
-              <a
-                href="/resume.pdf"
-                target="_blank"
-                className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-[var(--accent)] hover:bg-[var(--accent)]/8 transition-colors"
+            {NAV_LINKS.map((link, i) => (
+              <motion.button
+                key={link.label}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.07, duration: 0.28 }}
+                onClick={() => scrollTo(link.href)}
+                className="text-3xl font-display font-bold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors"
               >
-                <Download size={14} />
-                Download Resume
-              </a>
-            </div>
+                {link.label}
+              </motion.button>
+            ))}
+
+            <motion.a
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.22, duration: 0.28 }}
+              href="https://drive.google.com/file/d/1qN7eYP4iT87dGrI9E_vp_xKh6V7YB9dQ/view?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMenuOpen(false)}
+              className="text-base font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              Download Resume
+            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>

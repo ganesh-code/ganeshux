@@ -58,15 +58,15 @@ export default function CommandMenu() {
       label: "Download Resume",
       description: "Get my latest CV",
       icon: <Download size={16} />,
-      action: () => { window.open("/resume.pdf", "_blank"); setOpen(false); },
+      action: () => { window.open("https://drive.google.com/file/d/1qN7eYP4iT87dGrI9E_vp_xKh6V7YB9dQ/view?usp=sharing", "_blank"); setOpen(false); },
       category: "Actions",
     },
     {
       id: "email",
       label: "Copy Email",
-      description: "ganesh@designer.com",
+      description: "ganeshmuniganti27@gmail.com",
       icon: <Mail size={16} />,
-      action: () => { navigator.clipboard.writeText("ganesh@designer.com"); setOpen(false); },
+      action: () => { navigator.clipboard.writeText("ganeshmuniganti27@gmail.com"); setOpen(false); },
       category: "Actions",
     },
     {

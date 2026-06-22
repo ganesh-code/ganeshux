@@ -26,149 +26,128 @@ export interface CaseStudySection {
 
 export const projects: Project[] = [
   {
+    slug: "dimension-leap",
+    title: "Dimension Leap",
+    type: "SaaS & Healthcare · UX/Product Design",
+    tagline: "Designing workflows for AI-powered pre-production and dual healthcare ecosystems",
+    problem: "Film production teams spend weeks on manual script analysis, scheduling, and call sheet creation. Concurrently, patient-doctor engagement in healthcare lacks seamless coordination and mobile accessibility.",
+    solution: "Architected 6+ AI-powered workflows (story generation, script editing, auto-fill, scheduling, and call sheet automation) to reduce pre-production overhead by 35%. Additionally, designed a dual healthcare ecosystem spanning a patient mobile app and doctor web platform.",
+    impact: [
+      "35% Reduction In Manual Effort",
+      "6+ AI Workflows Designed",
+      "20% Faster Developer Handoffs",
+      "5 Product Releases Delivered"
+    ],
+    tools: ["Figma", "Miro", "FigJam", "Jitter", "Adobe After Effects", "Rive", "GitHub"],
+    duration: "May 2025 – June 2025",
+    role: "Associate UX / Product Designer",
+    color: "#7C3AED",
+    colorDark: "#A78BFA",
+    gradient: "from-[#7C3AED] to-[#A78BFA]",
+    heroImage: "/images/dimension-hero.jpg",
+    mockupImage: "/images/dimension-mockup.jpg",
+    year: "2025",
+    sections: [
+      {
+        title: "Overview",
+        content: "Dimension Leap is a pioneering platform where I led end-to-end design for AI-driven pre-production, serving writers, directors, and producers, as well as designing healthcare applications. Over two months, I designed workflows for four key user roles and supported complex production schedules."
+      },
+      {
+        title: "AI Workflows Design",
+        content: "I architected 6+ AI-powered workflows, including automated story generation, interactive script editing, metadata auto-fill systems, calendar scheduling, and call sheet generation. These automations reduced manual planning effort for production teams by an estimated 35%."
+      },
+      {
+        title: "Healthcare Ecosystem",
+        content: "In addition to pre-production tools, I designed a dual-sided healthcare ecosystem comprising a patient mobile app and a doctor web platform. This required deep user research and mapping out workflows to ensure patient safety, data clarity, and accessibility across devices."
+      },
+      {
+        title: "Design System & Handoff",
+        content: "Built scalable design systems and robust Figma component libraries. By aligning closely with engineers and establishing clear token architectures, developer handoff efficiency increased by 20% across 5 product releases."
+      }
+    ]
+  },
+  {
+    slug: "hobbiecue-ux-audit",
+    title: "Hobbiecue UX Audit",
+    type: "UX Audit & Design Systems",
+    tagline: "Conducting comprehensive audits to optimize usability, accessibility, and design consistency",
+    problem: "Hobbiecue and related platforms faced user drop-offs due to usability hurdles, low accessibility compliance (WCAG contrast/sizing), and UI inconsistencies across web interfaces.",
+    solution: "Executed 100+ UX audits across e-commerce, EV rental, and social apps. Identified 350+ issues and redesigned Hobbiecue's core flows, driving a 30% task success rate improvement and a unified design system.",
+    impact: [
+      "100+ UX Audits Conducted",
+      "350+ Issues Identified",
+      "30% Task Success Improvement",
+      "25% Accessibility Improvement",
+      "40% Design Consistency Improvement"
+    ],
+    tools: ["Figma", "Miro", "Maze", "Hotjar", "Google Forms", "GitHub"],
+    duration: "Feb 2024 – Feb 2025",
+    role: "UX Design Intern",
+    color: "#0EA5E9",
+    colorDark: "#38BDF8",
+    gradient: "from-[#0EA5E9] to-[#38BDF8]",
+    heroImage: "/images/hobbiecue-hero.jpg",
+    mockupImage: "/images/hobbiecue-mockup.jpg",
+    year: "2024",
+    sections: [
+      {
+        title: "Overview",
+        content: "At Banao Technologies, I served as a UX Design Intern responsible for analyzing, auditing, and upgrading user interfaces for multiple platforms, including EV rental and social media apps, with a focus on Hobbiecue."
+      },
+      {
+        title: "UX & Accessibility Audits",
+        content: "Conducted over 100 UX audits and logged 350+ accessibility, usability, and functional issues. Auditing was done against heuristic benchmarks, user feedback sessions, and WCAG contrast standards."
+      },
+      {
+        title: "Hobbiecue Redesign",
+        content: "Leveraging audit insights, I re-engineered navigation paths and transaction steps on the Hobbiecue application. Usability testing showed a 30% improvement in task success rates and a 25% bump in accessibility compliance."
+      },
+      {
+        title: "Systemizing Design",
+        content: "Built a comprehensive, componentized design system in Figma. This standardized UI grids, form components, and typography, reducing visual inconsistencies by 40% and accelerating developer handoffs by 20%."
+      }
+    ]
+  },
+  {
     slug: "phonepe-ux-redesign",
     title: "PhonePe UX Redesign",
-    type: "Mobile App · UX Research & Design",
-    tagline: "Reimagining India's most-used payment app for speed and clarity",
-    problem:
-      "Users struggle to discover key features quickly in PhonePe's dense interface. Critical actions like Scan & Pay were buried under multiple taps, causing frustration and high return-action rates.",
-    solution:
-      "Introduced a persistent floating Scan & Pay button, restructured bottom navigation for thumb reach, enhanced accessibility with WCAG-compliant contrast, and added universal search for instant feature discovery.",
+    type: "Fintech · Mobile App Design",
+    tagline: "Simplifying complex payment structures and discovery for 450M+ users",
+    problem: "Users faced cognitive overload when discovering non-core features like insurance and wealth store, leading to high drop-offs, while payment screens lacked clear transaction status hierarchy during low-network situations.",
+    solution: "Redesigned the primary navigation grid, created a contextual widget system for service discovery, and optimized the post-transaction state illustration, leading to a 50% faster service discovery rate and WCAG compliance.",
     impact: [
-      "50% faster feature discovery",
-      "30% fewer return actions",
-      "WCAG AA compliant",
-      "4.6★ post-redesign rating",
+      "50% Faster Discovery",
+      "30% Fewer Return Actions",
+      "15% Increase in Success Rate",
+      "4.6★ App Store Rating"
     ],
     tools: ["Figma", "Maze", "Hotjar", "FigJam", "Principle"],
     duration: "12 weeks",
     role: "Lead UX Designer",
     color: "#6C47FF",
     colorDark: "#8B5CF6",
-    gradient: "from-[#6C47FF] to-[#A78BFA]",
+    gradient: "from-[#6C47FF] to-[#8B5CF6]",
     heroImage: "/images/phonepe-hero.jpg",
     mockupImage: "/images/phonepe-mockup.jpg",
     year: "2024",
     sections: [
       {
         title: "Overview",
-        content:
-          "PhonePe serves over 500 million users in India, handling everything from payments to investments. Despite its massive scale, user research revealed significant friction in core task flows, particularly for feature discovery.",
+        content: "Led the design overhaul of India's leading fintech payment app. The core focus was to declutter the dashboard while raising visibility for high-margin financial products without degrading the core payment flows."
       },
       {
-        title: "Research",
-        content:
-          "Conducted 24 moderated usability sessions with users across urban and semi-urban India. Deployed heatmaps via Hotjar across 10,000 sessions to identify dead zones and rage-clicks. Key findings revealed that 68% of users couldn't locate the Scan & Pay feature within 5 seconds.",
+        title: "User Research & Analysis",
+        content: "Conducted field usability testing and analyzed maze click maps from 1,000+ representative participants. We discovered users primarily struggled with secondary services due to visual crowding and lack of conceptual grouping."
       },
       {
-        title: "Competitive Analysis",
-        content:
-          "Analyzed GPay, Paytm, and BHIM across 40+ heuristic criteria. Identified that persistent scan CTAs and progressive disclosure patterns significantly reduce time-to-task in competing apps.",
+        title: "The Redesign Strategy",
+        content: "Replaced the monolithic grid of icons with a responsive, categorized card deck. Added a smart search bar that suggests contextual shortcuts based on the user's past transaction history and time of day."
       },
       {
-        title: "Solution",
-        content:
-          "The redesign centered on three principles: immediate access to Scan & Pay via a persistent FAB, reduced cognitive load through information hierarchy improvements, and improved accessibility through larger touch targets and contrast ratios.",
-      },
-      {
-        title: "Impact",
-        content:
-          "Post-launch data from A/B testing with 50,000 users showed 50% reduction in time-to-scan, 30% fewer back navigations, and a significant uplift in user satisfaction scores.",
-      },
-    ],
-  },
-  {
-    slug: "creatiwise-website-redesign",
-    title: "Creatiwise Website Redesign",
-    type: "Web · Conversion Optimization",
-    tagline: "Building trust and clarity to turn visitors into clients",
-    problem:
-      "Creatiwise's previous website lacked credibility signals and had a confusing information hierarchy, resulting in high bounce rates and low conversion from visitor to inquiry.",
-    solution:
-      "Redesigned with a conversion-focused layout: prominent social proof, cleaner service presentation, streamlined inquiry flow, and a trust-building visual identity.",
-    impact: [
-      "29% lower bounce rate",
-      "42% increase in inquiries",
-      "2.1× session duration",
-      "Top 3 on target keywords",
-    ],
-    tools: ["Figma", "Webflow", "Google Analytics", "Hotjar", "Notion"],
-    duration: "8 weeks",
-    role: "UX/UI Designer",
-    color: "#0EA5E9",
-    colorDark: "#38BDF8",
-    gradient: "from-[#0EA5E9] to-[#38BDF8]",
-    heroImage: "/images/creatiwise-hero.jpg",
-    mockupImage: "/images/creatiwise-mockup.jpg",
-    year: "2024",
-    sections: [
-      {
-        title: "Overview",
-        content:
-          "Creatiwise is a creative agency offering content, design, and marketing services. Their website was generating traffic but failing to convert due to trust gaps and unclear value propositions.",
-      },
-      {
-        title: "Research",
-        content:
-          "Analyzed 3 months of GA data, conducted 8 user interviews with potential clients, and ran 5-second tests to gauge first impressions. Found that users couldn't identify Creatiwise's core offering within the first viewport.",
-      },
-      {
-        title: "Solution",
-        content:
-          "Prioritized social proof above the fold, simplified the service menu to 3 clear offerings, added a visible pricing tier structure, and optimized the inquiry form from 8 fields down to 4.",
-      },
-      {
-        title: "Impact",
-        content:
-          "Three months post-launch: bounce rate dropped from 72% to 51%, monthly inquiries grew by 42%, and average session duration doubled from 1:12 to 2:32.",
-      },
-    ],
-  },
-  {
-    slug: "tinythreads",
-    title: "TinyThreads",
-    type: "Mobile App · E-commerce UX",
-    tagline: "Helping parents find perfect kids' clothes in under 2 minutes",
-    problem:
-      "Parents spend excessive time searching for age and size-appropriate children's clothing, overwhelmed by irrelevant results and complex filter systems.",
-    solution:
-      "Built a personalized recommendation engine UI, child-profile onboarding flow, simplified browsing with smart filters, and a deal discovery hub — all optimized for one-hand thumb navigation.",
-    impact: [
-      "68% reduction in search time",
-      "4.8★ App Store rating",
-      "3× repeat purchase rate",
-      "Featured in App Store",
-    ],
-    tools: ["Figma", "Protopie", "Maze", "Swift UI", "FigJam"],
-    duration: "16 weeks",
-    role: "Product Designer",
-    color: "#F59E0B",
-    colorDark: "#FCD34D",
-    gradient: "from-[#F59E0B] to-[#FCD34D]",
-    heroImage: "/images/tinythreads-hero.jpg",
-    mockupImage: "/images/tinythreads-mockup.jpg",
-    year: "2023",
-    sections: [
-      {
-        title: "Overview",
-        content:
-          "TinyThreads addresses the $47B children's apparel market with a mobile-first experience designed around the needs of busy parents — primarily mothers aged 25–40.",
-      },
-      {
-        title: "Research",
-        content:
-          "Conducted diary studies with 12 parents over 4 weeks, tracking their shopping journeys. Identified 3 core pain points: size confusion, irrelevant search results, and inability to find deals quickly.",
-      },
-      {
-        title: "Solution",
-        content:
-          "The child profile onboarding takes 90 seconds and unlocks a personalized feed. Smart size mapping across 80+ brands eliminates size confusion. A dedicated Deals hub surfaces time-sensitive offers.",
-      },
-      {
-        title: "Impact",
-        content:
-          "Beta users found suitable items in an average of 1.8 minutes vs. 5.9 minutes on competitor apps. The app received 4.8★ on launch and was featured in the App Store Kids Shopping collection.",
-      },
-    ],
-  },
+        title: "Impact and Validation",
+        content: "Usability post-testing showed that the new dashboard design allowed users to locate insurance products 50% faster. More importantly, the redesign achieved full WCAG AA contrast standards, dramatically enhancing accessibility."
+      }
+    ]
+  }
 ];
+

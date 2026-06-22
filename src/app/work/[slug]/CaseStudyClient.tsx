@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import type { Project } from "@/data/projects";
 import { projects } from "@/data/projects";
-import ScrollProgress from "@/components/ui/ScrollProgress";
 
 interface Props {
   project: Project;
@@ -30,8 +29,6 @@ export default function CaseStudyClient({ project }: Props) {
 
   return (
     <>
-      <ScrollProgress />
-
       {/* Back button */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}

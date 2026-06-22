@@ -23,10 +23,12 @@ module.exports = {
         "dark-text-secondary": "#888888",
       },
       fontFamily: {
-        inter: ["var(--font-inter)", "Inter", "sans-serif"],
-        "inter-tight": ["var(--font-inter-tight)", "Inter Tight", "sans-serif"],
-        mono: ["var(--font-jetbrains)", "JetBrains Mono", "monospace"],
-        nunito: ["var(--font-nunito)", "Nunito", "sans-serif"],
+        bricolage: ["var(--font-bricolage)", "Bricolage Grotesque", "sans-serif"],
+        jakarta:   ["var(--font-jakarta)",   "Plus Jakarta Sans",   "sans-serif"],
+        // Legacy aliases so existing classes still compile
+        inter:     ["var(--font-jakarta)",   "Plus Jakarta Sans",   "sans-serif"],
+        nunito:    ["var(--font-bricolage)", "Bricolage Grotesque", "sans-serif"],
+        mono:      ["ui-monospace", "SFMono-Regular", "monospace"],
       },
       fontSize: {
         "hero-desktop": ["56px", { lineHeight: "1.1", letterSpacing: "-0.02em" }],

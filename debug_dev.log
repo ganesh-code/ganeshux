@@ -1,0 +1,170 @@
+   ▲ Next.js 15.3.3
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.4:3000
+
+ ✓ Starting...
+2026-06-20T08:18:31.114Z next:router-server:filesystem nextDataRoutes Set(0) {}
+2026-06-20T08:18:31.114Z next:router-server:filesystem dynamicRoutes []
+2026-06-20T08:18:31.114Z next:router-server:filesystem customRoutes {
+  headers: [],
+  rewrites: { beforeFiles: [], afterFiles: [], fallback: [] },
+  redirects: [
+    {
+      source: '/:path+/',
+      destination: '/:path+',
+      permanent: true,
+      locale: undefined,
+      internal: true
+    }
+  ]
+}
+2026-06-20T08:18:31.114Z next:router-server:filesystem publicFolderItems Set(0) {}
+2026-06-20T08:18:31.114Z next:router-server:filesystem nextStaticFolderItems Set(0) {}
+2026-06-20T08:18:31.114Z next:router-server:filesystem pageFiles Set(0) {}
+2026-06-20T08:18:31.114Z next:router-server:filesystem appFiles Set(0) {}
+2026-06-20T08:18:32.296Z next:jsconfig-paths-plugin tsconfig.json or jsconfig.json paths: { '@/*': [ './src/*' ] }
+2026-06-20T08:18:32.296Z next:jsconfig-paths-plugin resolved baseUrl: {
+  baseUrl: '/Users/munigantiganesh/Desktop/Portfolio-1',
+  isImplicit: true
+}
+2026-06-20T08:18:32.300Z next:jsconfig-paths-plugin tsconfig.json or jsconfig.json paths: { '@/*': [ './src/*' ] }
+2026-06-20T08:18:32.300Z next:jsconfig-paths-plugin resolved baseUrl: {
+  baseUrl: '/Users/munigantiganesh/Desktop/Portfolio-1',
+  isImplicit: true
+}
+2026-06-20T08:18:32.312Z next:jsconfig-paths-plugin tsconfig.json or jsconfig.json paths: { '@/*': [ './src/*' ] }
+2026-06-20T08:18:32.312Z next:jsconfig-paths-plugin resolved baseUrl: {
+  baseUrl: '/Users/munigantiganesh/Desktop/Portfolio-1',
+  isImplicit: true
+}
+ ✓ Ready in 1817ms
+2026-06-20T08:18:34.638Z next:router-server:main requestHandler! / {
+  matchedOutput: {
+    type: 'appFile',
+    fsPath: undefined,
+    locale: undefined,
+    itemsRoot: undefined,
+    itemPath: '/'
+  },
+  statusCode: undefined,
+  resHeaders: {},
+  bodyStream: false,
+  parsedUrl: { pathname: '/', query: [Object: null prototype] {} },
+  finished: true
+}
+2026-06-20T08:18:34.639Z next:router-server:main invokeRender / {
+  host: 'localhost:3000',
+  connection: 'keep-alive',
+  'cache-control': 'max-age=0',
+  'sec-ch-ua': '"Brave";v="149", "Chromium";v="149", "Not)A;Brand";v="24"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"macOS"',
+  'upgrade-insecure-requests': '1',
+  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
+  accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+  'sec-gpc': '1',
+  'accept-language': 'en-GB,en;q=0.8',
+  'sec-fetch-site': 'none',
+  'sec-fetch-mode': 'navigate',
+  'sec-fetch-user': '?1',
+  'sec-fetch-dest': 'document',
+  'accept-encoding': 'gzip, deflate, br, zstd',
+  cookie: '__next_hmr_refresh_hash__=d4d434349ee2379979a8311e850ed81f633457081244afec'
+}
+2026-06-20T08:18:34.715Z next:jsconfig-paths-plugin moduleName did not match any paths pattern next-app-loader
+2026-06-20T08:18:34.716Z next:jsconfig-paths-plugin moduleName did not match any paths pattern next-app-loader
+2026-06-20T08:18:34.717Z next:jsconfig-paths-plugin moduleName did not match any paths pattern next-app-loader
+2026-06-20T08:18:34.718Z next:jsconfig-paths-plugin moduleName did not match any paths pattern next-app-loader
+2026-06-20T08:18:34.733Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/app/layout.tsx
+2026-06-20T08:18:34.741Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.741Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/static.edge
+2026-06-20T08:18:34.742Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.742Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/static.edge
+2026-06-20T08:18:34.752Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/static.edge
+2026-06-20T08:18:34.752Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.752Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/client.edge
+2026-06-20T08:18:34.752Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/static.edge
+2026-06-20T08:18:34.752Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.752Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/client.edge
+2026-06-20T08:18:34.753Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Hero
+2026-06-20T08:18:34.753Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Work
+2026-06-20T08:18:34.753Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/About
+2026-06-20T08:18:34.753Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Contact
+2026-06-20T08:18:34.754Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/app/layout.tsx
+2026-06-20T08:18:34.770Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Hero
+2026-06-20T08:18:34.770Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Work
+2026-06-20T08:18:34.770Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/About
+2026-06-20T08:18:34.770Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Contact
+2026-06-20T08:18:34.772Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Work
+2026-06-20T08:18:34.773Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Work
+2026-06-20T08:18:34.773Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/About
+2026-06-20T08:18:34.773Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/About
+2026-06-20T08:18:34.774Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Contact
+2026-06-20T08:18:34.774Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Contact
+2026-06-20T08:18:34.775Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Hero
+2026-06-20T08:18:34.775Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/sections/Hero
+2026-06-20T08:18:34.796Z next:jsconfig-paths-plugin moduleName did not match any paths pattern server-only
+2026-06-20T08:18:34.804Z next:jsconfig-paths-plugin moduleName did not match any paths pattern @opentelemetry/api
+2026-06-20T08:18:34.805Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.805Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.805Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.805Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.806Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.807Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.807Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.807Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.807Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:34.808Z next:jsconfig-paths-plugin moduleName did not match any paths pattern server-only
+2026-06-20T08:18:34.822Z next:jsconfig-paths-plugin moduleName did not match any paths pattern @opentelemetry/api
+2026-06-20T08:18:35.004Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Navbar
+2026-06-20T08:18:35.004Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Footer
+2026-06-20T08:18:35.004Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/ui/ScrollProgress
+2026-06-20T08:18:35.005Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/providers/ThemeProvider
+2026-06-20T08:18:35.027Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Navbar
+2026-06-20T08:18:35.027Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Footer
+2026-06-20T08:18:35.028Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/ui/ScrollProgress
+2026-06-20T08:18:35.028Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/providers/ThemeProvider
+2026-06-20T08:18:35.028Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Navbar
+2026-06-20T08:18:35.028Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Navbar
+2026-06-20T08:18:35.029Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Footer
+2026-06-20T08:18:35.029Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/layout/Footer
+2026-06-20T08:18:35.029Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/ui/ScrollProgress
+2026-06-20T08:18:35.029Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/ui/ScrollProgress
+2026-06-20T08:18:35.030Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/providers/ThemeProvider
+2026-06-20T08:18:35.030Z next:jsconfig-paths-plugin skipping request as it is an absolute path /Users/munigantiganesh/Desktop/Portfolio-1/src/components/providers/ThemeProvider
+2026-06-20T08:18:35.068Z next:jsconfig-paths-plugin skipping request as it is inside node_modules react-dom
+2026-06-20T08:18:35.068Z next:jsconfig-paths-plugin skipping request as it is inside node_modules react
+2026-06-20T08:18:35.068Z next:jsconfig-paths-plugin skipping request as it is inside node_modules next/dist/server/route-modules/app-page/vendored/rsc/react-dom
+2026-06-20T08:18:35.068Z next:jsconfig-paths-plugin skipping request as it is inside node_modules next/dist/server/route-modules/app-page/vendored/rsc/react
+2026-06-20T08:18:35.068Z next:jsconfig-paths-plugin skipping request as it is inside node_modules /Users/munigantiganesh/Desktop/Portfolio-1/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-dom
+2026-06-20T08:18:35.068Z next:jsconfig-paths-plugin skipping request as it is inside node_modules /Users/munigantiganesh/Desktop/Portfolio-1/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.070Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.071Z next:jsconfig-paths-plugin moduleName did not match any paths pattern react-server-dom-webpack/server.edge
+2026-06-20T08:18:35.072Z next:jsconfig-paths-plugin skipping request as it is inside node_modules react-dom
+2026-06-20T08:18:35.073Z next:jsconfig-paths-plugin skipping request as it is inside node_modules next/dist/server/route-modules/app-page/vendored/rsc/react-dom
+2026-06-20T08:18:35.073Z next:jsconfig-paths-plugin skipping request as it is inside node_modules /Users/munigantiganesh/Desktop/Portfolio-1/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-dom
+2026-06-20T08:18:35.073Z next:jsconfig-paths-plugin skipping request as it is inside node_modules react
+2026-06-20T08:18:35.073Z next:jsconfig-paths-plugin skipping request as it is inside node_modules next/dist/server/route-modules/app-page/vendored/rsc/react
+2026-06-20T08:18:35.073Z next:jsconfig-paths-plugin skipping request as it is inside node_modules /Users/munigantiganesh/Desktop/Portfolio-1/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react
+ ○ Compiling / ...

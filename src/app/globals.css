@@ -2,112 +2,217 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Fonts loaded via next/font — no @import needed */
-
-/* ─── CSS Custom Properties ─── */
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────────────────────────── */
 :root {
-  --bg: #FAFAFA;
-  --text-primary: #111111;
-  --text-secondary: #666666;
-  --border: #EAEAEA;
-  --accent: #8B5CF6;
+  /* Backgrounds */
+  --bg:           #FFFFFF;
+  --bg-subtle:    #F7F7F7;
+  --surface:      #F5F5F5;
+
+  /* Text */
+  --text-primary:   #0A0A0A;
+  --text-secondary: #6B6B6B;
+  --text-tertiary:  #A8A8A8;
+
+  /* Border */
+  --border:       #E5E5E5;
+  --border-hover: #C0C0C0;
+
+  /* Accent */
+  --accent:       #7C3AED;
   --accent-light: #A78BFA;
-  --accent-dark: #7C3AED;
-  --card-bg: #FFFFFF;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --accent-dark:  #6D28D9;
+
+  /* Shadows */
+  --shadow-xs:   0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md:   0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg:   0 12px 48px rgba(0,0,0,0.10);
+  --shadow-xl:   0 24px 64px rgba(0,0,0,0.12);
+  /* Upward lift shadow — used by Work section sliding over Hero */
+  --shadow-lift: 0 -20px 80px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.06);
+
+  /* 8px spacing system */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+  --space-8: 128px;
+
+  /* Typography */
+  --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+  --font-sans:    'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono:    ui-monospace, 'SFMono-Regular', 'Cascadia Code', monospace;
+
+  /* Legacy compat */
+  --font-bricolage: var(--font-display);
+  --font-jakarta:   var(--font-sans);
+  --card-bg:        var(--bg);
+  --shadow:         var(--shadow-md);
+  --dark-surface:   var(--surface);
 }
 
 .dark {
-  --bg: #0A0A0A;
-  --text-primary: #FAFAFA;
-  --text-secondary: #888888;
-  --border: #1F1F1F;
-  --accent: #A78BFA;
+  --bg:           #0A0A0A;
+  --bg-subtle:    #111111;
+  --surface:      #141414;
+  --text-primary:   #F5F5F5;
+  --text-secondary: #A3A3A3;
+  --text-tertiary:  #6B6B6B;
+  --border:       #252525;
+  --border-hover: #3D3D3D;
+  --accent:       #A78BFA;
   --accent-light: #C4B5FD;
-  --accent-dark: #8B5CF6;
-  --card-bg: #111111;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --accent-dark:  #8B5CF6;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.6);
+  --shadow-xl: 0 24px 64px rgba(0,0,0,0.7);
+  --shadow-lift: 0 -20px 80px rgba(0,0,0,0.50), 0 -1px 0 rgba(255,255,255,0.04);
+  --card-bg:    var(--surface);
+  --dark-surface: var(--surface);
 }
 
-/* ─── Base reset ─── */
-*, *::before, *::after { box-sizing: border-box; }
+/* ─────────────────────────────────────────────────────────────
+   BASE RESET
+───────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 html {
-  /* No scroll-behavior: smooth — we handle smooth nav via JS scrollIntoView */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Tell browser this page scrolls — enables compositor-thread scroll */
+  text-rendering: optimizeLegibility;
   overscroll-behavior: none;
 }
 
 body {
   background-color: var(--bg);
   color: var(--text-primary);
-  font-family: var(--font-inter), 'Inter', sans-serif;
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.65;
   overflow-x: hidden;
-  cursor: none; /* custom cursor */
+  cursor: none;
 }
 
-/* ─── Selection ─── */
+@media (hover: none) {
+  body { cursor: auto; }
+  .custom-cursor { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SELECTION & FOCUS
+───────────────────────────────────────────────────────────── */
 ::selection {
   background: var(--accent);
   color: #fff;
 }
 
-/* ─── Scrollbar ─── */
-::-webkit-scrollbar { width: 4px; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
 
-/* ─── Utility classes ─── */
+/* ─────────────────────────────────────────────────────────────
+   LAYOUT SYSTEM
+───────────────────────────────────────────────────────────── */
+
+/* Primary container — max 1280px */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 480px) {
+  .container { padding: 0 24px; }
+}
+
+@media (min-width: 768px) {
+  .container { padding: 0 48px; }
+}
+
+@media (min-width: 1280px) {
+  .container { padding: 0 64px; }
+}
+
+/* Legacy alias — keep for case study pages */
 .container-custom {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
 @media (min-width: 768px) {
-  .container-custom { padding: 0 40px; }
+  .container-custom { padding: 0 48px; }
 }
 
 @media (min-width: 1280px) {
-  .container-custom { padding: 0 60px; }
+  .container-custom { padding: 0 64px; }
 }
 
-/* Section spacing */
+/* Section spacing — 120px desktop, 80px tablet, 56px mobile */
+.section {
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+
+/* Legacy alias */
 .section-py {
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 56px;
+  padding-bottom: 56px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 640px) {
+  .section,
   .section-py {
-    padding-top: 64px;
-    padding-bottom: 64px;
+    padding-top: 80px;
+    padding-bottom: 80px;
   }
 }
 
-/* 
-  Glass card — CRITICAL PERF FIX:
-  backdrop-filter: blur() forces browser to re-composite everything behind it
-  on every single scroll frame. We replace with a solid semi-transparent bg.
-  Visually nearly identical but eliminates the #1 cause of scroll jank.
-*/
+@media (min-width: 1024px) {
+  .section,
+  .section-py {
+    padding-top: 120px;
+    padding-bottom: 120px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLASS
+───────────────────────────────────────────────────────────── */
 .glass {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-sm);
 }
 
 .dark .glass {
-  background: rgba(20, 20, 20, 0.94);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  background: rgba(14, 14, 14, 0.96);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
-/* Gradient text */
+/* ─────────────────────────────────────────────────────────────
+   GRADIENT TEXT
+───────────────────────────────────────────────────────────── */
 .gradient-text {
   background: linear-gradient(135deg, var(--accent) 0%, #EC4899 100%);
   -webkit-background-clip: text;
@@ -115,63 +220,9 @@ body {
   background-clip: text;
 }
 
-/* Focus ring */
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* Animated underline */
-.nav-link {
-  position: relative;
-}
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1.5px;
-  background: var(--accent);
-  transition: width 0.3s ease;
-}
-.nav-link:hover::after,
-.nav-link.active::after {
-  width: 100%;
-}
-
-/* Custom cursor suppression for touch */
-@media (hover: none) {
-  body { cursor: auto; }
-  .custom-cursor { display: none !important; }
-}
-
-/* Reduce motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Float animation — CSS-only (compositor thread, zero JS overhead) */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
-}
-
-.float-card {
-  animation: float 6s ease-in-out infinite;
-  will-change: transform;
-}
-
-/* 
-  Card hover — GPU composited from the start via translateZ(0)
-  Using box-shadow for hover state instead of transform to avoid
-  layout recalculation (box-shadow is compositor-only)
-*/
+/* ─────────────────────────────────────────────────────────────
+   CARDS
+───────────────────────────────────────────────────────────── */
 .project-card {
   transform: translateZ(0);
   transition: box-shadow 0.35s ease, border-color 0.3s ease;
@@ -179,32 +230,24 @@ body {
 }
 
 .project-card:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Magnetic button — GPU layer promoted */
+/* ─────────────────────────────────────────────────────────────
+   MAGNETIC BUTTON
+───────────────────────────────────────────────────────────── */
 .magnetic-btn {
   will-change: transform;
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Shimmer skeleton */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, var(--border) 25%, rgba(0,0,0,0.05) 50%, var(--border) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
-}
-
-/* Badge pulse — GPU layer via will-change */
+/* ─────────────────────────────────────────────────────────────
+   STATUS DOT (availability indicator)
+───────────────────────────────────────────────────────────── */
 .status-dot {
   position: relative;
 }
+
 .status-dot::before {
   content: '';
   position: absolute;
@@ -218,49 +261,36 @@ body {
 
 @keyframes pulse-ring {
   0%, 100% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.6); opacity: 0; }
+  50%       { transform: scale(1.6); opacity: 0; }
 }
 
-/* Scroll indicator */
-.scroll-indicator {
-  animation: scrollBounce 2s ease-in-out infinite;
-  will-change: transform;
-}
-
-@keyframes scrollBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
-/* Command menu backdrop — only shown momentarily, blur OK here */
+/* ─────────────────────────────────────────────────────────────
+   COMMAND MENU BACKDROP
+───────────────────────────────────────────────────────────── */
 .cmd-backdrop {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* Profile image ring — GPU layer */
-.profile-ring {
-  background: conic-gradient(
-    from 180deg,
-    var(--accent) 0deg,
-    #EC4899 120deg,
-    #3B82F6 240deg,
-    var(--accent) 360deg
-  );
-  animation: spin 12s linear infinite;
-  will-change: transform;
+/* ─────────────────────────────────────────────────────────────
+   REDUCE MOTION
+───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+/* ─────────────────────────────────────────────────────────────
+   SCROLL PROGRESS (used by ScrollProgress component)
+───────────────────────────────────────────────────────────── */
+/* Component handles its own styles */
 
-/* Gradient text reveal */
-@keyframes blurReveal {
-  from { opacity: 0; filter: blur(4px); }
-  to   { opacity: 1; filter: blur(0); }
-}
-
-.blur-reveal {
-  animation: blurReveal 0.6s ease forwards;
+/* ─────────────────────────────────────────────────────────────
+   NAV LINK (legacy — no longer using underline pseudo)
+───────────────────────────────────────────────────────────── */
+.nav-link {
+  position: relative;
 }
