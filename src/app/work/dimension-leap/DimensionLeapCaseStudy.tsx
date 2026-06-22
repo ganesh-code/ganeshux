@@ -222,28 +222,9 @@ export default function DimensionLeapCaseStudy() {
 
   return (
     <>
-      {/* ── Back button ──────────────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, x: -16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4 }}
-        className="fixed top-5 left-5 z-50"
-      >
-        <Link
-          href="/#work"
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--bg)] border border-[var(--border)] text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all shadow-sm backdrop-blur-sm"
-        >
-          <ArrowLeft size={13} />
-          Back to Work
-        </Link>
-      </motion.div>
-
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* 01 · HERO                                                      */}
-      {/* ══════════════════════════════════════════════════════════════ */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex flex-col justify-end overflow-hidden"
+        className="relative min-h-screen flex flex-col justify-center overflow-hidden"
         style={{ paddingBottom: "80px", paddingTop: "120px" }}
       >
         {/* Cinematic gradient background */}
@@ -262,52 +243,99 @@ export default function DimensionLeapCaseStudy() {
           }}
         />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 container max-w-5xl mx-auto px-6">
-          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-            {/* Type badge */}
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-8"
-              style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}30` }}
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 container max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* LEFT: Text content */}
+            <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+
+              {/* ── Back link — inline, no overlap with navbar ───── */}
+              <Link
+                href="/#work"
+                className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-5 group transition-colors duration-200 w-fit"
+              >
+                <ArrowLeft
+                  size={14}
+                  className="transition-transform duration-200 group-hover:-translate-x-1"
+                />
+                Back to Work
+              </Link>
+
+              {/* Type badge */}
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-8"
+                style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}30` }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
+                SaaS · Healthcare · UX/Product Design
+              </div>
+
+              {/* Headline */}
+              <h1
+                className="font-display font-black text-[var(--text-primary)] leading-[0.95] tracking-tight mb-6"
+                style={{ fontSize: "clamp(36px, 6vw, 76px)" }}
+              >
+                AI-Powered Film<br />
+                <span style={{
+                  background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_LIGHT})`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}>
+                  Pre-Production
+                </span>
+              </h1>
+
+              <p className="text-base md:text-lg text-[var(--text-secondary)] leading-relaxed mb-10">
+                Designing workflows for an AI-powered platform that transformed how film productions manage scripts,
+                schedules, call sheets, and cross-functional collaboration.
+              </p>
+
+              {/* Meta row */}
+              <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-sm">
+                {[
+                  { label: "Role", value: "Associate UX / Product Designer" },
+                  { label: "Company", value: "Dimension Leap" },
+                  { label: "Duration", value: "May 2025 – June 2025" },
+                  { label: "Team", value: "1 Designer · 3 Engineers · PM · CEO" },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <span className="text-[var(--text-tertiary)] text-xs font-mono uppercase tracking-wider block mb-0.5">{label}</span>
+                    <span className="font-semibold text-[var(--text-primary)] text-sm leading-snug">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* RIGHT: Project screenshot */}
+            <motion.div
+              initial={{ opacity: 0, x: 40, scale: 0.96 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="relative hidden lg:block"
             >
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-              SaaS · Healthcare · UX/Product Design
-            </div>
-
-            {/* Headline */}
-            <h1
-              className="font-display font-black text-[var(--text-primary)] leading-[0.95] tracking-tight mb-6"
-              style={{ fontSize: "clamp(40px, 7vw, 88px)" }}
-            >
-              AI-Powered Film<br />
-              <span style={{
-                background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_LIGHT})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}>
-                Pre-Production
-              </span>
-            </h1>
-
-            <p className="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl leading-relaxed mb-12">
-              Designing workflows for an AI-powered platform that transformed how film productions manage scripts,
-              schedules, call sheets, and cross-functional collaboration.
-            </p>
-
-            {/* Meta row */}
-            <div className="flex flex-wrap gap-6 text-sm">
-              {[
-                { label: "Role", value: "Associate UX / Product Designer" },
-                { label: "Company", value: "Dimension Leap" },
-                { label: "Duration", value: "May 2025 – June 2025" },
-                { label: "Team", value: "1 Designer · 3 Engineers · PM · CEO" },
-              ].map(({ label, value }) => (
-                <div key={label}>
-                  <span className="text-[var(--text-tertiary)] text-xs font-mono uppercase tracking-wider block mb-0.5">{label}</span>
-                  <span className="font-semibold text-[var(--text-primary)]">{value}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+              {/* Glow behind image */}
+              <div
+                className="absolute -inset-6 rounded-3xl blur-3xl opacity-30"
+                style={{ background: `radial-gradient(ellipse, ${ACCENT}60 0%, transparent 70%)` }}
+              />
+              <div
+                className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+                style={{ boxShadow: `0 32px 80px rgba(124,58,237,0.25), 0 8px 24px rgba(0,0,0,0.2)` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/pre-production.png"
+                  alt="AI-Powered Film Pre-Production Platform — Dimension Leap"
+                  className="w-full h-auto object-cover block"
+                  draggable={false}
+                />
+                {/* Subtle gradient overlay on image bottom */}
+                <div
+                  className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+                  style={{ background: `linear-gradient(to top, ${ACCENT}18, transparent)` }}
+                />
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Scroll cue */}
@@ -361,7 +389,7 @@ export default function DimensionLeapCaseStudy() {
               </h2>
               <p className="text-[var(--text-secondary)] leading-relaxed">
                 Every production — from indie films to agency campaigns — shared the same hidden crisis.
-                Scripts lived in Google Docs. Schedules were copy-pasted from last season's Excel files.
+                Scripts lived in Google Docs. Schedules were copy-pasted from last season&apos;s Excel files.
                 Call sheets were assembled manually the night before every shoot day.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed">
@@ -834,7 +862,19 @@ export default function DimensionLeapCaseStudy() {
             Every interaction state was prototyped for developer handoff.
           </p>
           <div className="space-y-5">
-            <Visual label="Production Command Center — Producer Dashboard" height="h-72" icon={Cpu} />
+            {/* Real project screenshot */}
+            <div
+              className="relative rounded-2xl overflow-hidden border border-[var(--border)] shadow-xl"
+              style={{ boxShadow: `0 24px 64px rgba(124,58,237,0.18), 0 4px 16px rgba(0,0,0,0.1)` }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/pre-production.png"
+                alt="AI-Powered Film Pre-Production Platform — Production Command Center"
+                className="w-full h-auto object-cover block"
+                draggable={false}
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <Visual label="AI Script Editor — Writer View" height="h-56" icon={FileText} />
               <Visual label="Healthcare Patient App — Mobile" height="h-56" icon={Users} />
@@ -1095,11 +1135,11 @@ export default function DimensionLeapCaseStudy() {
           <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-6 text-center">
             Next Project
           </p>
-          <Link href="/work/hobbiecue-ux-audit" className="block group max-w-lg mx-auto">
+          <Link href="/work/healthcare-platform" className="block group max-w-lg mx-auto">
             <div className="flex items-center justify-between p-6 rounded-2xl border border-[var(--border)] hover:border-[var(--accent)] hover:shadow-lg transition-all bg-[var(--bg)]">
               <div>
-                <p className="text-xs text-[var(--text-secondary)] mb-1">UX Audit &amp; Design Systems</p>
-                <p className="font-display font-bold text-xl text-[var(--text-primary)]">Hobbiecue UX Audit</p>
+                <p className="text-xs text-[var(--text-secondary)] mb-1">Healthcare · Enterprise UX</p>
+                <p className="font-display font-bold text-xl text-[var(--text-primary)]">Unified Healthcare Platform</p>
               </div>
               <div
                 className="w-10 h-10 rounded-full border flex items-center justify-center transition-all group-hover:scale-110"

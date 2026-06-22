@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/data/projects";
@@ -21,98 +21,38 @@ function ProjectCard({
   isMobile: boolean;
 }) {
   const motionRef = useRef<HTMLDivElement>(null);
-  const cardRef   = useRef<HTMLDivElement>(null);
-  const shimRef   = useRef<HTMLDivElement>(null);
 
-  const isInView = useInView(motionRef, { once: true, amount: 0.12 });
-
-  // ── 3D Tilt via spring MotionValues ─────────────────────────────────────────
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const rawS = useMotionValue(1);
-  const rotX  = useSpring(rawX, { stiffness: 300, damping: 36, mass: 0.6 });
-  const rotY  = useSpring(rawY, { stiffness: 300, damping: 36, mass: 0.6 });
-  const sc    = useSpring(rawS, { stiffness: 300, damping: 36, mass: 0.6 });
-
-  const prefersReduced =
-    typeof window !== "undefined"
-      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      : false;
-  const enable3D = !isMobile && !prefersReduced;
-
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = cardRef.current;
-    const sh = shimRef.current;
-    if (!el) return;
-    const { left, top, width, height } = el.getBoundingClientRect();
-    const nx = (e.clientX - left) / width;
-    const ny = (e.clientY - top)  / height;
-    // Shimmer position
-    if (sh) {
-      sh.style.setProperty("--mx", `${nx * 100}%`);
-      sh.style.setProperty("--my", `${ny * 100}%`);
-    }
-    // 3D tilt
-    if (enable3D) {
-      rawX.set((ny - 0.5) * -8);
-      rawY.set((nx - 0.5) *  8);
-    }
-  };
-
-  const onMouseEnter = () => { if (enable3D) rawS.set(1.02); };
-  const onMouseLeave = () => {
-    if (enable3D) { rawX.set(0); rawY.set(0); rawS.set(1); }
-  };
+  const isInView = useInView(motionRef, { once: true, amount: 0.05 });
 
   return (
     <motion.div
       ref={motionRef}
       className="container"
-      initial={{ opacity: 0, y: 48, scale: 0.98 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <div className="pb-8 md:pb-12">
         <Link
           href={`/work/${project.slug}`}
           aria-label={`View ${project.title} case study`}
-          className="block group"
+          className="block"
         >
-          {/* ── CARD SHELL — solid bg, 3D tilt ────────────────────── */}
-          <motion.div
-            ref={cardRef}
-            onMouseMove={onMouseMove}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
+          {/* ── CARD SHELL — border-color on hover, zero JS, zero reflow ── */}
+          <div
             style={{
-              rotateX: enable3D ? rotX : 0,
-              rotateY: enable3D ? rotY : 0,
-              scale:   enable3D ? sc   : 1,
-              // IMPORTANT: solid base colour — shimmer lives in a child layer
               backgroundColor: "var(--bg)",
-              boxShadow: `
-                0 ${(index + 1) * 6}px ${(index + 1) * 28}px rgba(0,0,0,${0.06 + index * 0.025}),
-                0 1px 3px rgba(0,0,0,0.05)
-              `,
+              boxShadow: `0 ${(index + 1) * 6}px ${(index + 1) * 28}px rgba(0,0,0,${0.06 + index * 0.025}), 0 1px 3px rgba(0,0,0,0.05)`,
             }}
-            className="relative rounded-2xl md:rounded-[28px] border border-[var(--border)] overflow-hidden cursor-pointer will-change-transform"
+            className="relative rounded-2xl md:rounded-[28px] border border-[var(--border)] overflow-hidden cursor-pointer"
           >
-            {/* Shimmer radial — separate child, never overrides solid bg */}
-            <div
-              ref={shimRef}
-              aria-hidden="true"
-              className="absolute inset-0 pointer-events-none z-0"
-              style={{
-                background: `radial-gradient(circle at var(--mx, 50%) var(--my, 50%), ${project.color}0C 0%, transparent 65%)`,
-              }}
-            />
 
             {/* ── Content wrapper — above shimmer ─────────────────── */}
             <div className="relative z-[1] flex flex-col md:flex-row min-h-[260px]">
 
               {/* LEFT: Thumbnail (40%) ──────────────────────────────── */}
               <div
-                className="w-full md:w-[40%] lg:w-[38%] shrink-0 relative overflow-hidden"
+                className="w-full md:w-[40%] lg:w-[38%] shrink-0 relative overflow-hidden bg-[var(--bg-subtle)] dark:bg-[var(--surface)]"
                 style={{ minHeight: isMobile ? "200px" : undefined }}
               >
                 {/* Gradient fill */}
@@ -247,7 +187,7 @@ function ProjectCard({
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border)]">
                     {/* Tools — subtle, de-emphasised */}
-                    <div className="flex flex-wrap gap-1.5 opacity-40 group-hover:opacity-60 transition-opacity duration-300">
+                    <div className="flex flex-wrap gap-1.5 opacity-50">
                       {project.tools.slice(0, 4).map((tool) => (
                         <span
                           key={tool}
@@ -260,21 +200,18 @@ function ProjectCard({
 
                     {/* CTA */}
                     <span
-                      className="flex items-center gap-1.5 text-sm font-semibold shrink-0 transition-all duration-200"
+                      className="flex items-center gap-1.5 text-sm font-semibold shrink-0"
                       style={{ color: project.color }}
                     >
                       View Case Study
-                      <ArrowUpRight
-                        size={15}
-                        className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      />
+                      <ArrowUpRight size={15} />
                     </span>
                   </div>
                 </div>
 
               </div>
             </div>
-          </motion.div>
+          </div>
         </Link>
       </div>
     </motion.div>
@@ -305,7 +242,6 @@ function StackCard({
         position: "sticky",
         top: `${CARD_BASE_TOP + index * 16}px`,
         zIndex: index + 1,
-        willChange: "transform",
       }}
     >
       {card}
@@ -370,7 +306,7 @@ export default function Work() {
           ))}
         </div>
       ) : (
-        <div style={{ position: "relative", height: `${projects.length * VH_PER_CARD}vh` }}>
+        <div style={{ position: "relative", height: `${Math.max(150, projects.length * 75)}vh` }}>
           {projects.map((project, i) => (
             <StackCard key={project.slug} project={project} index={i} isSticky={true} isMobile={false} />
           ))}
