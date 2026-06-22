@@ -44,7 +44,7 @@ export const projects: Project[] = [
     color: "#7C3AED",
     colorDark: "#A78BFA",
     gradient: "from-[#7C3AED] to-[#A78BFA]",
-    heroImage: "/images/dimension-hero.jpg",
+    heroImage: "/pre-production.png",
     mockupImage: "/images/dimension-mockup.jpg",
     year: "2025",
     sections: [
