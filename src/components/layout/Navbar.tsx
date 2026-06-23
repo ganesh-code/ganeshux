@@ -66,9 +66,15 @@ export default function Navbar() {
     if (isSubPage) {
       // Navigate back to home page with the anchor hash
       window.location.href = "/" + href;
-    } else {
-      document.getElementById(href.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
+      return;
     }
+    // Contact is a sticky section revealed at the very end of the page —
+    // scrollIntoView doesn't work on sticky elements. Scroll to page bottom instead.
+    if (href === "#contact-anchor") {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      return;
+    }
+    document.getElementById(href.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
   };
 
   /* ─── Two explicit colour modes ─── */
