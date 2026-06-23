@@ -1131,13 +1131,14 @@ export default function HealthcareCaseStudy() {
       <section className="border-t border-[var(--border)] bg-[var(--bg-subtle)]">
         <div className="max-w-5xl mx-auto px-6 py-16">
           <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-6 text-center">Next Project</p>
-          <Link href="/work/dimension-leap" className="block group max-w-lg mx-auto">
+          <Link href="/work/phonepe-ux-redesign" className="block group max-w-lg mx-auto">
             <div className="flex items-center justify-between p-6 rounded-2xl border border-[var(--border)] hover:border-[var(--accent)] hover:shadow-lg transition-all bg-[var(--bg)]">
               <div>
-                <p className="text-xs text-[var(--text-secondary)] mb-1">SaaS &amp; Healthcare · UX/Product Design</p>
-                <p className="font-display font-bold text-xl text-[var(--text-primary)]">AI Preproduction Suite for Indian Films</p>
+                <p className="text-xs text-[var(--text-secondary)] mb-1">UX Research &amp; Product Design</p>
+                <p className="font-display font-bold text-xl text-[var(--text-primary)]">Enhancing PhonePe&apos;s Usability</p>
               </div>
-              <div className="w-10 h-10 rounded-full border flex items-center justify-center transition-all group-hover:scale-110"
+              <div
+                className="w-10 h-10 rounded-full border flex items-center justify-center transition-all group-hover:scale-110"
                 style={{ borderColor: ACCENT, color: ACCENT }}
               >
                 <ArrowRight size={16} />

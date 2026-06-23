@@ -106,6 +106,47 @@ export const projects: Project[] = [
         content: "Delivered a fully connected healthcare ecosystem that eliminated fragmentation, enabled real-time coordination across all stakeholders, and established a scalable design system used across all six products."
       }
     ]
+  },
+  {
+    slug: "phonepe-ux-redesign",
+    title: "Enhancing PhonePe's Usability",
+    type: "UX Research & Product Design",
+    tagline: "Improving Accessibility, Navigation & User Engagement through research-driven design decisions",
+    problem: "PhonePe users face challenges discovering critical features quickly, leading to slower transactions, unnecessary effort, and reduced usability.",
+    solution: "Conducted in-depth research into feature discoverability, accessibility, and navigation efficiency. Redesigned core interaction patterns for Scan & Pay, Split Bill, and feature discovery to reduce friction across the platform.",
+    impact: [
+      "40% Faster Feature Discovery",
+      "3 Core Flows Redesigned",
+      "Research-Driven Decisions",
+      "Accessibility Improved"
+    ],
+    tools: ["Figma", "Miro", "Google Forms"],
+    duration: "4 Weeks",
+    role: "UX Researcher & Designer",
+    color: "#5F259F",
+    colorDark: "#9B59B6",
+    gradient: "from-[#5F259F] to-[#9B59B6]",
+    heroImage: "/phonepe.png",
+    mockupImage: "/phonepe.png",
+    year: "2024",
+    sections: [
+      {
+        title: "Project Overview",
+        content: "PhonePe users face challenges discovering critical features quickly, leading to slower transactions, unnecessary effort, and reduced usability. This project focused on improving feature discoverability, accessibility, navigation efficiency, and overall user experience through research-driven design decisions."
+      },
+      {
+        title: "Research & Problem Definition",
+        content: "Conducted user interviews, surveys via Google Forms, and competitive analysis. Identified core pain points: difficulty locating Split Bill, inefficient Scan & Pay access, poor feature discoverability, and navigation confusion."
+      },
+      {
+        title: "Design Solutions",
+        content: "Redesigned the navigation structure to surface high-frequency features. Introduced contextual shortcuts, improved information hierarchy, and enhanced accessibility for diverse user demographics."
+      },
+      {
+        title: "Impact",
+        content: "The redesign improved task completion rates, reduced time-on-task for key flows, and enhanced satisfaction scores across tested user segments."
+      }
+    ]
   }
 ];
 
