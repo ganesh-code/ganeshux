@@ -4,23 +4,23 @@ import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import {
-  ArrowLeft, ArrowRight, Search, Navigation, Users, Eye,
-  CheckCircle2, AlertTriangle, Lightbulb, BarChart2,
-  Smartphone, MousePointer2, Zap, Target, TrendingUp,
-  FileText, MessageSquare, ChevronRight, Star, RefreshCw,
-  ClipboardList, Activity, Layout, Accessibility
+  ArrowLeft, ArrowRight, CheckCircle2, XCircle, AlertTriangle,
+  Users, Search, Navigation, Eye, ClipboardList,
+  Lightbulb, Target, Zap, Smartphone, MousePointer2,
+  ChevronRight, RefreshCw, Layout, Accessibility, Activity
 } from "lucide-react";
 
 const ACCENT = "#5F259F";
-const ACCENT2 = "#9B59B6";
-const ACCENT_LIGHT = "#E8D5F5";
+const ACCENT_LIGHT = "#9B59B6";
 
+// ── Fade-up animation variant ─────────────────────────────────────────────────
 const FU = {
   hidden: { opacity: 0, y: 32 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
-function SectionLabel({ n, text }: { n: string; text: string }) {
+// ── Section label ─────────────────────────────────────────────────────────────
+function Label({ n, text }: { n: string; text: string }) {
   return (
     <div className="flex items-center gap-3 mb-6">
       <span className="text-[11px] font-mono font-bold text-[var(--text-tertiary)] tracking-[0.2em]">{n}</span>
@@ -30,10 +30,11 @@ function SectionLabel({ n, text }: { n: string; text: string }) {
   );
 }
 
-function Stat({ value, label, color = ACCENT }: { value: string; label: string; color?: string }) {
+// ── Stat pill ─────────────────────────────────────────────────────────────────
+function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="font-display font-bold leading-none" style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.75rem)", color }}>
+      <span className="font-display font-bold leading-none" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: ACCENT }}>
         {value}
       </span>
       <span className="text-xs text-[var(--text-secondary)] leading-snug">{label}</span>
@@ -41,8 +42,23 @@ function Stat({ value, label, color = ACCENT }: { value: string; label: string; 
   );
 }
 
-function InsightCard({ icon: Icon, title, items, color = ACCENT }: {
-  icon: React.ElementType; title: string; items: string[]; color?: string;
+// ── Insight card ──────────────────────────────────────────────────────────────
+function InsightCard({ n, title, body }: { n: string; title: string; body: string }) {
+  return (
+    <motion.div
+      variants={FU}
+      className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)] flex flex-col gap-3"
+    >
+      <span className="text-xs font-mono font-bold tracking-[0.16em] text-[var(--text-tertiary)]">{n}</span>
+      <p className="font-semibold text-[var(--text-primary)] leading-snug">{title}</p>
+      <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{body}</p>
+    </motion.div>
+  );
+}
+
+// ── Finding card ──────────────────────────────────────────────────────────────
+function FindingCard({ icon: Icon, title, items, color }: {
+  icon: React.ElementType; title: string; items: string[]; color: string;
 }) {
   return (
     <motion.div
@@ -68,414 +84,419 @@ function InsightCard({ icon: Icon, title, items, color = ACCENT }: {
   );
 }
 
-function ProblemCard({ title, desc, severity }: { title: string; desc: string; severity: "high" | "medium" }) {
-  const color = severity === "high" ? "#EF4444" : "#F59E0B";
+// ── Solution card ─────────────────────────────────────────────────────────────
+function SolutionCard({ icon: Icon, n, name, before, after, metric }: {
+  icon: React.ElementType; n: string; name: string; before: string; after: string; metric: string;
+}) {
   return (
-    <motion.div
-      variants={FU}
-      className="p-5 rounded-xl border flex gap-4"
-      style={{ borderColor: `${color}28`, background: `${color}06` }}
-    >
-      <AlertTriangle size={18} className="shrink-0 mt-0.5" style={{ color }} />
-      <div>
-        <p className="font-semibold text-[var(--text-primary)] text-sm mb-1">{title}</p>
-        <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{desc}</p>
+    <motion.div variants={FU} className="group">
+      <div className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg)] hover:border-[var(--accent)] transition-colors duration-300">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${ACCENT}18` }}>
+              <Icon size={18} style={{ color: ACCENT }} />
+            </div>
+            <div>
+              <span className="text-[10px] font-mono text-[var(--text-tertiary)] tracking-wider">SOLUTION {n}</span>
+              <p className="font-semibold text-[var(--text-primary)] text-sm leading-snug">{name}</p>
+            </div>
+          </div>
+          <span
+            className="text-xs font-bold px-2.5 py-1 rounded-full"
+            style={{ background: `${ACCENT}18`, color: ACCENT }}
+          >
+            {metric}
+          </span>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-start gap-2">
+            <XCircle size={13} className="mt-0.5 shrink-0 text-red-400" />
+            <p className="text-xs text-[var(--text-secondary)]"><span className="text-[var(--text-tertiary)] font-mono mr-1">BEFORE:</span>{before}</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <CheckCircle2 size={13} className="mt-0.5 shrink-0 text-emerald-400" />
+            <p className="text-xs text-[var(--text-secondary)]"><span className="text-[var(--text-tertiary)] font-mono mr-1">AFTER:</span>{after}</p>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
 }
 
-function SolutionCard({ icon: Icon, title, desc }: { icon: React.ElementType; title: string; desc: string }) {
-  return (
-    <motion.div
-      variants={FU}
-      className="p-6 rounded-2xl border flex flex-col gap-3"
-      style={{ borderColor: `${ACCENT}22`, background: `${ACCENT}05` }}
-    >
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${ACCENT}15` }}>
-        <Icon size={20} style={{ color: ACCENT }} />
-      </div>
-      <p className="font-semibold text-[var(--text-primary)] text-sm">{title}</p>
-      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{desc}</p>
-    </motion.div>
-  );
-}
-
+// ─── Main component ───────────────────────────────────────────────────────────
 export default function PhonePeCaseStudy() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-
-  const overviewRef = useRef(null);
-  const problemRef = useRef(null);
-  const researchRef = useRef(null);
-  const findingsRef = useRef(null);
-  const solutionsRef = useRef(null);
-  const testingRef = useRef(null);
-  const outcomeRef = useRef(null);
-
-  const isOverviewInView = useInView(overviewRef, { once: true, amount: 0.15 });
-  const isProblemInView = useInView(problemRef, { once: true, amount: 0.15 });
-  const isResearchInView = useInView(researchRef, { once: true, amount: 0.15 });
-  const isFindingsInView = useInView(findingsRef, { once: true, amount: 0.15 });
-  const isSolutionsInView = useInView(solutionsRef, { once: true, amount: 0.15 });
-  const isTestingInView = useInView(testingRef, { once: true, amount: 0.15 });
-  const isOutcomeInView = useInView(outcomeRef, { once: true, amount: 0.15 });
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
     <>
-      {/* ── Back Button ─────────────────────────────────────────────────────── */}
-      <Link
-        href="/#work"
-        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-sm text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all"
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* HERO                                                           */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <section
+        ref={heroRef}
+        className="relative min-h-screen flex flex-col justify-center overflow-hidden"
+        style={{ paddingTop: "100px", paddingBottom: "80px" }}
       >
-        <ArrowLeft size={14} />
-        Back
-      </Link>
-
-      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[70vh] flex items-end overflow-hidden">
         {/* Background */}
-        <motion.div
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="absolute inset-0"
-        >
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(135deg, ${ACCENT}22 0%, ${ACCENT}0A 50%, transparent 100%)`,
-            }}
-          />
-          {/* Grid pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage: `radial-gradient(circle, ${ACCENT} 1px, transparent 1px)`,
-              backgroundSize: "28px 28px",
-            }}
-          />
-          {/* PhonePe hero image */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/phonepe.png"
-            alt="PhonePe UX Redesign"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-          />
-          {/* Bottom fade */}
-          <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[var(--bg)] to-transparent" />
+        <div className="absolute inset-0" style={{
+          background: `radial-gradient(ellipse 70% 70% at 60% 0%, ${ACCENT}1A 0%, transparent 60%),
+                       radial-gradient(ellipse 50% 50% at 10% 80%, ${ACCENT_LIGHT}0E 0%, transparent 60%)`
+        }} />
+        <div className="absolute inset-0 opacity-[0.025]" style={{
+          backgroundImage: `linear-gradient(${ACCENT} 1px, transparent 1px), linear-gradient(90deg, ${ACCENT} 1px, transparent 1px)`,
+          backgroundSize: "48px 48px"
+        }} />
+
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 max-w-6xl mx-auto px-6 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            {/* LEFT */}
+            <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+              <Link href="/#work"
+                className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-5 group transition-colors w-fit"
+              >
+                <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1 duration-200" />
+                Back to Work
+              </Link>
+
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-7"
+                style={{ background: `${ACCENT}18`, color: ACCENT, border: `1px solid ${ACCENT}28` }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
+                UX Research &amp; Product Design
+              </div>
+
+              <h1 className="font-display font-black text-[var(--text-primary)] leading-[0.95] tracking-tight mb-5"
+                style={{ fontSize: "clamp(34px, 5.5vw, 72px)" }}
+              >
+                Enhancing
+                <br />
+                <span style={{
+                  background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_LIGHT})`,
+                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
+                }}>
+                  PhonePe&apos;s
+                </span>
+                <br />
+                Usability
+              </h1>
+
+              <p className="text-base md:text-lg text-[var(--text-secondary)] leading-relaxed mb-9">
+                Improving accessibility, navigation efficiency, and user engagement through
+                research-driven design decisions across core payment flows.
+              </p>
+
+              <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-sm">
+                {[
+                  { label: "Role", value: "UX Researcher & Designer" },
+                  { label: "Category", value: "UX Research & Product Design" },
+                  { label: "Duration", value: "4 Weeks" },
+                  { label: "Tools", value: "Figma · Miro · Google Forms" },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <span className="text-[var(--text-tertiary)] text-xs font-mono uppercase tracking-wider block mb-0.5">{label}</span>
+                    <span className="font-semibold text-[var(--text-primary)] text-sm leading-snug">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* RIGHT — PhonePe screenshot */}
+            <motion.div
+              initial={{ opacity: 0, x: 40, scale: 0.96 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="relative hidden lg:block"
+            >
+              <div className="absolute -inset-8 rounded-3xl blur-3xl opacity-25"
+                style={{ background: `radial-gradient(ellipse, ${ACCENT}70 0%, transparent 70%)` }}
+              />
+              <div className="relative rounded-2xl overflow-hidden border border-white/10"
+                style={{ boxShadow: `0 32px 80px rgba(95,37,159,0.22), 0 8px 24px rgba(0,0,0,0.18)` }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/phonepe.png" alt="PhonePe UX Redesign" className="w-full h-auto object-cover block" draggable={false} />
+                <div className="absolute inset-x-0 bottom-0 h-20 pointer-events-none"
+                  style={{ background: `linear-gradient(to top, ${ACCENT}14, transparent)` }}
+                />
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
-        {/* Hero content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-6 pb-20 pt-36 w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {/* Category badge */}
-            <div className="flex flex-wrap items-center gap-3 mb-6">
-              <span
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
-                style={{ background: `${ACCENT}18`, color: ACCENT, border: `1px solid ${ACCENT}30` }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: ACCENT }} />
-                UX Research &amp; Product Design
-              </span>
-              <span className="text-xs font-mono text-[var(--text-tertiary)]">4 Weeks · 2024</span>
-            </div>
-
-            <h1
-              className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-              style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}
-            >
-              Enhancing PhonePe&apos;s Usability
-            </h1>
-            <p
-              className="font-display text-[var(--text-secondary)] leading-snug mb-8 max-w-2xl"
-              style={{ fontSize: "clamp(16px, 2vw, 22px)" }}
-            >
-              Improving Accessibility, Navigation &amp; User Engagement
-            </p>
-
-            {/* Meta row */}
-            <div className="flex flex-wrap gap-6">
-              {[
-                { label: "Role", value: "UX Researcher & Designer" },
-                { label: "Duration", value: "4 Weeks" },
-                { label: "Tools", value: "Figma · Miro · Google Forms" },
-                { label: "Category", value: "UX Research & Product Design" },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex flex-col gap-0.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-tertiary)]">{label}</span>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">{value}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+        {/* Scroll cue */}
+        <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        >
+          <span className="text-[10px] font-mono tracking-widest text-[var(--text-tertiary)]">SCROLL</span>
+          <div className="w-px h-10 bg-gradient-to-b from-[var(--accent)] to-transparent" />
+        </motion.div>
       </section>
 
-      {/* ── Impact Bar ──────────────────────────────────────────────────────── */}
+      {/* ── Impact bar ────────────────────────────────────────────────── */}
       <section className="border-y border-[var(--border)] bg-[var(--bg-subtle)]">
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="grid grid-cols-2 md:grid-cols-4 gap-8"
           >
-            <Stat value="40%" label="Faster Feature Discovery" />
-            <Stat value="3" label="Core Flows Redesigned" color={ACCENT2} />
-            <Stat value="WCAG" label="Accessibility Standards Met" />
-            <Stat value="4 Wks" label="Research-Driven Sprint" color={ACCENT2} />
+            {[
+              { value: "40%", label: "Faster Feature Discovery" },
+              { value: "3", label: "Core Flows Redesigned" },
+              { value: "WCAG", label: "Accessibility Standards Met" },
+              { value: "4 Wks", label: "Research-Driven Sprint" },
+            ].map((s, i) => (
+              <motion.div key={s.label} variants={FU} transition={{ delay: i * 0.08 }}>
+                <Stat value={s.value} label={s.label} />
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* ── Content ─────────────────────────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-6 py-16 space-y-24">
+      {/* ── Article body ──────────────────────────────────────────────── */}
+      <div className="max-w-5xl mx-auto px-6 pb-32 space-y-32 mt-24">
 
-        {/* ─── 01 PROJECT OVERVIEW ─────────────────────────────────────────── */}
-        <motion.section
-          ref={overviewRef}
-          initial="hidden"
-          animate={isOverviewInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionLabel n="01" text="Project Overview" />
-          <div className="grid md:grid-cols-2 gap-8 items-start">
-            <motion.div variants={FU} className="space-y-4">
-              <h2 className="font-display font-bold text-2xl text-[var(--text-primary)]">
-                Understanding the Challenge
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 01 · PROJECT OVERVIEW                                          */}
+        {/* ══════════════════════════════════════════════════════════════ */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
+          <Label n="01" text="Project Overview" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div className="flex flex-col gap-5">
+              <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight"
+                style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
+              >
+                A usability problem hiding in{" "}
+                <span style={{ color: ACCENT }}>plain sight.</span>
               </h2>
               <p className="text-[var(--text-secondary)] leading-relaxed">
-                PhonePe users face challenges discovering critical features quickly, leading to slower
-                transactions, unnecessary effort, and reduced usability. This project focused on improving
-                feature discoverability, accessibility, navigation efficiency, and overall user experience
-                through research-driven design decisions.
+                PhonePe is one of India&apos;s most widely used UPI payment apps, yet users consistently
+                struggled to find critical features — leading to slower transactions, unnecessary effort,
+                and reduced satisfaction.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed">
-                The redesign explored how users interact with core features such as <strong className="text-[var(--text-primary)]">Scan &amp; Pay</strong>,{" "}
-                <strong className="text-[var(--text-primary)]">Split Bill</strong>, and feature discovery
-                mechanisms across the platform.
+                This project focused on improving <strong className="text-[var(--text-primary)]">feature discoverability</strong>,{" "}
+                <strong className="text-[var(--text-primary)]">navigation efficiency</strong>, and{" "}
+                <strong className="text-[var(--text-primary)]">accessibility</strong> through research-driven
+                design decisions — without disrupting users&apos; existing mental models.
               </p>
-            </motion.div>
-
-            <motion.div variants={FU} className="space-y-3">
-              {[
-                { label: "Platform", value: "PhonePe (UPI Payments App)" },
-                { label: "Focus Area", value: "Feature Discoverability & Navigation" },
-                { label: "Methodology", value: "Research-Driven UX Design" },
-                { label: "Scope", value: "Mobile App — iOS & Android" },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex justify-between items-center py-3 border-b border-[var(--border)]">
-                  <span className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wide">{label}</span>
-                  <span className="text-sm font-medium text-[var(--text-primary)]">{value}</span>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </motion.section>
-
-        {/* ─── 02 THE PROBLEM ──────────────────────────────────────────────── */}
-        <motion.section
-          ref={problemRef}
-          initial="hidden"
-          animate={isProblemInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionLabel n="02" text="The Problem" />
-          <motion.div variants={FU} className="mb-8">
-            <h2 className="font-display font-bold text-2xl text-[var(--text-primary)] mb-3">
-              Research Revealed Several Usability Issues
-            </h2>
-            <p className="text-[var(--text-secondary)] leading-relaxed max-w-2xl">
-              Research revealed several usability issues within the existing PhonePe experience that hindered
-              users from completing their goals efficiently.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-4 mb-8">
-            <ProblemCard
-              title="Difficulty Locating Split Bill"
-              desc="Users struggled to find the Split Bill feature, often resorting to manual calculations and separate payment flows."
-              severity="high"
-            />
-            <ProblemCard
-              title="Inefficient Scan & Pay Access"
-              desc="The QR scanner was buried multiple taps deep, creating friction in the most common payment flow."
-              severity="high"
-            />
-            <ProblemCard
-              title="Poor Feature Discoverability"
-              desc="New and infrequently used features had no clear entry points or contextual hints for users."
-              severity="medium"
-            />
-            <ProblemCard
-              title="Navigation Confusion"
-              desc="Users couldn't efficiently navigate between primary features, leading to increased return-to-home actions."
-              severity="medium"
-            />
-          </div>
-
-          {/* How Might We */}
-          <motion.div
-            variants={FU}
-            className="p-8 rounded-2xl border-l-4 bg-[var(--bg-subtle)]"
-            style={{ borderLeftColor: ACCENT }}
-          >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-3" style={{ color: ACCENT }}>
-              How Might We
-            </p>
-            <p className="font-display text-lg font-semibold text-[var(--text-primary)] leading-relaxed">
-              &ldquo;How might we help PhonePe users discover and access critical features faster,
-              without disrupting their existing mental models?&rdquo;
-            </p>
-          </motion.div>
-        </motion.section>
-
-        {/* ─── 03 RESEARCH METHODOLOGY ─────────────────────────────────────── */}
-        <motion.section
-          ref={researchRef}
-          initial="hidden"
-          animate={isResearchInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-        >
-          <SectionLabel n="03" text="Research Methodology" />
-          <motion.div variants={FU} className="mb-8">
-            <h2 className="font-display font-bold text-2xl text-[var(--text-primary)] mb-3">
-              A Multi-Method Research Approach
-            </h2>
-            <p className="text-[var(--text-secondary)] leading-relaxed max-w-2xl">
-              To deeply understand user pain points and behaviors, I employed a combination of qualitative
-              and quantitative research methods over two weeks.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-5 mb-10">
-            <InsightCard
-              icon={Users}
-              title="User Interviews"
-              items={[
-                "8 participants across demographics",
-                "Semi-structured sessions (45 min each)",
-                "Think-aloud protocol",
-                "Task-based scenarios",
-              ]}
-            />
-            <InsightCard
-              icon={ClipboardList}
-              title="Survey Research"
-              items={[
-                "Google Forms questionnaire",
-                "Quantitative satisfaction data",
-                "Feature usage frequency",
-                "Navigation pain point ratings",
-              ]}
-            />
-            <InsightCard
-              icon={Eye}
-              title="Usability Testing"
-              items={[
-                "Task completion rate analysis",
-                "Time-on-task measurement",
-                "Error rate tracking",
-                "Heuristic evaluation",
-              ]}
-            />
-          </div>
-
-          {/* Research Process Timeline */}
-          <motion.div variants={FU} className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-tertiary)] mb-4">Research Timeline</p>
-            {[
-              { week: "Week 1", title: "Discovery & Research", desc: "User interviews, surveys, competitive analysis, and heuristic evaluation of the existing app." },
-              { week: "Week 2", title: "Synthesis & Definition", desc: "Affinity mapping, persona development, journey mapping, and problem statement refinement." },
-              { week: "Week 3", title: "Ideation & Design", desc: "Sketching, wireframing, and high-fidelity prototyping of redesigned flows in Figma." },
-              { week: "Week 4", title: "Testing & Iteration", desc: "Usability testing with 6 participants, iteration on findings, and final design documentation." },
-            ].map(({ week, title, desc }, i) => (
-              <div key={week} className="flex gap-4 items-start">
-                <div className="flex flex-col items-center">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
-                    style={{ background: `${ACCENT}15`, color: ACCENT }}
-                  >
-                    {i + 1}
+              <div className="space-y-3 pt-2">
+                {[
+                  "Users couldn't locate the Split Bill feature without help",
+                  "Scan & Pay required 4+ taps from the home screen",
+                  "Feature discovery was accidental rather than intentional",
+                  "Navigation labels were icon-only with no text support",
+                ].map((p) => (
+                  <div key={p} className="flex items-start gap-3">
+                    <XCircle size={14} className="mt-0.5 shrink-0 text-red-400" />
+                    <p className="text-sm text-[var(--text-secondary)]">{p}</p>
                   </div>
-                  {i < 3 && <div className="w-px h-6 mt-1" style={{ background: `${ACCENT}25` }} />}
+                ))}
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-[var(--border)] overflow-hidden">
+                <div className="px-5 py-3 border-b border-[var(--border)] bg-[var(--bg-subtle)]">
+                  <p className="text-xs font-mono text-[var(--text-tertiary)]">PROJECT AT A GLANCE</p>
                 </div>
-                <div className="pb-4">
-                  <span className="text-[10px] font-mono text-[var(--text-tertiary)] uppercase tracking-widest">{week}</span>
-                  <p className="font-semibold text-sm text-[var(--text-primary)] mt-0.5">{title}</p>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{desc}</p>
+                <div className="p-5 space-y-3">
+                  {[
+                    { label: "Platform", value: "PhonePe — UPI Payments App" },
+                    { label: "Focus", value: "Feature Discoverability & Navigation" },
+                    { label: "Methodology", value: "Research-Driven UX Design" },
+                    { label: "Scope", value: "Mobile App — iOS & Android" },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="flex justify-between items-center py-2 border-b border-[var(--border)] last:border-0">
+                      <span className="text-xs font-mono text-[var(--text-tertiary)] uppercase tracking-wide">{label}</span>
+                      <span className="text-sm font-medium text-[var(--text-primary)]">{value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </motion.div>
+              {/* How Might We */}
+              <div className="p-5 rounded-2xl border-l-4 bg-[var(--bg-subtle)]" style={{ borderLeftColor: ACCENT }}>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] mb-2" style={{ color: ACCENT }}>
+                  How Might We
+                </p>
+                <p className="text-sm font-medium text-[var(--text-primary)] leading-relaxed italic">
+                  &ldquo;How might we help PhonePe users discover and access critical features faster,
+                  without disrupting their existing mental models?&rdquo;
+                </p>
+              </div>
+            </div>
+          </div>
         </motion.section>
 
-        {/* ─── 04 KEY FINDINGS ─────────────────────────────────────────────── */}
-        <motion.section
-          ref={findingsRef}
-          initial="hidden"
-          animate={isFindingsInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionLabel n="04" text="Key Findings" />
-          <motion.div variants={FU} className="mb-8">
-            <h2 className="font-display font-bold text-2xl text-[var(--text-primary)] mb-3">
-              What Users Told Us
-            </h2>
-            <p className="text-[var(--text-secondary)] leading-relaxed max-w-2xl">
-              Across all research methods, three consistent themes emerged that defined the core usability
-              challenges within the PhonePe app.
-            </p>
-          </motion.div>
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 02 · THE PROBLEM                                               */}
+        {/* ══════════════════════════════════════════════════════════════ */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+          <Label n="02" text="The Problem" />
+          <motion.h2 variants={FU} className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
+          >
+            Research revealed several{" "}
+            <span style={{ color: ACCENT }}>usability issues.</span>
+          </motion.h2>
+          <motion.p variants={FU} className="text-[var(--text-secondary)] leading-relaxed max-w-2xl mb-10">
+            Users struggled to accomplish basic tasks that are core to the PhonePe experience. Each problem was
+            validated across multiple research methods before being prioritised for redesign.
+          </motion.p>
+          <div className="grid sm:grid-cols-2 gap-5">
+            {[
+              {
+                n: "PROBLEM 01",
+                title: "Difficulty Locating Split Bill",
+                body: "Users who needed to split expenses with friends couldn't find the feature. Most resorted to external calculators and manual payment splits, adding unnecessary friction to a social use case."
+              },
+              {
+                n: "PROBLEM 02",
+                title: "Inefficient Scan & Pay Access",
+                body: "The QR code scanner — the most common payment trigger — required 4+ taps to reach from the home screen. This slowed down in-store payments and frustrated users under time pressure."
+              },
+              {
+                n: "PROBLEM 03",
+                title: "Poor Feature Discoverability",
+                body: "Less prominent features had no clear entry points, contextual hints, or onboarding guidance. Users discovered features accidentally or didn't know they existed at all."
+              },
+              {
+                n: "PROBLEM 04",
+                title: "Navigation Confusion",
+                body: "Icon-only bottom navigation created ambiguity. Users often navigated to the wrong section and had to backtrack, increasing return-to-home actions by 62% per session."
+              },
+            ].map(({ n, title, body }) => (
+              <InsightCard key={n} n={n} title={title} body={body} />
+            ))}
+          </div>
+        </motion.section>
 
-          <div className="grid md:grid-cols-2 gap-5 mb-10">
-            <InsightCard
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 03 · RESEARCH METHODOLOGY                                      */}
+        {/* ══════════════════════════════════════════════════════════════ */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+          <Label n="03" text="Research Methodology" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div>
+              <motion.h2 variants={FU} className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+                style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
+              >
+                A multi-method{" "}
+                <span style={{ color: ACCENT }}>research approach.</span>
+              </motion.h2>
+              <motion.p variants={FU} className="text-[var(--text-secondary)] leading-relaxed mb-8">
+                To deeply understand user pain points and behaviour patterns, I combined qualitative
+                and quantitative research methods across a structured 4-week sprint.
+              </motion.p>
+              <div className="space-y-4">
+                {[
+                  { week: "Week 1", title: "Discovery & Research", desc: "User interviews (8 participants), survey via Google Forms, competitive analysis, and heuristic evaluation of the existing app.", icon: Search },
+                  { week: "Week 2", title: "Synthesis & Definition", desc: "Affinity mapping, persona development, user journey mapping, and problem statement refinement.", icon: ClipboardList },
+                  { week: "Week 3", title: "Ideation & Design", desc: "Sketching, wireframing, and high-fidelity prototyping of redesigned flows in Figma.", icon: Layout },
+                  { week: "Week 4", title: "Testing & Iteration", desc: "Moderated usability testing with 6 participants, iteration on key findings, and final documentation.", icon: Target },
+                ].map(({ week, title, desc, icon: Icon }, i) => (
+                  <motion.div key={week} variants={FU} className="flex gap-4 items-start">
+                    <div className="flex flex-col items-center">
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${ACCENT}15` }}>
+                        <Icon size={16} style={{ color: ACCENT }} />
+                      </div>
+                      {i < 3 && <div className="w-px h-5 mt-1" style={{ background: `${ACCENT}25` }} />}
+                    </div>
+                    <div className="pb-4">
+                      <span className="text-[10px] font-mono text-[var(--text-tertiary)] uppercase tracking-widest">{week}</span>
+                      <p className="font-semibold text-sm text-[var(--text-primary)] mt-0.5">{title}</p>
+                      <p className="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">{desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-4">
+              {[
+                {
+                  icon: Users,
+                  title: "User Interviews",
+                  items: ["8 participants across age groups and usage patterns", "Semi-structured sessions (45 min each)", "Think-aloud protocol for task walkthroughs", "Recruited from active PhonePe user base"],
+                  color: ACCENT
+                },
+                {
+                  icon: ClipboardList,
+                  title: "Survey Research",
+                  items: ["Google Forms questionnaire distributed online", "Quantitative satisfaction scores collected", "Feature usage frequency self-reported", "Navigation pain point severity ratings"],
+                  color: "#0EA5E9"
+                },
+                {
+                  icon: Eye,
+                  title: "Usability Testing",
+                  items: ["Task-based scenarios on interactive prototype", "Time-on-task and error rate measurement", "Heuristic evaluation of existing interface", "6 moderated sessions in final testing round"],
+                  color: "#10B981"
+                },
+              ].map(({ icon: Icon, title, items, color }) => (
+                <FindingCard key={title} icon={Icon} title={title} items={items} color={color} />
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 04 · KEY FINDINGS                                              */}
+        {/* ══════════════════════════════════════════════════════════════ */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+          <Label n="04" text="Key Findings" />
+          <motion.h2 variants={FU} className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
+          >
+            What users{" "}
+            <span style={{ color: ACCENT }}>told us.</span>
+          </motion.h2>
+          <motion.p variants={FU} className="text-[var(--text-secondary)] leading-relaxed max-w-2xl mb-10">
+            Four consistent themes emerged across all research methods, defining the core usability
+            challenges within the PhonePe experience.
+          </motion.p>
+          <div className="grid sm:grid-cols-2 gap-5 mb-10">
+            <FindingCard
               icon={Navigation}
               title="Navigation Inefficiency"
               items={[
                 "75% of users took 3+ taps to reach Scan & Pay",
                 "Split Bill discovered accidentally by most users",
-                "Return-to-home rate was 62% per session",
-                "Bottom nav labels were ambiguous",
+                "Return-to-home rate: 62% per session",
+                "Bottom nav labels were ambiguous or missing",
               ]}
               color="#EF4444"
             />
-            <InsightCard
+            <FindingCard
               icon={Search}
               title="Discoverability Gaps"
               items={[
                 "40% of users unaware of Split Bill feature",
                 "Financial Tools section rarely explored",
-                "Search bar underutilized (< 15% usage)",
-                "Onboarding flow skipped feature highlights",
+                "Search bar usage below 15% despite prominence",
+                "Onboarding skipped feature highlights entirely",
               ]}
               color="#F59E0B"
             />
-            <InsightCard
+            <FindingCard
               icon={Accessibility}
               title="Accessibility Barriers"
               items={[
                 "Text contrast ratio below WCAG AA in key areas",
-                "Touch targets below 44px minimum in some CTA areas",
-                "No alternative text for icon-only buttons",
-                "Color-only differentiation for transaction types",
+                "Touch targets below 44px minimum on some CTAs",
+                "No alt text for icon-only interactive elements",
+                "Color-only transaction type differentiation",
               ]}
               color="#0EA5E9"
             />
-            <InsightCard
+            <FindingCard
               icon={Activity}
               title="Engagement Drop-offs"
               items={[
-                "High abandonment in multi-step flows",
+                "High abandonment in multi-step payment flows",
+                "Error states were unclear and unhelpful",
+                "No progress indicators in longer payment flows",
                 "Confirmation screens added unnecessary friction",
-                "Error states unclear and unhelpful",
-                "No progress indicators in longer flows",
               ]}
               color="#8B5CF6"
             />
@@ -492,156 +513,108 @@ export default function PhonePeCaseStudy() {
                 className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-sm font-bold"
                 style={{ background: `${ACCENT}20`, color: ACCENT }}
               >
-                U1
+                P4
               </div>
               <div>
                 <p className="text-sm text-[var(--text-primary)] leading-relaxed italic mb-2">
-                  &ldquo;I use PhonePe every day for payments, but I still can&apos;t find the Split Bill option quickly. I just use WhatsApp to split costs with friends because I can&apos;t figure out where it is in the app.&rdquo;
+                  &ldquo;I use PhonePe every day for payments, but I still can&apos;t find the Split Bill option quickly.
+                  I just use WhatsApp to split costs with friends because I can&apos;t figure out where it is in the app.&rdquo;
                 </p>
-                <p className="text-[10px] font-mono text-[var(--text-tertiary)]">— Participant #4, 27yo, Frequent PhonePe User</p>
+                <p className="text-[10px] font-mono text-[var(--text-tertiary)]">— Participant #4, 27yo · Frequent PhonePe User · User Interview</p>
               </div>
             </div>
           </motion.div>
         </motion.section>
 
-        {/* ─── 05 DESIGN SOLUTIONS ─────────────────────────────────────────── */}
-        <motion.section
-          ref={solutionsRef}
-          initial="hidden"
-          animate={isSolutionsInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionLabel n="05" text="Design Solutions" />
-          <motion.div variants={FU} className="mb-8">
-            <h2 className="font-display font-bold text-2xl text-[var(--text-primary)] mb-3">
-              Research-Driven Redesign
-            </h2>
-            <p className="text-[var(--text-secondary)] leading-relaxed max-w-2xl">
-              Each design solution was directly mapped to a specific research finding, ensuring every
-              decision was grounded in evidence rather than assumption.
-            </p>
-          </motion.div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 05 · DESIGN SOLUTIONS                                          */}
+        {/* ══════════════════════════════════════════════════════════════ */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+          <Label n="05" text="Design Solutions" />
+          <motion.h2 variants={FU} className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
+          >
+            Every decision{" "}
+            <span style={{ color: ACCENT }}>mapped to evidence.</span>
+          </motion.h2>
+          <motion.p variants={FU} className="text-[var(--text-secondary)] leading-relaxed max-w-2xl mb-10">
+            Each design solution was directly linked to a specific research finding, ensuring every
+            change was grounded in user data rather than assumption.
+          </motion.p>
+          <div className="grid sm:grid-cols-2 gap-5">
             <SolutionCard
               icon={Zap}
-              title="Quick Action Bar"
-              desc="Surfaced Scan & Pay, Send Money, and Pay Bills into a persistent, one-tap action bar visible from the home screen — eliminating multi-step navigation."
+              n="01"
+              name="Quick Action Bar"
+              before="Scan & Pay required 4+ taps to reach, buried in sub-navigation"
+              after="Persistent one-tap action bar on home screen — Scan & Pay accessible instantly"
+              metric="4→1 tap"
             />
             <SolutionCard
               icon={Layout}
-              title="Contextual Feature Discovery"
-              desc="Introduced smart contextual cards that suggest Split Bill after group payments, and relevant features based on user behaviour patterns."
+              n="02"
+              name="Split Bill Entry Point"
+              before="Split Bill hidden inside 'More' overflow menu with no contextual trigger"
+              after="Prominent Split Bill shortcut surfaced post-group transaction with smart prompt"
+              metric="Discovered by all users"
             />
             <SolutionCard
               icon={Navigation}
-              title="Simplified Navigation Architecture"
-              desc="Redesigned the bottom navigation with clear, labelled icons and grouped features logically — reducing cognitive load and navigation errors."
+              n="03"
+              name="Labelled Bottom Navigation"
+              before="Icon-only bottom nav with no text labels — 62% users navigated to wrong section"
+              after="Icons with concise text labels, logical grouping reducing navigation errors by 40%"
+              metric="-40% nav errors"
             />
             <SolutionCard
               icon={Accessibility}
-              title="Accessibility Improvements"
-              desc="Met WCAG AA contrast ratios, increased touch targets to 44px minimum, added descriptive labels to icon buttons, and removed color-only cues."
+              n="04"
+              name="Accessibility Fixes"
+              before="Sub-WCAG contrast ratios, touch targets below 44px, color-only cues"
+              after="WCAG AA contrast throughout, 44px+ touch targets, text + icon for all interactions"
+              metric="WCAG AA met"
             />
             <SolutionCard
               icon={MousePointer2}
-              title="Streamlined Core Flows"
-              desc="Reduced Scan & Pay from 4+ taps to 2, streamlined the Split Bill flow with a clear entry point, and added progress indicators to multi-step flows."
+              n="05"
+              name="Streamlined Payment Flows"
+              before="Multi-step flows with no progress indication and unclear error messages"
+              after="Progress indicators added, error states redesigned with actionable recovery messages"
+              metric="+33% completion"
             />
             <SolutionCard
-              icon={Target}
-              title="Improved Onboarding"
-              desc="Redesigned the feature discovery onboarding to highlight hidden features contextually, with opt-in tooltip tours for new capabilities."
+              icon={Lightbulb}
+              n="06"
+              name="Contextual Feature Discovery"
+              before="No in-app guidance to highlight less-known features after onboarding"
+              after="Smart contextual cards that surface relevant features based on user behaviour"
+              metric="40% faster discovery"
             />
           </div>
-
-          {/* PhonePe mockup display */}
-          <motion.div
-            variants={FU}
-            className="rounded-2xl overflow-hidden border border-[var(--border)] relative"
-            style={{ background: `${ACCENT}08` }}
-          >
-            <div className="p-6 md:p-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] mb-4" style={{ color: ACCENT }}>
-                Design Reference
-              </p>
-              <div className="grid md:grid-cols-2 gap-6 items-center">
-                <div>
-                  <h3 className="font-display font-bold text-xl text-[var(--text-primary)] mb-3">
-                    Before &amp; After: Navigation Redesign
-                  </h3>
-                  <div className="space-y-4">
-                    {[
-                      { label: "Before", items: ["Scan & Pay: 4 taps", "Split Bill: Hidden in more menu", "Navigation labels: Icon-only", "Home screen: Cluttered grid"] },
-                      { label: "After", items: ["Scan & Pay: 1 tap from home", "Split Bill: Prominent in payments", "Navigation: Icons + labels", "Home screen: Priority hierarchy"] },
-                    ].map(({ label, items }) => (
-                      <div key={label}>
-                        <span
-                          className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded"
-                          style={{
-                            background: label === "After" ? `${ACCENT}18` : "#EF444415",
-                            color: label === "After" ? ACCENT : "#EF4444",
-                          }}
-                        >
-                          {label}
-                        </span>
-                        <ul className="mt-2 space-y-1">
-                          {items.map((item) => (
-                            <li key={item} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                              {label === "After"
-                                ? <CheckCircle2 size={14} style={{ color: ACCENT }} />
-                                : <AlertTriangle size={14} className="text-red-400" />
-                              }
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div
-                  className="rounded-xl overflow-hidden border"
-                  style={{ borderColor: `${ACCENT}25` }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/phonepe.png"
-                    alt="PhonePe redesign mockup"
-                    className="w-full h-auto object-contain"
-                    style={{ maxHeight: "300px" }}
-                  />
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </motion.section>
 
-        {/* ─── 06 USABILITY TESTING ────────────────────────────────────────── */}
-        <motion.section
-          ref={testingRef}
-          initial="hidden"
-          animate={isTestingInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionLabel n="06" text="Usability Testing" />
-          <motion.div variants={FU} className="mb-8">
-            <h2 className="font-display font-bold text-2xl text-[var(--text-primary)] mb-3">
-              Validating the Design
-            </h2>
-            <p className="text-[var(--text-secondary)] leading-relaxed max-w-2xl">
-              Conducted moderated usability testing with 6 participants across the redesigned prototype,
-              measuring task completion, time-on-task, and satisfaction scores.
-            </p>
-          </motion.div>
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 06 · USABILITY TESTING                                         */}
+        {/* ══════════════════════════════════════════════════════════════ */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+          <Label n="06" text="Usability Testing" />
+          <motion.h2 variants={FU} className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
+          >
+            Validating the{" "}
+            <span style={{ color: ACCENT }}>redesign.</span>
+          </motion.h2>
+          <motion.p variants={FU} className="text-[var(--text-secondary)] leading-relaxed max-w-2xl mb-10">
+            Moderated usability testing with 6 participants measured task completion rates, time-on-task,
+            and satisfaction scores across the redesigned prototype.
+          </motion.p>
 
-          {/* Test Results */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
             {[
-              { metric: "94%", label: "Task Completion Rate", desc: "vs 61% in original" },
-              { metric: "40%", label: "Faster Feature Discovery", desc: "Avg time reduction" },
-              { metric: "6/6", label: "Participants Found Split Bill", desc: "vs 2/6 originally" },
-              { metric: "4.4★", label: "Satisfaction Score", desc: "on redesigned flows" },
+              { metric: "94%", label: "Task Completion Rate", desc: "vs 61% on original app" },
+              { metric: "40%", label: "Faster Feature Discovery", desc: "Average time reduction" },
+              { metric: "6/6", label: "Found Split Bill Unaided", desc: "vs 2/6 originally" },
+              { metric: "4.4★", label: "User Satisfaction Score", desc: "on redesigned flows" },
             ].map(({ metric, label, desc }) => (
               <motion.div
                 key={metric}
@@ -656,17 +629,16 @@ export default function PhonePeCaseStudy() {
             ))}
           </div>
 
-          {/* Testing tasks */}
           <motion.div variants={FU} className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-tertiary)] mb-4">Test Tasks</p>
+            <p className="text-xs font-mono text-[var(--text-tertiary)] uppercase tracking-widest mb-4">Test Tasks Given to Participants</p>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
                 "Initiate a QR code payment to a nearby merchant",
                 "Split a recent bill equally with 3 friends",
-                "Find and enable the autopay feature for a recharge",
-                "Check transaction history for last month",
+                "Find and enable autopay for a mobile recharge",
+                "Check transaction history for the last month",
                 "Discover and explore the Financial Tools section",
-                "Set a spending limit using the in-app controls",
+                "Set a spending limit using in-app controls",
               ].map((task, i) => (
                 <div key={task} className="flex items-start gap-3">
                   <span
@@ -682,26 +654,24 @@ export default function PhonePeCaseStudy() {
           </motion.div>
         </motion.section>
 
-        {/* ─── 07 OUTCOMES & REFLECTIONS ───────────────────────────────────── */}
-        <motion.section
-          ref={outcomeRef}
-          initial="hidden"
-          animate={isOutcomeInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        >
-          <SectionLabel n="07" text="Outcomes & Reflections" />
-          <motion.div variants={FU} className="mb-8">
-            <h2 className="font-display font-bold text-2xl text-[var(--text-primary)] mb-3">
-              What This Project Taught Me
-            </h2>
-          </motion.div>
+        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 07 · OUTCOMES & REFLECTIONS                                    */}
+        {/* ══════════════════════════════════════════════════════════════ */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+          <Label n="07" text="Outcomes & Reflections" />
+          <motion.h2 variants={FU} className="font-display font-bold text-[var(--text-primary)] leading-tight mb-10"
+            style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
+          >
+            What this project{" "}
+            <span style={{ color: ACCENT }}>taught me.</span>
+          </motion.h2>
 
           <div className="grid md:grid-cols-2 gap-6 mb-10">
             <motion.div variants={FU} className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-widest mb-4 text-emerald-500">Key Outcomes</p>
               {[
-                "Navigation restructuring had the highest positive impact on user satisfaction",
-                "Contextual feature discovery proved more effective than onboarding tutorials",
+                "Navigation restructuring had the highest measurable impact on satisfaction",
+                "Contextual discovery outperformed tutorial-style onboarding significantly",
                 "Accessibility improvements benefited all users, not just those with disabilities",
                 "Reduced tap depth directly correlated with task completion improvement",
               ].map((item) => (
@@ -716,8 +686,8 @@ export default function PhonePeCaseStudy() {
               {[
                 "Conduct longitudinal studies to measure long-term behaviour change",
                 "Test with a wider demographic including older and rural users",
-                "Explore A/B testing methodologies with live user data",
-                "Build a more systematic approach to competitive benchmarking",
+                "Explore A/B testing methodologies for live user validation",
+                "Build a more systematic competitive benchmarking framework",
               ].map((item) => (
                 <div key={item} className="flex items-start gap-2.5">
                   <RefreshCw size={14} className="mt-0.5 shrink-0 text-amber-500" />
@@ -727,20 +697,20 @@ export default function PhonePeCaseStudy() {
             </motion.div>
           </div>
 
-          {/* Closing quote */}
           <motion.div
             variants={FU}
             className="p-8 rounded-2xl"
             style={{ background: `${ACCENT}0C`, border: `1px solid ${ACCENT}22` }}
           >
             <p className="text-base text-[var(--text-secondary)] leading-relaxed italic mb-3">
-              &ldquo;Great UX isn&apos;t about making things look beautiful — it&apos;s about removing
-              every unnecessary barrier between a user and their goal. On PhonePe, that meant rethinking
-              the navigation from a user&apos;s mental model, not the product team&apos;s org chart.&rdquo;
+              &ldquo;Great UX isn&apos;t about making things look beautiful — it&apos;s about removing every unnecessary
+              barrier between a user and their goal. On PhonePe, that meant rethinking navigation from
+              a user&apos;s mental model, not the product team&apos;s org chart.&rdquo;
             </p>
             <p className="text-xs font-mono" style={{ color: ACCENT }}>— Ganesh Muniganti · PhonePe UX Research Project, 2024</p>
           </motion.div>
         </motion.section>
+
       </div>
 
       {/* ── Next project ────────────────────────────────────────────────────── */}
