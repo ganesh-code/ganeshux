@@ -85,6 +85,7 @@ export default function HomePage() {
            • Revealed as the sliding layer scrolls off the top
           ──────────────────────────────────────────────────── */}
       <div
+        id="contact-anchor"
         style={{
           height: "200vh",
           position: "relative",
