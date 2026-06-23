@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
@@ -17,20 +18,26 @@ export default function Navbar() {
   const [menuOpen,  setMenuOpen]  = useState(false);
   const [mounted,   setMounted]   = useState(false);
   const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
+
+  // True when we're NOT on the home page
+  const isSubPage = pathname !== "/";
 
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
+    if (isSubPage) {
+      // On case study pages, always use scrolled (solid) style — no white-on-white
+      setScrolled(true);
+      return;
+    }
+
     const onScroll = () => {
       // Switch navbar background when the Work section reaches the navbar top.
-      // This keeps the transparent "hero" style for the entire Hero pinned phase,
-      // and only activates frosted glass once Work physically slides in.
       const workEl = document.getElementById("work");
       if (workEl) {
-        // 64px ≈ navbar height — trigger just as Work panel reaches the bar
         setScrolled(workEl.getBoundingClientRect().top <= 64);
       } else {
-        // Fallback if Work section isn't mounted yet
         setScrolled(window.scrollY > 80);
       }
 
@@ -45,18 +52,24 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll(); // run once on mount
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isSubPage]);
 
-  const scrollTo = (href: string) => {
-    document.getElementById(href.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
+  const handleNavClick = (href: string) => {
     setMenuOpen(false);
+    if (isSubPage) {
+      // Navigate back to home page with the anchor hash
+      window.location.href = "/" + href;
+    } else {
+      document.getElementById(href.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
-  /* ─── Two explicit colour modes — no CSS variable opacity tricks ─── */
-  // HERO mode  → on top of dark video
-  // SCROLL mode → on top of page content (light or dark theme)
-  const onHero = !scrolled && !menuOpen;
+  /* ─── Two explicit colour modes ─── */
+  // HERO mode  → transparent, white text (home page, not yet scrolled past hero)
+  // SCROLL mode → frosted glass, dark text (always on sub-pages / after scrolling)
+  const onHero = !scrolled && !menuOpen && !isSubPage;
 
   return (
     <>
@@ -70,7 +83,7 @@ export default function Navbar() {
         }`}
         style={{ isolation: "isolate" }}
       >
-        {/* ── Background layer (separate element so blur stays GPU-only) ── */}
+        {/* ── Light-mode frosted background ─────────────────────────────── */}
         {scrolled && (
           <div
             aria-hidden="true"
@@ -79,11 +92,10 @@ export default function Navbar() {
               backdropFilter: "blur(20px) saturate(180%)",
               WebkitBackdropFilter: "blur(20px) saturate(180%)",
               backgroundColor: "rgba(255,255,255,0.88)",
-              // Dark mode override — applied via a sibling in JS below
             }}
           />
         )}
-        {/* Dark-mode frosted bg — rendered only when scrolled + dark theme */}
+        {/* ── Dark-mode frosted background ──────────────────────────────── */}
         {scrolled && mounted && theme === "dark" && (
           <div
             aria-hidden="true"
@@ -101,9 +113,12 @@ export default function Navbar() {
 
           {/* Logo */}
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => {
+              if (isSubPage) window.location.href = "/";
+              else window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             className="flex items-center gap-2.5 group"
-            aria-label="Back to top"
+            aria-label="Back to home"
           >
             <div className="w-7 h-7 rounded-[8px] bg-[var(--accent)] flex items-center justify-center text-white text-xs font-bold font-display shrink-0">
               G
@@ -119,11 +134,11 @@ export default function Navbar() {
           {/* Desktop nav links */}
           <nav className="hidden md:flex items-center gap-0.5" aria-label="Main navigation">
             {NAV_LINKS.map((link) => {
-              const isActive = active === link.href.replace("#", "");
+              const isActive = !isSubPage && active === link.href.replace("#", "");
               return (
                 <button
                   key={link.label}
-                  onClick={() => scrollTo(link.href)}
+                  onClick={() => handleNavClick(link.href)}
                   className="relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200"
                   style={{
                     color: onHero
@@ -176,14 +191,8 @@ export default function Navbar() {
               className="hidden sm:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
               style={
                 onHero
-                  ? {
-                      background: "#ffffff",
-                      color: "#0A0A0A",
-                    }
-                  : {
-                      background: "var(--text-primary)",
-                      color: "var(--bg)",
-                    }
+                  ? { background: "#ffffff", color: "#0A0A0A" }
+                  : { background: "var(--text-primary)", color: "var(--bg)" }
               }
             >
               Resume
@@ -228,7 +237,7 @@ export default function Navbar() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07, duration: 0.28 }}
-                onClick={() => scrollTo(link.href)}
+                onClick={() => handleNavClick(link.href)}
                 className="text-3xl font-display font-bold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors"
               >
                 {link.label}
