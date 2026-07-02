@@ -294,3 +294,108 @@ body {
 .nav-link {
   position: relative;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   PAGE LOADER  — design-process storytelling
+───────────────────────────────────────────────────────────── */
+
+/* Root overlay */
+.loader-root {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: all;
+}
+
+/* Dark curtain — slides up to reveal page */
+.loader-curtain {
+  position: absolute;
+  inset: 0;
+  background: #080808;
+  will-change: transform;
+}
+
+/* Centred content */
+.loader-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 0 24px;
+}
+
+/* ── Tiny label above the word ── */
+.loader-step-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.22);
+  margin: 0 0 8px;
+}
+
+/* ── Cycling design process word ── */
+.loader-word-wrap {
+  height: clamp(64px, 11vw, 110px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.loader-word {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(52px, 10vw, 100px);
+  color: #ffffff;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0;
+  white-space: nowrap;
+  will-change: transform, opacity, filter;
+}
+
+/* ── Sub-text below the word ── */
+.loader-sub-wrap {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.loader-sub {
+  font-family: var(--font-sans);
+  font-size: clamp(12px, 1.6vw, 14px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: 0.01em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ── Progress line — pinned to bottom of screen ── */
+.loader-progress-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  z-index: 3;
+}
+
+.loader-progress-fill {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.35);
+  transition: width 0.06s linear;
+}
+

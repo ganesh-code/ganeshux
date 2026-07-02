@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import BackToTop from "@/components/ui/BackToTop";
+import PageLoader from "@/components/ui/PageLoader";
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -56,6 +57,7 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased">
         <ThemeProvider>
+          <PageLoader />
           <ScrollProgress />
           <Navbar />
           <main>{children}</main>
