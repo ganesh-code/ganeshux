@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import HealthcareCaseStudy from "./HealthcareCaseStudy";
 
 export const metadata: Metadata = {
-  title: "Unified Healthcare Platform — 6-Product Ecosystem · Ganesh Muniganti",
+  title: "How a client rejection taught me where AI belongs in healthcare — Ganesh Muniganti",
   description:
-    "A world-class UX case study on designing a connected healthcare ecosystem: Patient App, Doctor App, Doctor Web Portal, Clinic Portal, Pharmacy Portal, and Super Admin Dashboard.",
+    "A product design case study on building a unified AI-powered healthcare platform: 6 products, 5 stakeholder types, rejected concepts, design system architecture, and real trade-off decisions.",
 };
 
 export default function HealthcarePlatformPage() {

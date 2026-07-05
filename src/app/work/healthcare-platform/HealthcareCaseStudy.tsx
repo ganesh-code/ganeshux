@@ -1,24 +1,28 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, XCircle, AlertTriangle,
   Users, Heart, Pill, Building2, Shield, Smartphone, Monitor,
-  ChevronRight, Star, RefreshCw, GitBranch, Target, Layers,
-  Calendar, FileText, MessageSquare, Zap, TrendingUp, Lock
+  ChevronRight, Star, GitBranch, FileText, MessageSquare,
+  Zap, TrendingUp, Target, RefreshCw, Code,
+  Lightbulb, BarChart3, ArrowUpRight, Layers, PenTool, Layout
 } from "lucide-react";
 
-const ACCENT = "#0EA5E9";
+const ACCENT  = "#0EA5E9";
 const ACCENT2 = "#7C3AED";
+const EMERALD = "#10B981";
+const AMBER   = "#F59E0B";
+const RED     = "#EF4444";
 
-// ── Reusable primitives ───────────────────────────────────────────────────────
 const FU = {
-  hidden: { opacity: 0, y: 32 },
+  hidden:  { opacity: 0, y: 32 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
+// ── Reusable primitives ───────────────────────────────────────────────────────
 function SectionLabel({ n, text }: { n: string; text: string }) {
   return (
     <div className="flex items-center gap-3 mb-6">
@@ -29,143 +33,72 @@ function SectionLabel({ n, text }: { n: string; text: string }) {
   );
 }
 
-function Visual({ label, height = "h-64", icon: Icon = Monitor }: {
-  label: string; height?: string; icon?: React.ElementType;
-}) {
+function Tag({ text, color }: { text: string; color: string }) {
   return (
-    <div
-      className={`relative ${height} rounded-2xl border border-[var(--border)] overflow-hidden flex flex-col items-center justify-center gap-3 select-none`}
-      style={{ background: `linear-gradient(135deg, ${ACCENT}10 0%, ${ACCENT}04 100%)` }}
-    >
-      <div className="absolute inset-0 opacity-[0.04]"
-        style={{ backgroundImage: `radial-gradient(circle, ${ACCENT} 1px, transparent 1px)`, backgroundSize: "20px 20px" }}
-      />
-      <Icon size={28} style={{ color: ACCENT, opacity: 0.45 }} />
-      <span className="text-xs font-mono text-[var(--text-tertiary)] px-6 text-center leading-relaxed">{label}</span>
-    </div>
+    <span className="text-[10px] font-mono font-bold tracking-widest px-2.5 py-1 rounded-full"
+      style={{ background: `${color}15`, color }}>{text}</span>
   );
 }
 
-function Stat({ value, label, color = ACCENT }: { value: string; label: string; color?: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="font-display font-bold leading-none" style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.75rem)", color }}>
-        {value}
-      </span>
-      <span className="text-xs text-[var(--text-secondary)] leading-snug">{label}</span>
-    </div>
-  );
-}
-
-function ProductCard({ icon: Icon, title, type, purpose, users, goals, color }: {
-  icon: React.ElementType; title: string; type: string;
-  purpose: string; users: string; goals: string[]; color: string;
+// Standardized Decision Story format — visually consistent, instantly scannable
+function DecisionStory({ challenge, options, decision, tradeoff, outcome, whatChanged }: {
+  challenge: string;
+  options: { label: string; rejected: boolean; reason: string }[];
+  decision: string;
+  tradeoff: string;
+  outcome: string;
+  whatChanged: { role: string; change: string; color: string }[];
 }) {
+  const steps = [
+    { label: "Challenge",          content: challenge,  color: RED     },
+    { label: "Decision",           content: decision,   color: EMERALD },
+    { label: "Trade-off Accepted", content: tradeoff,   color: AMBER   },
+    { label: "Outcome",            content: outcome,    color: ACCENT2 },
+  ];
   return (
-    <motion.div
-      variants={FU}
-      className="p-6 rounded-2xl border flex flex-col gap-4"
-      style={{ borderColor: `${color}28`, background: `${color}06` }}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}18` }}>
-            <Icon size={18} style={{ color }} />
-          </div>
-          <div>
-            <p className="font-semibold text-[var(--text-primary)] text-sm leading-snug">{title}</p>
-            <p className="text-[10px] font-mono text-[var(--text-tertiary)] mt-0.5">{type}</p>
-          </div>
+    <div className="space-y-6">
+      {/* Options considered */}
+      <div>
+        <p className="text-[10px] font-mono font-bold tracking-widest mb-3 text-[var(--text-tertiary)]">OPTIONS CONSIDERED</p>
+        <div className="space-y-2">
+          {options.map(({ label, rejected, reason }) => (
+            <div key={label} className="flex items-start gap-3 p-3 rounded-xl border border-[var(--border)]"
+              style={{ background: rejected ? `${RED}06` : `${EMERALD}06`, opacity: rejected ? 0.85 : 1 }}>
+              {rejected
+                ? <XCircle size={14} className="mt-0.5 shrink-0 text-red-400" />
+                : <CheckCircle2 size={14} className="mt-0.5 shrink-0" style={{ color: EMERALD }} />}
+              <div>
+                <p className="text-xs font-semibold text-[var(--text-primary)] mb-0.5">{label}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{reason}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-      <div className="space-y-3">
-        <div>
-          <p className="text-[10px] font-mono font-bold tracking-wider mb-1.5" style={{ color }}>PURPOSE</p>
-          <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{purpose}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-mono font-bold tracking-wider mb-1.5" style={{ color }}>USERS</p>
-          <p className="text-xs text-[var(--text-secondary)]">{users}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-mono font-bold tracking-wider mb-1.5" style={{ color }}>GOALS</p>
-          <ul className="space-y-1">
-            {goals.map((g) => (
-              <li key={g} className="flex items-start gap-1.5 text-xs text-[var(--text-secondary)]">
-                <ChevronRight size={10} className="mt-0.5 shrink-0" style={{ color }} />
-                {g}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
 
-function ProblemCard({ n, problem, impact, stakeholders, risk, opportunity }: {
-  n: string; problem: string; impact: string; stakeholders: string; risk: string; opportunity: string;
-}) {
-  return (
-    <motion.div variants={FU} className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-[10px] font-mono font-bold tracking-widest text-[var(--text-tertiary)]">PROBLEM {n}</span>
-      </div>
-      <p className="font-semibold text-[var(--text-primary)] mb-4 leading-snug">{problem}</p>
-      <div className="grid grid-cols-2 gap-3">
-        {[
-          { label: "Impact", value: impact, c: "#EF4444" },
-          { label: "Stakeholders", value: stakeholders, c: ACCENT },
-          { label: "Business Risk", value: risk, c: "#F59E0B" },
-          { label: "Opportunity", value: opportunity, c: "#10B981" },
-        ].map(({ label, value, c }) => (
-          <div key={label} className="p-2.5 rounded-xl border" style={{ borderColor: `${c}20`, background: `${c}06` }}>
-            <p className="text-[9px] font-mono font-bold tracking-widest mb-1" style={{ color: c }}>{label.toUpperCase()}</p>
-            <p className="text-xs text-[var(--text-secondary)] leading-snug">{value}</p>
+      {/* Linear story flow */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {steps.map(({ label, content, color }) => (
+          <div key={label} className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+            <p className="text-[10px] font-mono font-bold tracking-widest mb-2" style={{ color }}>{label.toUpperCase()}</p>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{content}</p>
           </div>
         ))}
       </div>
-    </motion.div>
-  );
-}
 
-function IterationBlock({ version, title, feedback, problems, changes, outcome }: {
-  version: string; title: string; feedback: string; problems: string[]; changes: string[]; outcome: string;
-}) {
-  return (
-    <motion.div variants={FU} className="border border-[var(--border)] rounded-2xl overflow-hidden">
-      <div className="px-6 py-4 border-b border-[var(--border)] flex items-center gap-3" style={{ background: `${ACCENT}08` }}>
-        <span className="text-[10px] font-mono font-bold tracking-widest" style={{ color: ACCENT }}>{version}</span>
-        <span className="font-semibold text-[var(--text-primary)] text-sm">{title}</span>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--border)]">
-        <div className="p-5">
-          <p className="text-[10px] font-mono font-bold tracking-widest text-red-400 mb-2">FEEDBACK & PROBLEMS</p>
-          <p className="text-xs text-[var(--text-secondary)] mb-3 italic">&ldquo;{feedback}&rdquo;</p>
-          <ul className="space-y-1.5">
-            {problems.map((p) => (
-              <li key={p} className="flex items-start gap-1.5 text-xs text-[var(--text-secondary)]">
-                <XCircle size={10} className="mt-0.5 shrink-0 text-red-400" />{p}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="p-5">
-          <p className="text-[10px] font-mono font-bold tracking-widest mb-2" style={{ color: ACCENT }}>CHANGES MADE</p>
-          <ul className="space-y-1.5">
-            {changes.map((c) => (
-              <li key={c} className="flex items-start gap-1.5 text-xs text-[var(--text-secondary)]">
-                <CheckCircle2 size={10} className="mt-0.5 shrink-0 text-emerald-400" />{c}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="p-5">
-          <p className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 mb-2">OUTCOME</p>
-          <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{outcome}</p>
+      {/* What Changed */}
+      <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+        <p className="text-[10px] font-mono font-bold tracking-widest mb-3" style={{ color: ACCENT }}>WHY THIS DECISION MATTERED</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {whatChanged.map(({ role, change, color }) => (
+            <div key={role} className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
+              <p className="text-xs text-[var(--text-secondary)]"><span className="font-semibold" style={{ color }}>{role}:</span> {change}</p>
+            </div>
+          ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -173,70 +106,21 @@ function IterationBlock({ version, title, feedback, problems, changes, outcome }
 export default function HealthcareCaseStudy() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+  const heroY       = useTransform(scrollYProgress, [0, 1],   ["0%", "28%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
-  const products = [
-    {
-      icon: Smartphone, title: "Patient Mobile App", type: "iOS & Android",
-      color: "#0EA5E9",
-      purpose: "Give patients full control of their health journey — appointments, records, prescriptions, and communication in one place.",
-      users: "Patients across all demographics and digital literacy levels",
-      goals: ["Book and manage appointments", "Access medical records and lab results", "Communicate with assigned doctors", "Receive medication reminders and health alerts"],
-    },
-    {
-      icon: Heart, title: "Doctor Mobile App", type: "iOS & Android",
-      color: "#7C3AED",
-      purpose: "Enable doctors to manage consultations, patient communication, and availability on the go.",
-      users: "Practicing doctors, specialists, consultants",
-      goals: ["View patient consultation queue", "Access patient history during appointments", "Set and manage availability slots", "Receive and respond to patient messages"],
-    },
-    {
-      icon: Monitor, title: "Doctor Web Portal", type: "Web Application",
-      color: "#10B981",
-      purpose: "Provide a comprehensive workstation for doctors to manage full practice operations, analytics, and advanced patient coordination.",
-      users: "Senior doctors, specialists, clinic-based practitioners",
-      goals: ["Advanced patient management and case history", "Analytics on consultation outcomes and load", "Full schedule management with conflict detection", "Workflow templates and decision support tools"],
-    },
-    {
-      icon: Building2, title: "Clinic Management Portal", type: "Web Application",
-      color: "#F59E0B",
-      purpose: "Give clinic administrators full operational control over appointments, staff, workflows, and performance.",
-      users: "Clinic managers, front desk staff, operations teams",
-      goals: ["Appointment scheduling and management", "Doctor and staff assignment", "Operational reporting and efficiency tracking", "Patient flow and queue management"],
-    },
-    {
-      icon: Pill, title: "Pharmacy Management Portal", type: "Web Application",
-      color: "#EF4444",
-      purpose: "Connect pharmacies to the prescription ecosystem for seamless, error-free medication fulfillment.",
-      users: "Pharmacists, pharmacy managers, dispensing staff",
-      goals: ["Receive and process digital prescriptions", "Manage inventory and stock levels", "Track order status and fulfillment", "Flag drug interactions and contraindications"],
-    },
-    {
-      icon: Shield, title: "Super Admin Dashboard", type: "Web Application",
-      color: "#6366F1",
-      purpose: "Provide the platform operator with full visibility and control across the entire healthcare ecosystem.",
-      users: "Platform administrators, operations leadership, technical team",
-      goals: ["User and role management across all apps", "System health monitoring and alerts", "Platform analytics and usage reporting", "Configuration and policy management"],
-    },
-  ];
 
   return (
     <>
       {/* ══════════════════════════════════════════════════════════════ */}
       {/* HERO                                                           */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex flex-col justify-center overflow-hidden"
-        style={{ paddingTop: "100px", paddingBottom: "80px" }}
-      >
-        {/* Background */}
+      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center overflow-hidden"
+        style={{ paddingTop: "100px", paddingBottom: "80px" }}>
         <div className="absolute inset-0" style={{
           background: `radial-gradient(ellipse 70% 70% at 30% 0%, ${ACCENT}1A 0%, transparent 60%),
                        radial-gradient(ellipse 50% 50% at 90% 80%, ${ACCENT2}10 0%, transparent 60%)`
         }} />
-        <div className="absolute inset-0 opacity-[0.02]" style={{
+        <div className="absolute inset-0 opacity-[0.025]" style={{
           backgroundImage: `linear-gradient(${ACCENT} 1px, transparent 1px), linear-gradient(90deg, ${ACCENT} 1px, transparent 1px)`,
           backgroundSize: "48px 48px"
         }} />
@@ -244,48 +128,44 @@ export default function HealthcareCaseStudy() {
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 max-w-6xl mx-auto px-6 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
-            {/* LEFT */}
             <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-              <Link href="/#work"
-                className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-5 group transition-colors w-fit"
-              >
+              <Link href="/#work" className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-5 group transition-colors w-fit">
                 <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1 duration-200" />
                 Back to Work
               </Link>
 
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-7"
-                style={{ background: `${ACCENT}18`, color: ACCENT, border: `1px solid ${ACCENT}28` }}
-              >
+                style={{ background: `${ACCENT}18`, color: ACCENT, border: `1px solid ${ACCENT}28` }}>
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-                Healthcare · Enterprise UX · 6 Products
+                Healthcare · Enterprise UX · AI Integration · 6 Products
               </div>
 
-              <h1 className="font-display font-black text-[var(--text-primary)] leading-[0.95] tracking-tight mb-5"
-                style={{ fontSize: "clamp(34px, 5.5vw, 72px)" }}
-              >
-                Unified
-                <br />
-                <span style={{
-                  background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT2})`,
-                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
-                }}>
-                  Healthcare
-                </span>
-                <br />
-                Platform
+              <h1 className="font-display font-black text-[var(--text-primary)] leading-[1.05] tracking-tight mb-4"
+                style={{ fontSize: "clamp(28px, 4.5vw, 58px)" }}>
+                How a client rejection{" "}
+                <span style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  taught me where AI
+                </span>{" "}
+                actually belongs in a healthcare app
               </h1>
 
-              <p className="text-base md:text-lg text-[var(--text-secondary)] leading-relaxed mb-9">
-                Designing a connected healthcare ecosystem from the ground up — 6 products, 5 stakeholder types,
-                one unified experience.
+              {/* Emotional hook */}
+              <p className="text-base font-semibold text-[var(--text-primary)] mb-4 leading-relaxed border-l-4 pl-4"
+                style={{ borderLeftColor: ACCENT }}>
+                One client request — &ldquo;Add AI&rdquo; — became the biggest product decision of the project:
+                where AI should, and shouldn&apos;t, live in a healthcare experience.
+              </p>
+
+              <p className="text-base text-[var(--text-secondary)] leading-relaxed mb-9">
+                We proposed AI as the homepage. Stakeholders rejected it. That rejection changed how I think about product strategy entirely.
               </p>
 
               <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-sm">
                 {[
-                  { label: "Role", value: "Associate UX / Product Designer" },
+                  { label: "Role",    value: "Associate UX / Product Designer" },
                   { label: "Company", value: "Dimension Leap" },
-                  { label: "Duration", value: "2025" },
-                  { label: "Scope", value: "6 Products · 5 User Types" },
+                  { label: "Year",    value: "2025" },
+                  { label: "Scope",   value: "6 Products · 5 Stakeholder Types" },
                 ].map(({ label, value }) => (
                   <div key={label}>
                     <span className="text-[var(--text-tertiary)] text-xs font-mono uppercase tracking-wider block mb-0.5">{label}</span>
@@ -295,113 +175,132 @@ export default function HealthcareCaseStudy() {
               </div>
             </motion.div>
 
-            {/* RIGHT — healthcare screenshot */}
-            <motion.div
-              initial={{ opacity: 0, x: 40, scale: 0.96 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative hidden lg:block"
-            >
+            <motion.div initial={{ opacity: 0, x: 40, scale: 0.96 }} animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }} className="relative hidden lg:block">
               <div className="absolute -inset-8 rounded-3xl blur-3xl opacity-25"
-                style={{ background: `radial-gradient(ellipse, ${ACCENT}70 0%, transparent 70%)` }}
-              />
+                style={{ background: `radial-gradient(ellipse, ${ACCENT}70 0%, transparent 70%)` }} />
               <div className="relative rounded-2xl overflow-hidden border border-white/10"
-                style={{ boxShadow: `0 32px 80px rgba(14,165,233,0.22), 0 8px 24px rgba(0,0,0,0.18)` }}
-              >
+                style={{ boxShadow: `0 32px 80px rgba(14,165,233,0.22), 0 8px 24px rgba(0,0,0,0.18)` }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/healthcare.png" alt="Unified Healthcare Platform" className="w-full h-auto object-cover block" draggable={false} />
                 <div className="absolute inset-x-0 bottom-0 h-20 pointer-events-none"
-                  style={{ background: `linear-gradient(to top, ${ACCENT}14, transparent)` }}
-                />
+                  style={{ background: `linear-gradient(to top, ${ACCENT}14, transparent)` }} />
               </div>
             </motion.div>
           </div>
         </motion.div>
 
         <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-        >
+          animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
           <span className="text-[10px] font-mono tracking-widest text-[var(--text-tertiary)]">SCROLL</span>
           <div className="w-px h-10 bg-gradient-to-b from-[var(--accent)] to-transparent" />
         </motion.div>
       </section>
 
-      {/* ── Impact bar ────────────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* PROJECT AT A GLANCE                                           */}
+      {/* ══════════════════════════════════════════════════════════════ */}
       <section className="border-y border-[var(--border)] bg-[var(--bg-subtle)]">
-        <div className="max-w-5xl mx-auto px-6 py-10">
+        <div className="max-w-5xl mx-auto px-6 py-12">
+
+          {/* Quick context row */}
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-          >
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 pb-10 mb-10 border-b border-[var(--border)]">
             {[
-              { value: "6", label: "Interconnected Products Designed" },
-              { value: "5", label: "Stakeholder Types Served" },
-              { value: "100%", label: "End-to-End Ecosystem Coverage" },
-              { value: "1", label: "Unified Design System" },
-            ].map((s, i) => (
-              <motion.div key={s.label} variants={FU} transition={{ delay: i * 0.08 }}>
-                <Stat value={s.value} label={s.label} />
+              { label: "Role",             value: "Product Designer" },
+              { label: "Duration",         value: "~1 Year" },
+              { label: "Team",             value: "1 PM · Devs · QA · Client" },
+              { label: "Platforms",        value: "Mobile & Web" },
+              { label: "Tools",            value: "Figma · FigJam · Notion" },
+              { label: "Deliverables",     value: "Design System · UI · Handoff · QA" },
+            ].map(({ label, value }) => (
+              <motion.div key={label} variants={FU}>
+                <span className="text-[9px] font-mono font-bold tracking-widest block mb-1 text-[var(--text-tertiary)]">{label.toUpperCase()}</span>
+                <span className="text-xs font-semibold text-[var(--text-primary)] leading-snug">{value}</span>
               </motion.div>
             ))}
+          </motion.div>
+
+          {/* Three headline facts */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+            {[
+              { icon: AlertTriangle, label: "Biggest Challenge",  text: "Designing six products simultaneously, from zero infrastructure, for stakeholders with completely different mental models.", color: RED     },
+              { icon: GitBranch,     label: "Biggest Decision",   text: "Rejecting AI as the homepage — and repositioning it as contextual assistance embedded within existing healthcare workflows.", color: ACCENT  },
+              { icon: Lightbulb,     label: "Biggest Lesson",     text: "Where you place a feature is a product strategy decision. AI at the wrong moment reduces trust — even if the feature itself is well-designed.", color: AMBER   },
+            ].map(({ icon: Icon, label, text, color }) => (
+              <motion.div key={label} variants={FU} className="p-5 rounded-2xl border border-[var(--border)]"
+                style={{ borderColor: `${color}25`, background: `${color}06` }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <Icon size={15} style={{ color }} />
+                  <p className="text-[10px] font-mono font-bold tracking-widest" style={{ color }}>{label.toUpperCase()}</p>
+                </div>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{text}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Key decisions at a glance */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FU}>
+            <p className="text-[10px] font-mono font-bold tracking-widest mb-4" style={{ color: ACCENT }}>KEY PRODUCT DECISIONS</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              {[
+                "✓ Built shared design system before any product screen",
+                "✓ Proposed AI-first homepage — and supported its rejection",
+                "✓ Repositioned AI from entry point to contextual assistance",
+                "✓ Chose purpose-built products over a super-app",
+                "✓ Applied progressive disclosure to solve clinical navigation",
+                "✓ Introduced pre-QA design validation every sprint",
+              ].map((d) => (
+                <div key={d} className="flex items-start gap-2.5 px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--bg)]">
+                  <span className="text-xs text-[var(--text-secondary)] leading-relaxed">{d}</span>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* ── Article body ──────────────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-6 pb-32 space-y-32 mt-24">
+      <div className="max-w-5xl mx-auto px-6 pb-32 space-y-28 mt-24">
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 01 · THE CHALLENGE                                             */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 01 · THE OPPORTUNITY */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="01" text="The Challenge" />
+          <SectionLabel n="01" text="The Opportunity" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4">
               <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight"
-                style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}
-              >
-                One healthcare system.
-                <br /><span style={{ color: ACCENT }}>Six broken pieces.</span>
+                style={{ fontSize: "clamp(26px, 3.8vw, 42px)" }}>
+                Not a design brief.<br /><span style={{ color: ACCENT }}>A business problem.</span>
               </h2>
               <p className="text-[var(--text-secondary)] leading-relaxed">
-                The company had a vision: build a unified healthcare platform that connects every stakeholder
-                in the healthcare journey. What they had instead was chaos — five different types of users,
-                each working in complete isolation from the others.
+                Healthcare in India runs on fragmentation. The client saw a market opportunity: build a unified, AI-powered platform before competitors did. The business case was first-mover advantage in a market where patients, doctors, clinics, pharmacies, and administrators each operated in isolation.
               </p>
               <p className="text-[var(--text-secondary)] leading-relaxed">
-                Patients couldn&apos;t see their own records. Doctors couldn&apos;t access patient history before consultations.
-                Clinics manually tracked appointments in spreadsheets. Pharmacies received prescriptions by fax.
-                Administrators had no visibility into anything.
+                The real brief: <em>design a system complex enough to replace five broken workflows — simple enough for a 60-year-old doctor and an 18-year-old patient.</em>
               </p>
-              <div className="space-y-3 pt-2">
-                {[
-                  "Patients had no central place to manage their health journey",
-                  "Doctors operated without cross-system patient data",
-                  "Clinics depended on manual scheduling and paper-based workflows",
-                  "Pharmacies received disconnected prescriptions with no status tracking",
-                  "Administrators had no centralized control or monitoring capability",
-                ].map((p) => (
-                  <div key={p} className="flex items-start gap-3">
-                    <XCircle size={14} className="mt-0.5 shrink-0 text-red-400" />
-                    <p className="text-sm text-[var(--text-secondary)]">{p}</p>
-                  </div>
-                ))}
+              <div className="p-5 rounded-2xl border-l-4 bg-[var(--bg-subtle)]" style={{ borderLeftColor: ACCENT }}>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed italic">
+                  &ldquo;We have the vision for a unified platform. We need a designer who can see the entire system at once and make it feel like one product.&rdquo;
+                </p>
+                <p className="text-xs text-[var(--text-tertiary)] mt-2 font-mono">— CEO, Product Kickoff</p>
               </div>
             </div>
-            <div className="space-y-4">
-              {/* Ecosystem breakdown visual */}
+            <div>
+              {/* Before-state visual */}
               <div className="rounded-2xl border border-[var(--border)] overflow-hidden">
                 <div className="px-5 py-3 border-b border-[var(--border)] bg-[var(--bg-subtle)]">
-                  <p className="text-xs font-mono text-[var(--text-tertiary)]">BEFORE: Fragmented Healthcare Ecosystem</p>
+                  <p className="text-xs font-mono text-[var(--text-tertiary)]">BEFORE — Fragmented ecosystem</p>
                 </div>
                 <div className="p-5 space-y-2">
                   {[
-                    { label: "Patient", tool: "WhatsApp + Phone calls", c: "#EF4444" },
-                    { label: "Doctor", tool: "Paper notes + Verbal coordination", c: "#F59E0B" },
-                    { label: "Clinic", tool: "Excel spreadsheets", c: "#EF4444" },
-                    { label: "Pharmacy", tool: "Fax + Manual entry", c: "#F59E0B" },
-                    { label: "Admin", tool: "No central system", c: "#EF4444" },
+                    { label: "Patient",  tool: "WhatsApp + phone calls",           c: RED    },
+                    { label: "Doctor",   tool: "Paper notes + verbal coordination", c: AMBER  },
+                    { label: "Clinic",   tool: "Excel spreadsheets",               c: RED    },
+                    { label: "Pharmacy", tool: "Fax + manual entry",               c: AMBER  },
+                    { label: "Admin",    tool: "No central system",                c: RED    },
                   ].map(({ label, tool, c }) => (
-                    <div key={label} className="flex items-center justify-between gap-3 py-2 border-b border-[var(--border)] last:border-0">
+                    <div key={label} className="flex items-center gap-3 py-2 border-b border-[var(--border)] last:border-0">
                       <span className="text-sm font-medium text-[var(--text-primary)] w-24 shrink-0">{label}</span>
                       <span className="text-xs text-[var(--text-secondary)] flex-1">{tool}</span>
                       <XCircle size={13} style={{ color: c }} className="shrink-0" />
@@ -409,717 +308,899 @@ export default function HealthcareCaseStudy() {
                   ))}
                 </div>
               </div>
-              <div className="p-5 rounded-2xl border-l-4 bg-[var(--bg-subtle)]" style={{ borderLeftColor: ACCENT }}>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed italic">
-                  &ldquo;We have the vision for a unified platform — but right now every team is an island.
-                  We need a designer who can see the entire system at once.&rdquo;
+            </div>
+          </div>
+        </motion.section>
+
+        {/* 02 · CONSTRAINTS */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
+          <SectionLabel n="02" text="Constraints" />
+          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            The constraints that made every decision harder.
+          </h2>
+          <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
+            Without these constraints, the decisions below look easy. They weren&apos;t.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { label: "Greenfield — 0 to 1",        desc: "No prior product, no design system, no prior designer. Everything built from scratch.", color: RED     },
+              { label: "No design system",           desc: "Six products needed to feel like one platform. No shared foundation existed.", color: AMBER  },
+              { label: "Undefined AI requirements",  desc: "Client wanted AI but hadn&apos;t specified what it should do, where, or what it replaces.", color: ACCENT  },
+              { label: "Six products in parallel",   desc: "All products designed simultaneously. Design had to stay ahead of development without creating speculative work.", color: ACCENT2 },
+              { label: "Sprint-based delivery",      desc: "Features were shipping while design was still progressing. Tight synchronisation required.", color: EMERALD },
+              { label: "Continuous stakeholder feedback", desc: "Client and CEO feedback arrived mid-sprint, sometimes requiring direction changes without slipping timelines.", color: "#6366F1" },
+            ].map(({ label, desc, color }) => (
+              <div key={label} className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle size={12} style={{ color }} />
+                  <p className="text-xs font-semibold" style={{ color }}>{label}</p>
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: desc }} />
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* 03 · BUILDING THE FOUNDATION */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
+          <SectionLabel n="03" text="Building the Foundation" />
+          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            Why I built the design system before a single product screen.
+          </h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-8">
+            <div className="flex flex-col gap-4">
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                Six products. One designer. No shared foundation. If design began with features, each product would grow its own visual language. By sprint eight, inconsistency would be structural and expensive to reverse.
+              </p>
+              <p className="text-[var(--text-secondary)] leading-relaxed">
+                I proposed pausing feature design to build the system first. To the PM: <em>&ldquo;Every sprint after this becomes faster because components already exist.&rdquo;</em>
+              </p>
+
+              {/* Key outcome — specific, defensible */}
+              <div className="p-5 rounded-2xl border-l-4 bg-[var(--bg-subtle)]" style={{ borderLeftColor: EMERALD }}>
+                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">The outcome</p>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  Reusable components allowed screens across the Patient, Clinic, Pharmacy, and Admin products to follow a shared interaction language — without each screen requiring new design decisions from scratch.
                 </p>
-                <p className="text-xs text-[var(--text-tertiary)] mt-2 font-mono">— CEO, Product Kickoff Meeting</p>
+              </div>
+            </div>
+
+            {/* Design System Visual Artifact */}
+            <div className="rounded-2xl border border-[var(--border)] overflow-hidden">
+              <div className="px-5 py-3 border-b border-[var(--border)] bg-[var(--bg-subtle)]">
+                <p className="text-xs font-mono text-[var(--text-tertiary)]">DESIGN SYSTEM — What was built</p>
+              </div>
+              <div className="p-5 space-y-4">
+                {/* Typography scale */}
+                <div>
+                  <p className="text-[9px] font-mono font-bold tracking-widest mb-2" style={{ color: ACCENT }}>TYPOGRAPHY HIERARCHY</p>
+                  <div className="space-y-1.5">
+                    {[
+                      { size: "32px", weight: "800", label: "Display / Hero", sample: "Aa" },
+                      { size: "20px", weight: "700", label: "Section heading", sample: "Aa" },
+                      { size: "16px", weight: "600", label: "Card title",      sample: "Aa" },
+                      { size: "14px", weight: "400", label: "Body text",       sample: "Aa" },
+                      { size: "12px", weight: "400", label: "Caption / Label", sample: "Aa" },
+                    ].map(({ size, weight, label, sample }) => (
+                      <div key={label} className="flex items-center gap-3">
+                        <span className="font-bold text-[var(--text-primary)] w-10 shrink-0" style={{ fontSize: size, fontWeight: weight }}>{sample}</span>
+                        <span className="text-xs text-[var(--text-tertiary)]">{size} / {weight} — {label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Colour tokens */}
+                <div>
+                  <p className="text-[9px] font-mono font-bold tracking-widest mb-2" style={{ color: ACCENT }}>COLOUR TOKENS</p>
+                  <div className="flex gap-2 flex-wrap">
+                    {[
+                      { name: "Brand",     c: ACCENT  },
+                      { name: "Purple",    c: ACCENT2 },
+                      { name: "Success",   c: EMERALD },
+                      { name: "Warning",   c: AMBER   },
+                      { name: "Danger",    c: RED     },
+                      { name: "Surface",   c: "#1F2937" },
+                    ].map(({ name, c }) => (
+                      <div key={name} className="flex flex-col items-center gap-1">
+                        <div className="w-8 h-8 rounded-lg" style={{ background: c }} />
+                        <span className="text-[8px] text-[var(--text-tertiary)] font-mono">{name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Spacing scale */}
+                <div>
+                  <p className="text-[9px] font-mono font-bold tracking-widest mb-2" style={{ color: ACCENT }}>8PT SPACING SCALE</p>
+                  <div className="flex items-end gap-2">
+                    {[4, 8, 12, 16, 24, 32, 48].map((s) => (
+                      <div key={s} className="flex flex-col items-center gap-1">
+                        <div className="rounded" style={{ width: "12px", height: `${s * 0.6}px`, background: `${ACCENT}50` }} />
+                        <span className="text-[8px] text-[var(--text-tertiary)] font-mono">{s}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Components */}
+                <div>
+                  <p className="text-[9px] font-mono font-bold tracking-widest mb-2" style={{ color: ACCENT }}>COMPONENT LIBRARY</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Buttons", "Inputs", "Cards", "Modals", "Nav", "Tables", "Badges", "States"].map((c) => (
+                      <span key={c} className="text-[10px] px-2.5 py-1 rounded-full border border-[var(--border)] text-[var(--text-secondary)] font-mono">{c}</span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 02 · UNDERSTANDING THE HEALTHCARE NETWORK                      */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 04 · UNDERSTANDING THE PRODUCT */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="02" text="Understanding the Healthcare Network" />
+          <SectionLabel n="04" text="Understanding the Product" />
           <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Every stakeholder depends on another.
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            Before screens, I mapped the transaction chain.
           </h2>
           <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            Before designing a single screen, I mapped the entire dependency graph. A patient action triggers a doctor
-            response. A doctor prescription triggers a pharmacy order. A clinic schedule determines both. The Admin
-            oversees the whole chain. Understanding this web was the most critical first step.
+            Every design decision in one product triggered effects in others. Mapping this upfront prevented conflicts that would have surfaced much later.
           </p>
 
-          {/* Ecosystem chain */}
-          <div className="flex flex-col items-center gap-0 mb-10">
-            {[
-              { icon: Users, label: "Patient", sub: "Books appointments, views records, receives prescriptions", color: "#0EA5E9" },
-              { icon: Heart, label: "Doctor", sub: "Manages consultations, raises prescriptions, updates records", color: "#7C3AED" },
-              { icon: Building2, label: "Clinic", sub: "Coordinates scheduling, manages staff, monitors patient flow", color: "#F59E0B" },
-              { icon: Pill, label: "Pharmacy", sub: "Fulfills prescriptions, manages inventory, tracks orders", color: "#EF4444" },
-              { icon: Shield, label: "Super Admin", sub: "Controls platform, monitors systems, manages all users", color: "#6366F1" },
-            ].map(({ icon: Icon, label, sub, color }, i, arr) => (
-              <div key={label} className="flex flex-col items-center w-full max-w-lg">
-                <div
-                  className="w-full p-4 rounded-2xl border flex items-center gap-4"
-                  style={{ borderColor: `${color}28`, background: `${color}08` }}
-                >
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}20` }}>
-                    <Icon size={20} style={{ color }} />
+          {/* Transaction flow — product-oriented */}
+          <div className="rounded-2xl border border-[var(--border)] overflow-hidden mb-10">
+            <div className="px-5 py-3 border-b border-[var(--border)] bg-[var(--bg-subtle)]">
+              <p className="text-xs font-mono text-[var(--text-tertiary)]">THE CORE TRANSACTION CHAIN</p>
+            </div>
+            <div className="p-6 overflow-x-auto">
+              <div className="flex items-start gap-0 min-w-max">
+                {[
+                  { actor: "Patient",  action: "Books consultation",     platform: "Mobile App", color: "#0EA5E9", icon: Users      },
+                  { actor: "Clinic",   action: "Assigns doctor + slot",  platform: "Web Portal", color: "#F59E0B", icon: Building2  },
+                  { actor: "Doctor",   action: "Reviews history + consults", platform: "Mobile/Web", color: "#7C3AED", icon: Heart   },
+                  { actor: "Doctor",   action: "Raises prescription",    platform: "Mobile App", color: "#7C3AED", icon: FileText   },
+                  { actor: "Pharmacy", action: "Receives + fulfils",     platform: "Web Portal", color: "#EF4444", icon: Pill       },
+                  { actor: "Patient",  action: "Gets status + AI guidance", platform: "Mobile App", color: "#0EA5E9", icon: Users   },
+                ].map(({ actor, action, platform, color, icon: Icon }, i, arr) => (
+                  <div key={`${actor}-${i}`} className="flex items-center gap-0">
+                    <div className="flex flex-col items-center gap-2 w-28">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}20` }}>
+                        <Icon size={18} style={{ color }} />
+                      </div>
+                      <p className="text-[10px] font-mono font-bold" style={{ color }}>{actor.toUpperCase()}</p>
+                      <p className="text-[10px] text-[var(--text-primary)] font-medium text-center leading-tight">{action}</p>
+                      <p className="text-[9px] text-[var(--text-tertiary)] font-mono text-center">{platform}</p>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <div className="flex flex-col items-center px-2 pb-10">
+                        <div className="w-6 h-px bg-[var(--border)]" />
+                        <ArrowRight size={10} className="text-[var(--text-tertiary)] -mt-1.5" />
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <p className="font-semibold text-[var(--text-primary)] text-sm">{label}</p>
-                    <p className="text-xs text-[var(--text-secondary)]">{sub}</p>
-                  </div>
-                </div>
-                {i < arr.length - 1 && (
-                  <div className="flex flex-col items-center py-1">
-                    <div className="w-px h-5 bg-[var(--border)]" />
-                    <ChevronRight size={14} className="rotate-90 text-[var(--text-tertiary)]" />
-                    <div className="w-px h-2 bg-[var(--border)]" />
-                  </div>
-                )}
+                ))}
               </div>
-            ))}
-          </div>
-          <Visual label="Full Ecosystem Dependency Map — Data Flows, Trigger Chains & Cross-Platform Relationships" height="h-64" icon={GitBranch} />
-        </motion.section>
-
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 03 · RESEARCH & DISCOVERY                                      */}
-        {/* ══════════════════════════════════════════════════════════════ */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="03" text="Research & Discovery" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Listening before designing.
-          </h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            I ran four weeks of intensive discovery — stakeholder workshops, requirement sessions, and operational
-            mapping. The goal was to enter the design phase with zero assumptions and 100% context.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-            {[
-              { icon: MessageSquare, label: "CEO Product Sessions", desc: "3 strategy sessions with the CEO to align on vision, platform scope, and non-negotiables. Resulted in a prioritized feature roadmap for v1." },
-              { icon: Heart, label: "Doctor Interviews", desc: "Interviewed 6 practicing doctors across specialties. Discovered pain points around patient history access, consultation efficiency, and schedule visibility." },
-              { icon: Building2, label: "Clinic Operations Study", desc: "Shadowed clinic managers for 2 days. Documented 34 distinct manual processes — all of which became automation targets." },
-              { icon: Pill, label: "Pharmacy Workflow Analysis", desc: "Analyzed prescription handling from receipt to dispensing. Identified 12 failure points where medication errors were most likely to occur." },
-              { icon: Users, label: "Patient Focus Groups", desc: "Conducted 2 focus groups with 8 participants each. Mapped the patient's entire emotional journey from symptom to follow-up." },
-              { icon: Shield, label: "Admin Requirement Sessions", desc: "Worked with the operations team to define platform governance, user role management, and system monitoring requirements." },
-            ].map(({ icon: Icon, label, desc }) => (
-              <div key={label} className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ background: `${ACCENT}18` }}>
-                  <Icon size={16} style={{ color: ACCENT }} />
-                </div>
-                <p className="font-semibold text-sm text-[var(--text-primary)] mb-2">{label}</p>
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{desc}</p>
-              </div>
-            ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { n: "47+", label: "Workflow breakdowns documented" },
-              { n: "6", label: "Stakeholder types interviewed" },
-              { n: "34", label: "Manual processes identified for automation" },
-            ].map(({ n, label }) => (
-              <div key={label} className="p-5 rounded-2xl border border-[var(--border)] text-center">
-                <p className="font-display font-bold text-3xl mb-1" style={{ color: ACCENT }}>{n}</p>
-                <p className="text-xs text-[var(--text-secondary)]">{label}</p>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 04 · BREAKING DOWN THE SYSTEM                                  */}
-        {/* ══════════════════════════════════════════════════════════════ */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
-          <SectionLabel n="04" text="Breaking Down the System" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Six products. One purpose.
-          </h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            Each product existed to solve a distinct operational problem for a specific stakeholder —
-            while sharing a unified data layer that made the whole system coherent.
-          </p>
+          {/* 6 products grid */}
           <motion.div
-            variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+            variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
             initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
-          >
-            {products.map((p) => <ProductCard key={p.title} {...p} />)}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { icon: Smartphone, title: "Patient Mobile App",          type: "iOS & Android",    color: "#0EA5E9", purpose: "Appointments, records, prescriptions, AI guidance" },
+              { icon: Heart,      title: "Doctor Mobile App",           type: "iOS & Android",    color: "#7C3AED", purpose: "Consultation queue, patient history, prescriptions" },
+              { icon: Monitor,    title: "Doctor Web Portal",           type: "Web Application",  color: "#10B981", purpose: "Practice management, analytics, full case history" },
+              { icon: Building2,  title: "Clinic Management Portal",    type: "Web Application",  color: "#F59E0B", purpose: "Scheduling, staff assignment, patient flow" },
+              { icon: Pill,       title: "Pharmacy Management Portal",  type: "Web Application",  color: "#EF4444", purpose: "Digital prescriptions, inventory, fulfilment tracking" },
+              { icon: Shield,     title: "Super Admin Dashboard",       type: "Web Application",  color: "#6366F1", purpose: "User management, system monitoring, platform analytics" },
+            ].map(({ icon: Icon, title, type, color, purpose }) => (
+              <motion.div key={title} variants={FU}
+                className="p-5 rounded-2xl border flex items-start gap-3"
+                style={{ borderColor: `${color}28`, background: `${color}06` }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}18` }}>
+                  <Icon size={18} style={{ color }} />
+                </div>
+                <div>
+                  <p className="font-semibold text-[var(--text-primary)] text-sm leading-snug">{title}</p>
+                  <p className="text-[10px] font-mono text-[var(--text-tertiary)] mb-1">{type}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{purpose}</p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 05 · JOURNEY MAPPING                                           */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 05 · REJECTED CONCEPTS */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="05" text="Journey Mapping" />
+          <SectionLabel n="05" text="Rejected Concepts" />
           <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Mapping the journey across the entire ecosystem.
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            The ideas that didn&apos;t make it — and why.
           </h2>
-          <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
-            I created end-to-end journey maps for every stakeholder — then overlaid them to reveal exactly where
-            handoffs happened between systems, where delays occurred, and where experience breaks were most painful.
-          </p>
-
           <div className="space-y-4">
             {[
               {
-                role: "Patient Journey",
-                color: "#0EA5E9",
-                steps: ["Symptom → Search Doctor", "Book Appointment", "Attend Consultation", "Receive Prescription", "Pharmacy Pickup", "Follow-up"],
-                painPoints: "Juggling 3 apps + phone calls. No single view of health history.",
+                label: "❌ AI-First Homepage",
+                proposed: "Open the Patient App directly into an AI chat — patients describe symptoms before accessing any other feature.",
+                rejected: "Felt experimental and untrustworthy. Patients who wanted to book an appointment had to navigate through AI first.",
+                instead:  "AI repositioned as contextual assistance within existing workflows — appearing at moments of uncertainty, not as a gatekeeper.",
               },
               {
-                role: "Doctor Journey",
-                color: "#7C3AED",
-                steps: ["View Schedule", "Review Patient History", "Conduct Consultation", "Document Notes", "Raise Prescription", "Request Follow-up"],
-                painPoints: "Accessing patient history required calling clinic staff. Prescription writing was manual.",
+                label: "❌ Single Super-App with Role Switcher",
+                proposed: "One app for all six stakeholder types. Role selection at login reveals the relevant view.",
+                rejected: "A patient browsing doctors and a pharmacist processing prescriptions share nothing in terms of mental model. Cognitive overload and security complexity at scale.",
+                instead:  "Six purpose-built products sharing one design system and one data layer.",
               },
               {
-                role: "Clinic Journey",
-                color: "#F59E0B",
-                steps: ["Receive Booking", "Assign Doctor", "Confirm Appointment", "Manage Check-in", "Update Records", "Process Billing"],
-                painPoints: "Overbooking common. No real-time view of doctor availability.",
+                label: "❌ Federated Apps, No Shared Design Layer",
+                proposed: "Six independent apps, shared backend only. Each product with its own visual language.",
+                rejected: "We were hired to solve fragmentation. Six independently designed products would replicate the same problem.",
+                instead:  "Unified design system across all products, with platform-specific adaptations built in.",
               },
               {
-                role: "Pharmacy Journey",
-                color: "#EF4444",
-                steps: ["Receive Prescription", "Verify Patient", "Check Inventory", "Dispense Medication", "Update Records", "Flag Interactions"],
-                painPoints: "Prescriptions arrived by fax or phone. No digital verification.",
+                label: "❌ 8-Level Navigation for Patient Records",
+                proposed: "Clinically complete record hierarchy — 8 levels deep for full health history access.",
+                rejected: "Clinically complete, practically unusable. Staff couldn't complete common tasks without getting lost.",
+                instead:  "Progressive disclosure — primary navigation capped at 3 levels. Clinical depth accessible for those who need it, not imposed on everyone.",
               },
-            ].map(({ role, color, steps, painPoints }) => (
-              <div key={role} className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="w-2 h-2 rounded-full" style={{ background: color }} />
-                  <p className="font-semibold text-sm text-[var(--text-primary)]">{role}</p>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {steps.map((step, i) => (
-                    <div key={step} className="flex items-center gap-1.5">
-                      <span className="text-xs px-2.5 py-1 rounded-full border text-[var(--text-secondary)]"
-                        style={{ borderColor: `${color}30`, background: `${color}08` }}
-                      >{step}</span>
-                      {i < steps.length - 1 && <ChevronRight size={10} className="text-[var(--text-tertiary)]" />}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex items-start gap-2">
-                  <AlertTriangle size={12} className="mt-0.5 shrink-0 text-amber-500" />
-                  <p className="text-xs text-[var(--text-secondary)] italic">{painPoints}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 06 · IDENTIFYING CORE PROBLEMS                                 */}
-        {/* ══════════════════════════════════════════════════════════════ */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
-          <SectionLabel n="06" text="Identifying Core Problems" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            The real problems, precisely named.
-          </h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            After synthesis, I distilled 47 documented pain points into 5 systemic problems that touched
-            every stakeholder and every product simultaneously.
-          </p>
-          <motion.div
-            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-            initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-5"
-          >
-            <ProblemCard n="01"
-              problem="No unified patient record accessible across the platform"
-              impact="Doctors make decisions without full context. Errors increase."
-              stakeholders="Patients, Doctors, Clinics"
-              risk="Medical error liability + poor care quality"
-              opportunity="Universal health record → trust + retention"
-            />
-            <ProblemCard n="02"
-              problem="Appointment booking had no real-time availability"
-              impact="Overbooking, missed appointments, poor experience"
-              stakeholders="Patients, Clinics, Doctors"
-              risk="Revenue leakage + patient drop-off"
-              opportunity="Smart scheduling → operational efficiency"
-            />
-            <ProblemCard n="03"
-              problem="Prescription chain was completely disconnected"
-              impact="Medication errors, prescription loss, delays"
-              stakeholders="Doctors, Pharmacies, Patients"
-              risk="Patient safety + regulatory risk"
-              opportunity="Digital prescription flow → zero-error fulfillment"
-            />
-            <ProblemCard n="04"
-              problem="Administrators had no platform-wide visibility or control"
-              impact="Inability to monitor, intervene, or scale"
-              stakeholders="Super Admin, All platforms"
-              risk="Platform integrity + security gaps"
-              opportunity="Control plane → enterprise scalability"
-            />
-            <ProblemCard n="05"
-              problem="No shared design language across the 6 products"
-              impact="Inconsistent UX across platforms → training overhead"
-              stakeholders="All user types"
-              risk="Poor adoption + high support costs"
-              opportunity="Unified design system → coherent ecosystem"
-            />
-          </motion.div>
-        </motion.section>
-
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 07 · SOLUTION EXPLORATION                                      */}
-        {/* ══════════════════════════════════════════════════════════════ */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="07" text="Solution Exploration" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Three concepts. Hard trade-offs.
-          </h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            Before committing to a direction, I explored three structurally different approaches — each with
-            a different answer to the core question: how do you make six products feel like one platform?
-          </p>
-          <div className="space-y-5">
-            {[
-              {
-                label: "Concept A — Super App (Single Codebase, Role Switcher)",
-                status: "rejected",
-                desc: "One application with a role-selection screen at login. All six stakeholders would use the same app, seeing different views based on their role.",
-                why: "Rejected. The mental models of a patient and a pharmacy manager are completely different. One app trying to serve both creates cognitive overload and security complexity. Role-based access control at this scale would have become a maintenance nightmare.",
-              },
-              {
-                label: "Concept B — Federated Apps with Shared Backend Only",
-                status: "rejected",
-                desc: "Six completely independent apps sharing only a backend API. Each product team would build their own design system and UX patterns.",
-                why: "Rejected. Without a shared design layer, the platform would fragment into six inconsistent experiences. Users who touched multiple apps (like doctors who used both mobile and web) would face entirely different design languages.",
-              },
-              {
-                label: "Concept C — Unified Design System + Purpose-Built Products ✓",
-                status: "chosen",
-                desc: "Six purpose-built products, each designed for a specific mental model — but all sharing a unified design system with shared components, tokens, and interaction patterns. The backend data layer provides seamless information flow across all products.",
-                why: "Chosen. This approach gave each product the UX freedom to serve its users perfectly, while ensuring the platform felt coherent, consistent, and trustworthy across all six touchpoints. This is the architecture that scales.",
-              },
-            ].map(({ label, status, desc, why }) => (
-              <div key={label} className="p-6 rounded-2xl border"
-                style={status === "chosen"
-                  ? { borderColor: `${ACCENT}40`, background: `${ACCENT}06` }
-                  : { borderColor: "var(--border)", background: "var(--bg-subtle)", opacity: 0.75 }
-                }
-              >
-                <div className="flex items-start gap-3 mb-3">
-                  {status === "chosen"
-                    ? <CheckCircle2 size={16} className="mt-0.5 shrink-0" style={{ color: ACCENT }} />
-                    : <XCircle size={16} className="mt-0.5 shrink-0 text-red-400" />
-                  }
+            ].map(({ label, proposed, rejected, instead }) => (
+              <div key={label} className="rounded-2xl border border-[var(--border)] overflow-hidden">
+                <div className="px-6 py-3 border-b border-[var(--border)] bg-[var(--bg-subtle)]">
                   <p className="font-semibold text-sm text-[var(--text-primary)]">{label}</p>
                 </div>
-                <p className="text-sm text-[var(--text-secondary)] mb-2 leading-relaxed pl-7">{desc}</p>
-                <p className="text-xs text-[var(--text-tertiary)] italic pl-7">{why}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--border)]">
+                  <div className="p-5">
+                    <p className="text-[9px] font-mono font-bold tracking-widest mb-2" style={{ color: ACCENT }}>PROPOSED</p>
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{proposed}</p>
+                  </div>
+                  <div className="p-5">
+                    <p className="text-[9px] font-mono font-bold tracking-widest text-red-400 mb-2">WHY REJECTED</p>
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{rejected}</p>
+                  </div>
+                  <div className="p-5">
+                    <p className="text-[9px] font-mono font-bold tracking-widest text-emerald-400 mb-2">WHAT WE DID INSTEAD</p>
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{instead}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 08 · DESIGNING THE ECOSYSTEM                                   */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 06 · DECISION STORY #1 — AI PLACEMENT (SIGNATURE MOMENT — LARGE) */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="08" text="Designing the Ecosystem" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Building six experiences that feel like one.
+          <SectionLabel n="06" text="Decision Story #1 — The Signature Moment" />
+
+          {/* Large visual treatment */}
+          <div className="rounded-3xl overflow-hidden border mb-8"
+            style={{ borderColor: `${ACCENT}30`, background: `linear-gradient(135deg, ${ACCENT}0A 0%, ${ACCENT2}08 100%)` }}>
+            <div className="p-8 md:p-12">
+              <h2 className="font-display font-black text-[var(--text-primary)] leading-tight mb-6"
+                style={{ fontSize: "clamp(26px, 4vw, 52px)" }}>
+                Why didn&apos;t AI become the home screen?
+              </h2>
+
+              {/* The visual story — large format */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+                {/* Step 1 — First proposal */}
+                <div className="md:col-span-2 p-5 rounded-2xl border border-red-400/25 bg-red-400/06">
+                  <div className="flex items-center gap-2 mb-3">
+                    <XCircle size={16} className="text-red-400 shrink-0" />
+                    <p className="text-xs font-mono font-bold tracking-widest text-red-400">FIRST PROPOSAL</p>
+                  </div>
+                  <p className="text-lg font-bold text-[var(--text-primary)] mb-2">AI Chat as Homepage</p>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
+                    Patient opens app → AI conversation → describes symptoms → then accesses the rest of the product.
+                  </p>
+                  <div className="space-y-1.5">
+                    {[
+                      "Felt experimental, not trustworthy",
+                      "Patients wanting to book were forced through AI first",
+                      "No equivalent path for clinical staff",
+                    ].map((p) => (
+                      <div key={p} className="flex items-start gap-1.5">
+                        <XCircle size={11} className="mt-0.5 shrink-0 text-red-400" />
+                        <p className="text-xs text-[var(--text-secondary)]">{p}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Arrow + feedback */}
+                <div className="flex flex-col items-center justify-center gap-2 py-4">
+                  <div className="h-px w-full md:h-full md:w-px bg-[var(--border)]" />
+                  <div className="px-3 py-2 rounded-xl text-center" style={{ background: `${AMBER}15`, border: `1px solid ${AMBER}30` }}>
+                    <p className="text-[9px] font-mono font-bold tracking-widest" style={{ color: AMBER }}>CLIENT FEEDBACK</p>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1 italic">&ldquo;Users want to find a doctor. AI should help them — not replace what they came to do.&rdquo;</p>
+                  </div>
+                  <div className="h-px w-full md:h-full md:w-px bg-[var(--border)]" />
+                </div>
+
+                {/* Step 2 — Final solution */}
+                <div className="md:col-span-2 p-5 rounded-2xl border bg-[var(--bg)]" style={{ borderColor: `${EMERALD}30`, background: `${EMERALD}06` }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <CheckCircle2 size={16} style={{ color: EMERALD }} className="shrink-0" />
+                    <p className="text-xs font-mono font-bold tracking-widest" style={{ color: EMERALD }}>FINAL SOLUTION</p>
+                  </div>
+                  <p className="text-lg font-bold text-[var(--text-primary)] mb-2">AI as Contextual Assistance</p>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">
+                    Familiar healthcare dashboard → AI appears at specific moments of uncertainty within existing flows.
+                  </p>
+                  <div className="space-y-1.5">
+                    {[
+                      "Before booking: AI suggests relevant specialists",
+                      "Post-consultation: AI surfaces relevant health guidance",
+                      "Prescription flow: AI flags potential interactions",
+                    ].map((p) => (
+                      <div key={p} className="flex items-start gap-1.5">
+                        <CheckCircle2 size={11} className="mt-0.5 shrink-0" style={{ color: EMERALD }} />
+                        <p className="text-xs text-[var(--text-secondary)]">{p}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Annotation */}
+              <div className="p-4 rounded-2xl text-center" style={{ background: `${ACCENT}10`, border: `1px solid ${ACCENT}20` }}>
+                <p className="text-sm font-semibold text-[var(--text-primary)]">
+                  AI now supports decisions — instead of replacing navigation.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Standardized Decision Story */}
+          <DecisionStory
+            challenge="Client wanted AI front and center. Our first concept made it the entry point. Stakeholders rejected it — it felt like a chatbot product, not a healthcare platform."
+            options={[
+              { label: "AI-First Homepage", rejected: true,  reason: "Experimental feel. Patients wanting to book had to navigate through AI first. Trust dropped before any value was delivered." },
+              { label: "No AI at all",      rejected: true,  reason: "Abandoned the client&apos;s core product vision and competitive differentiator." },
+              { label: "Contextual AI within existing workflows ✓", rejected: false, reason: "AI appears at specific decision moments inside familiar flows. Familiar navigation preserved; AI adds value without adding friction." },
+            ]}
+            decision="AI repositioned from homepage entry point to contextual assistance embedded within existing healthcare workflows."
+            tradeoff="AI is less visible on first open — but far more trusted and useful when it appears."
+            outcome="Client accepted the direction. The platform preserved familiar healthcare navigation while AI became a layer that genuinely enhances specific moments."
+            whatChanged={[
+              { role: "Users",       change: "Familiar navigation reduced learning curve. AI supported existing intent rather than redirecting it.",         color: "#0EA5E9" },
+              { role: "Business",    change: "Preserved the client&apos;s AI vision without restructuring the entire product.",                             color: EMERALD  },
+              { role: "Engineering", change: "Reused existing navigation. AI was a layer, not a rebuild.",                                                  color: ACCENT2  },
+              { role: "Design",      change: "Created room to expand AI features incrementally into more workflows in future sprints.",                     color: AMBER    },
+            ]}
+          />
+        </motion.section>
+
+        {/* 07 · DECISION STORY #2 — ARCHITECTURE */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
+          <SectionLabel n="07" text="Decision Story #2" />
+          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-6"
+            style={{ fontSize: "clamp(24px, 3.8vw, 44px)" }}>
+            One app for all stakeholders, or six purpose-built products?
           </h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            Each product was designed independently but under a shared design system. Key features, interaction
-            patterns, and navigation structures were documented as cross-platform standards.
+          <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
+            The most consequential structural decision of the project. It locked in the entire design and development trajectory.
           </p>
 
-          <div className="space-y-8">
-            {[
-              {
-                product: "Patient Mobile App",
-                icon: Users,
-                color: "#0EA5E9",
-                features: [
-                  { name: "Smart Appointment Booking", desc: "Real-time doctor availability, specialty filter, location-based search, and instant confirmation." },
-                  { name: "Unified Medical Records", desc: "Complete health history — diagnoses, medications, lab results, and doctor notes in one timeline." },
-                  { name: "Prescription Tracking", desc: "View active prescriptions, receive pharmacy status updates, and set medication reminders." },
-                  { name: "In-App Doctor Communication", desc: "Secure messaging with assigned doctors for follow-up questions without booking a new appointment." },
-                ],
-              },
-              {
-                product: "Doctor Mobile App",
-                icon: Heart,
-                color: "#7C3AED",
-                features: [
-                  { name: "Consultation Queue", desc: "Real-time view of today's patients with status indicators, wait times, and priority flags." },
-                  { name: "Patient History Access", desc: "Full patient record accessible before consultation — diagnoses, medications, allergies, and past visits." },
-                  { name: "Smart Scheduling", desc: "Manage availability, block leave, and receive notifications when schedule changes occur." },
-                  { name: "Digital Prescription Writing", desc: "Write and send prescriptions directly to the patient's pharmacy — no paper, no phone calls." },
-                ],
-              },
-              {
-                product: "Clinic Management Portal",
-                icon: Building2,
-                color: "#F59E0B",
-                features: [
-                  { name: "Appointment Command Center", desc: "Master view of all appointments across all doctors with conflict detection and real-time status." },
-                  { name: "Staff Management", desc: "Assign, schedule, and monitor clinic staff with role-based access per team member." },
-                  { name: "Operational Analytics", desc: "Daily, weekly, and monthly reports on patient throughput, doctor utilization, and revenue metrics." },
-                  { name: "Patient Flow Management", desc: "Queue management with check-in kiosks, waiting room status, and estimated consultation times." },
-                ],
-              },
-            ].map(({ product, icon: Icon, color, features }) => (
-              <div key={product} className="rounded-2xl border border-[var(--border)] overflow-hidden">
-                <div className="flex items-center gap-3 px-6 py-4 border-b border-[var(--border)]"
-                  style={{ background: `${color}08` }}
-                >
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: `${color}20` }}>
-                    <Icon size={15} style={{ color }} />
-                  </div>
-                  <p className="font-semibold text-sm text-[var(--text-primary)]">{product}</p>
+          <DecisionStory
+            challenge="Six stakeholder types. Completely different mental models and tasks. One wrong architectural decision would compound through every sprint."
+            options={[
+              { label: "Super App — Role switcher at login",           rejected: true,  reason: "Patient browsing doctors and pharmacist processing prescriptions share nothing. Cognitive overload, security complexity." },
+              { label: "Federated Apps — Shared backend only",         rejected: true,  reason: "Six independently designed products = six inconsistent experiences. Replicates the fragmentation we were hired to solve." },
+              { label: "Unified design system + purpose-built products ✓", rejected: false, reason: "Each product owns its interaction model. Design system owns the shared language. Consistency is structural, not manual." },
+            ]}
+            decision="Six purpose-built products, each designed for a specific mental model, connected by a unified design system and a shared data layer."
+            tradeoff="More upfront investment in the design system — but every sprint after benefits as components are reused and decisions made once apply everywhere."
+            outcome="Shared component library reduced repetition across six products. Visual and interaction coherence didn't require manual checking — it was built into the system."
+            whatChanged={[
+              { role: "Users",       change: "Each stakeholder got a product designed for their mental model, not a reduced version of someone else's.",  color: "#0EA5E9" },
+              { role: "Business",    change: "Platform coherence made onboarding easier. Users who touched multiple products recognised the shared language.", color: EMERALD  },
+              { role: "Engineering", change: "Shared component library reduced the frontend surface area across six products.",                             color: ACCENT2  },
+              { role: "Design",      change: "Decisions made in the design system applied everywhere. Consistency was the default, not the exception.",      color: AMBER    },
+            ]}
+          />
+        </motion.section>
+
+        {/* 08 · DECISION STORY #3 — NAVIGATION */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
+          <SectionLabel n="08" text="Decision Story #3" />
+          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-6"
+            style={{ fontSize: "clamp(24px, 3.8vw, 44px)" }}>
+            Healthcare is genuinely complex. How do you design for that without building a complex product?
+          </h2>
+
+          {/* Before / After navigation diagram */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+            <div className="rounded-2xl border border-red-400/25 overflow-hidden">
+              <div className="px-5 py-3 border-b border-red-400/20 bg-red-400/06">
+                <div className="flex items-center gap-2">
+                  <XCircle size={12} className="text-red-400" />
+                  <p className="text-xs font-mono font-bold text-red-400">VERSION 1 — 8 LEVELS DEEP</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[var(--border)]">
-                  {features.map(({ name, desc }) => (
-                    <div key={name} className="p-5">
-                      <p className="font-medium text-xs text-[var(--text-primary)] mb-1.5 flex items-center gap-1.5">
-                        <Zap size={11} style={{ color }} />{name}
-                      </p>
-                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{desc}</p>
+              </div>
+              <div className="p-5">
+                <div className="space-y-1">
+                  {["Home", "→ Health", "→→ Records", "→→→ Medical", "→→→→ History", "→→→→→ Lab", "→→→→→→ Results", "→→→→→→→ Detail"].map((item, i) => (
+                    <div key={item} className="flex items-center gap-2">
+                      <div className="h-px flex-shrink-0" style={{ width: `${i * 12}px`, background: "var(--border)" }} />
+                      <span className="text-xs font-mono text-[var(--text-secondary)]">{item.trim()}</span>
                     </div>
                   ))}
                 </div>
+                <p className="text-xs text-red-400 mt-3 italic">Clinically complete. Practically unusable.</p>
               </div>
-            ))}
+            </div>
+            <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${EMERALD}30` }}>
+              <div className="px-5 py-3 border-b bg-[var(--bg-subtle)]" style={{ borderColor: `${EMERALD}25` }}>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={12} style={{ color: EMERALD }} />
+                  <p className="text-xs font-mono font-bold" style={{ color: EMERALD }}>FINAL — 3 LEVELS MAX</p>
+                </div>
+              </div>
+              <div className="p-5">
+                <div className="space-y-1">
+                  {[
+                    { label: "Home", depth: 0 },
+                    { label: "→ Health Records", depth: 1 },
+                    { label: "→→ Lab Result Detail", depth: 2 },
+                  ].map(({ label, depth }) => (
+                    <div key={label} className="flex items-center gap-2">
+                      <div className="h-px flex-shrink-0" style={{ width: `${depth * 16}px`, background: `${EMERALD}40` }} />
+                      <span className="text-xs font-mono" style={{ color: depth === 0 ? "var(--text-primary)" : "var(--text-secondary)" }}>{label.trim()}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-3 border-t" style={{ borderColor: `${EMERALD}20` }}>
+                  <p className="text-xs text-[var(--text-secondary)]">Full clinical depth still accessible — not forced on every path.</p>
+                </div>
+                <div className="mt-3 p-3 rounded-xl" style={{ background: `${EMERALD}08` }}>
+                  <p className="text-xs font-semibold" style={{ color: EMERALD }}>
+                    The goal wasn&apos;t to reduce features — it was to reduce perceived complexity.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <DecisionStory
+            challenge="Version 1 had 8-level deep navigation. Clinically complete but unusable in practice. Clinical staff couldn't complete common tasks without getting lost."
+            options={[
+              { label: "Reduce features",             rejected: true,  reason: "Would have removed real clinical value. Depth wasn't the problem — who sees it and when was." },
+              { label: "Add navigation shortcuts",    rejected: true,  reason: "Shortcuts over a broken structure add complexity without solving the root issue." },
+              { label: "Progressive disclosure ✓",   rejected: false, reason: "Common tasks capped at 3 levels. Clinical depth accessible to those who need it, not imposed on everyone." },
+            ]}
+            decision="Progressive disclosure applied across all products. Maximum 3 levels for primary navigation. Full depth accessible without forcing it on the default path."
+            tradeoff="Power users must navigate one additional step to reach advanced clinical data. Worth it: the primary user population doesn't need that depth on every visit."
+            outcome="Users completing common tasks — booking, viewing recent records — could do so without encountering clinical complexity they didn't need."
+            whatChanged={[
+              { role: "Users",        change: "Common tasks achievable without training. Power users retained full access.",                  color: "#0EA5E9" },
+              { role: "Clinic staff", change: "Faster onboarding. Fewer navigation-related support escalations.",                            color: "#7C3AED" },
+              { role: "Engineering",  change: "Simpler routing structure. Fewer navigation-related edge cases to handle.",                   color: EMERALD  },
+              { role: "Business",     change: "Users previously abandoning tasks silently now completing them. Clearer paths matter.",       color: AMBER    },
+            ]}
+          />
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 09 · INFORMATION ARCHITECTURE                                  */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 09 · DESIGNING MULTIPLE PLATFORMS */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="09" text="Information Architecture" />
+          <SectionLabel n="09" text="Designing Multiple Platforms" />
           <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Structure that scales across six products.
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            Same design system. Different interaction languages.
           </h2>
           <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
-            The IA for each product had to be simple enough for its specific users, yet consistent enough
-            to feel part of a single platform. I ran card sorting sessions with representative users from each
-            stakeholder group before finalizing any navigation structure.
+            A doctor between consultations on mobile has entirely different needs from a clinic manager at a desktop managing a full day. Platform-specific interaction rules were documented within the shared design language.
           </p>
-          <Visual label="Cross-Platform IA — Site Maps, Navigation Structures & Data Relationships" height="h-72" icon={Layers} />
 
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              "1 unified design token system",
-              "Consistent navigation patterns",
-              "Shared authentication layer",
-              "Role-based permission model",
-              "3 rounds of card sorting",
-              "Zero redundant navigation paths",
-            ].map((item) => (
-              <div key={item} className="flex items-start gap-2 p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]">
-                <CheckCircle2 size={13} className="mt-0.5 shrink-0" style={{ color: ACCENT }} />
-                <p className="text-xs text-[var(--text-secondary)]">{item}</p>
+              {
+                platform: "Mobile — Patient & Doctor",
+                icon: Smartphone, color: "#0EA5E9",
+                context: "On the go — waiting rooms, between consultations, at home.",
+                principles: ["Thumb-first navigation: critical actions within comfortable reach", "Minimal text input: smart defaults and selection patterns", "Task-focused flows: one primary action per screen", "Offline-accessible records for unreliable networks"],
+                tradeoff: "Feature depth reduced in favour of access speed.",
+              },
+              {
+                platform: "Web — Doctor, Clinic, Pharmacy, Admin",
+                icon: Monitor, color: "#7C3AED",
+                context: "At workstations — full-session, information-dense tools.",
+                principles: ["Multi-panel layouts: patient detail + history side by side", "Data tables with sort, filter, and export", "Keyboard accessibility: workflows navigable without a mouse", "Information density: multiple data streams visible at once"],
+                tradeoff: "Higher visual complexity accepted — users are trained on the tool.",
+              },
+            ].map(({ platform, icon: Icon, color, context, principles, tradeoff }) => (
+              <div key={platform} className="p-6 rounded-2xl border" style={{ borderColor: `${color}25`, background: `${color}05` }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}18` }}>
+                    <Icon size={18} style={{ color }} />
+                  </div>
+                  <p className="font-semibold text-sm text-[var(--text-primary)]">{platform}</p>
+                </div>
+                <p className="text-xs italic text-[var(--text-secondary)] mb-4">{context}</p>
+                <ul className="space-y-1.5 mb-4">
+                  {principles.map((p) => (
+                    <li key={p} className="flex items-start gap-1.5 text-xs text-[var(--text-secondary)]">
+                      <ChevronRight size={10} className="mt-0.5 shrink-0" style={{ color }} />{p}
+                    </li>
+                  ))}
+                </ul>
+                <div className="p-3 rounded-xl" style={{ background: `${color}08` }}>
+                  <p className="text-[9px] font-mono font-bold tracking-widest mb-1" style={{ color }}>TRADE-OFF ACCEPTED</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{tradeoff}</p>
+                </div>
               </div>
             ))}
           </div>
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 10 · DESIGN ITERATIONS                                         */}
-        {/* ══════════════════════════════════════════════════════════════ */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
-          <SectionLabel n="10" text="Design Iterations" />
+        {/* 10 · DESIGNING FOR CONTINUOUS DELIVERY (renamed) */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
+          <SectionLabel n="10" text="Designing for Continuous Delivery" />
           <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Three rounds. Major evolution.
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            Translating product priorities into sprint-ready designs — across six products at once.
           </h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            No product shipped in its first version. Here is the documented evolution across three major
-            iteration rounds — each driven by stakeholder feedback and usability insights.
-          </p>
-          <motion.div
-            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-            initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="space-y-5"
-          >
-            <IterationBlock
-              version="VERSION 1"
-              title="Lo-Fi Wireframes + System Architecture"
-              feedback="Stakeholders liked the vision but found the navigation too complex for clinical staff."
-              problems={[
-                "Patient app had 8-level deep navigation for records",
-                "Clinic portal showed too much data on the dashboard simultaneously",
-                "No clear visual distinction between mobile and web products",
-              ]}
-              changes={[
-                "Reduced all navigation to maximum 3 levels deep",
-                "Introduced progressive disclosure — summary first, detail on demand",
-                "Established distinct visual grammar for mobile vs web contexts",
-              ]}
-              outcome="Stakeholder alignment session rated the revised architecture 8.5/10. Greenlighted for mid-fi development."
-            />
-            <IterationBlock
-              version="VERSION 2"
-              title="Mid-Fidelity Designs + Usability Testing"
-              feedback="Doctors found the consultation workflow too many taps. Pharmacists couldn't verify prescriptions quickly enough."
-              problems={[
-                "Doctor app required 7 taps to access patient history during consultation",
-                "Prescription verification in pharmacy portal had no confidence indicators",
-                "Patient appointment cancellation flow lacked clear confirmation states",
-              ]}
-              changes={[
-                "Redesigned doctor app consultation view as a single-screen panel system",
-                "Added drug interaction flags and confidence scores to pharmacy prescription view",
-                "Added clear multi-step confirmation with undo option for all destructive actions",
-              ]}
-              outcome="Task completion rate for doctor consultation flow improved from 52% to 94% in retesting."
-            />
-            <IterationBlock
-              version="VERSION 3"
-              title="High-Fidelity Final Designs + Developer Handoff"
-              feedback="Engineering flagged 3 animations as not feasible in sprint timeline. CEO wanted a more premium visual feel."
-              problems={[
-                "Complex microanimations not achievable without significant timeline extension",
-                "Color contrast in some states failed WCAG AA",
-                "Design system components not annotated for developer reference",
-              ]}
-              changes={[
-                "Replaced complex animations with CSS transition-based equivalents",
-                "Audited and corrected all 23 contrast failures across all six products",
-                "Created complete Figma handoff kit with 80+ annotated components",
-              ]}
-              outcome="Zero design-to-development rejects. All six products shipped to staging within sprint timeline."
-            />
-          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <p className="text-xs font-mono font-bold tracking-widest mb-5" style={{ color: ACCENT }}>HOW IT WORKED</p>
+              <div className="space-y-4">
+                {[
+                  { icon: Target,      label: "Long-term reference prototype", desc: "A full-platform prototype for CEO and client reviews — kept separate from what was being built each sprint." },
+                  { icon: Zap,         label: "Sprint-scoped design specs",    desc: "Figma files annotated and scoped precisely to what development was building that sprint. No aspirational elements." },
+                  { icon: GitBranch,   label: "Working with prioritised features", desc: "Features prioritised by the PM. My role: translate those priorities into design specs that could be built on time." },
+                  { icon: RefreshCw,   label: "Handling mid-sprint direction changes", desc: "Separating the long-term prototype from sprint specs meant feedback could be absorbed without disrupting the current build." },
+                ].map(({ icon: Icon, label, desc }) => (
+                  <div key={label} className="flex gap-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${ACCENT}18` }}>
+                      <Icon size={14} style={{ color: ACCENT }} />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm text-[var(--text-primary)] mb-0.5">{label}</p>
+                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-mono font-bold tracking-widest mb-5" style={{ color: ACCENT2 }}>PROBLEMS THIS ADDRESSED</p>
+              <div className="space-y-3">
+                {[
+                  { problem: "CEO vision expanding mid-sprint",    solution: "Long-term prototype absorbed new directions without touching sprint specs",       color: RED    },
+                  { problem: "Priorities shifting without warning", solution: "Sprint specs were tightly scoped — changes outside scope queued without blocking", color: AMBER  },
+                  { problem: "Ambiguity about which version to build", solution: "Sprint-specific Figma with clear labelling eliminated guesswork",              color: ACCENT },
+                  { problem: "Design falling behind across 6 products", solution: "Shared design system: new screens were compositions, not new designs",        color: EMERALD },
+                ].map(({ problem, solution, color }) => (
+                  <div key={problem} className="p-3 rounded-xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+                    <div className="flex items-start gap-2 mb-1.5">
+                      <XCircle size={11} className="mt-0.5 shrink-0" style={{ color: RED }} />
+                      <p className="text-xs font-semibold text-[var(--text-primary)]">{problem}</p>
+                    </div>
+                    <div className="flex items-start gap-2 pl-4">
+                      <ChevronRight size={9} className="mt-0.5 shrink-0" style={{ color }} />
+                      <p className="text-xs text-[var(--text-secondary)]">{solution}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 11 · COLLABORATION                                             */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 11 · DEVELOPER COLLABORATION */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="11" text="Collaboration" />
+          <SectionLabel n="11" text="Developer Collaboration" />
           <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Six products require six kinds of collaboration.
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            I didn&apos;t hand off screens. I handed off decisions.
           </h2>
-          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed">
-            The hardest part of this project wasn&apos;t designing screens — it was managing alignment across
-            5 different stakeholder groups who all had competing priorities and very different mental models.
+          <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
+            Every sprint: explain interaction logic to developers, verify builds before QA, document gaps, collaborate on fixes. Developers should never have to guess what a component does, how it behaves in an edge case, or what the correct state looks like.
+          </p>
+
+          {/* Concrete example */}
+          <div className="rounded-2xl border border-[var(--border)] overflow-hidden mb-8">
+            <div className="px-5 py-3 border-b border-[var(--border)] bg-[var(--bg-subtle)]">
+              <p className="text-xs font-mono text-[var(--text-tertiary)]">CONCRETE EXAMPLE — Prescription Card Component</p>
+            </div>
+            <div className="overflow-x-auto">
+              <div className="flex min-w-max p-5 gap-0">
+                {[
+                  { step: "Component",          desc: "Prescription status card with 4 states: pending, processing, ready, dispensed",    icon: Layout,       color: ACCENT  },
+                  { step: "States Specified",   desc: "All 4 states designed, labelled, and annotated. Loading, error, and empty states included", icon: FileText, color: ACCENT2 },
+                  { step: "Developer Build",    desc: "Frontend implements the component against the spec",                                icon: Code,         color: AMBER   },
+                  { step: "Issue Found",         desc: "Pre-QA review: 'ready' state was missing the timestamp. Tap target below minimum on mobile", icon: AlertTriangle, color: RED },
+                  { step: "Fix + Sign-off",     desc: "Resolved directly with the developer. Verified. Passed to QA with full spec coverage", icon: CheckCircle2, color: EMERALD },
+                ].map(({ step, desc, icon: Icon, color }, i, arr) => (
+                  <div key={step} className="flex items-center gap-0">
+                    <div className="w-36 flex flex-col items-center text-center gap-2 px-2">
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: `${color}18` }}>
+                        <Icon size={15} style={{ color }} />
+                      </div>
+                      <p className="text-[10px] font-mono font-bold tracking-widest" style={{ color }}>{step.toUpperCase()}</p>
+                      <p className="text-[10px] text-[var(--text-secondary)] leading-snug">{desc}</p>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <div className="flex items-center pb-10">
+                        <div className="w-3 h-px bg-[var(--border)]" />
+                        <ArrowRight size={10} className="text-[var(--text-tertiary)]" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {[
+              { icon: Code,         label: "Interaction Specifications",  desc: "Every handoff included: hover, focus, active, loading, error, empty, and disabled states. Responsive breakpoints and edge cases documented per component.",  color: ACCENT  },
+              { icon: MessageSquare,label: "Explaining Flows Before Building", desc: "Before development started, I walked developers through interaction sequences — explaining conditional states and the reason behind each decision.",       color: ACCENT2 },
+              { icon: FileText,     label: "Reviewing Builds Before QA",  desc: "I reviewed implemented screens against specs before formal QA — checking spacing, typography, component states, and responsive behaviour.",                  color: EMERALD },
+              { icon: RefreshCw,    label: "Pragmatic on Constraints",    desc: "When engineering flagged interactions as too costly for the sprint, I collaborated on equivalent experiences that achieved the same UX intent within available effort.", color: AMBER },
+            ].map(({ icon: Icon, label, desc, color }) => (
+              <div key={label} className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}18` }}>
+                    <Icon size={14} style={{ color }} />
+                  </div>
+                  <p className="font-semibold text-sm text-[var(--text-primary)]">{label}</p>
+                </div>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* 12 · FINDING UI DEFECTS WHEN CHEAPEST TO FIX (renamed) */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
+          <SectionLabel n="12" text="Pre-QA Design Validation" />
+          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            Finding UI defects when they were cheapest to fix.
+          </h2>
+          <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
+            In most projects, design issues surface during QA and become bug tickets. By reviewing builds before they reached the QA team, issues were caught and resolved at the cheapest possible moment — directly with the developer who built them.
+          </p>
+
+          <div className="rounded-2xl border border-[var(--border)] overflow-hidden mb-6">
+            <div className="px-5 py-3 border-b border-[var(--border)] bg-[var(--bg-subtle)]">
+              <p className="text-xs font-mono text-[var(--text-tertiary)]">THE PROCESS — EACH SPRINT</p>
+            </div>
+            <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-[var(--border)]">
+              {[
+                { step: "01", label: "Build Review",     desc: "Review implementation against Figma spec",  icon: Target       },
+                { step: "02", label: "Document Gaps",    desc: "Log visual and interaction deviations",     icon: FileText     },
+                { step: "03", label: "Resolve with Dev", desc: "Work through fixes directly",               icon: Code         },
+                { step: "04", label: "Pass to QA",       desc: "Hand off only after design sign-off",       icon: CheckCircle2 },
+              ].map(({ step, label, desc, icon: Icon }) => (
+                <div key={step} className="flex-1 p-5 flex flex-col items-center text-center gap-2">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: `${ACCENT}18` }}>
+                    <Icon size={15} style={{ color: ACCENT }} />
+                  </div>
+                  <p className="text-[9px] font-mono font-bold tracking-widest" style={{ color: ACCENT }}>STEP {step}</p>
+                  <p className="font-semibold text-sm text-[var(--text-primary)]">{label}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+            <p className="text-[9px] font-mono font-bold tracking-widest mb-4" style={{ color: ACCENT }}>WHAT VALIDATION COVERED</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+                "Accessibility — contrast ratios, touch target sizes, keyboard reachability",
+                "Spacing and layout — alignment against 8pt grid across breakpoints",
+                "Typography — font sizes, weights, and line heights matching design tokens",
+                "Component states — hover, focus, loading, error, empty, disabled",
+                "Interaction sequences — transitions, timing, and conditional logic",
+                "Edge cases — empty states, overflow content, long text, network failure",
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-2 p-3 rounded-xl border border-[var(--border)]">
+                  <CheckCircle2 size={11} className="mt-0.5 shrink-0" style={{ color: EMERALD }} />
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* 13 · BEHIND THE DECISIONS */}
+        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
+          <SectionLabel n="13" text="Behind the Decisions" />
+          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            What the process actually looked like.
+          </h2>
+          <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
+            The decisions in this case study didn&apos;t arrive fully formed. They went through iterations, client notes, developer constraints, and version changes before reaching the outcomes described here.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
               {
-                person: "CEO",
-                dynamic: "Vision was ambitious and constantly evolving. I managed this by creating a 'North Star' design — a full-platform prototype that captured the long-term vision — while maintaining a separate sprint-ready spec for immediate development. The CEO approved both, which eliminated scope creep during sprints.",
-                win: "Established a weekly design review that separated vision from delivery.",
+                icon: PenTool,
+                label: "Early whiteboard sessions",
+                desc: "The first architecture decision started on a FigJam whiteboard — mapping out all six stakeholders, their workflows, and the data handoffs between them. Three full architecture diagrams were drawn before Option C was chosen.",
+                tag: "DISCOVERY",  color: ACCENT,
               },
               {
-                person: "Product Manager",
-                dynamic: "Constant tension between feature completeness and sprint deadlines. I introduced a feature priority matrix — every design decision was tagged as P0/P1/P2. PM could de-scope P2 items without impacting core UX quality. This gave us a shared language for trade-offs.",
-                win: "Feature matrix reduced priority disputes by 70% in the last 4 weeks.",
+                icon: XCircle,
+                label: "Rejected navigation iterations",
+                desc: "The Patient App navigation went through four structural iterations before progressive disclosure was applied. Each version was tested with stakeholder walkthroughs. The 8-level version was Version 1 of four.",
+                tag: "ITERATION",  color: RED,
               },
               {
-                person: "Doctors (as users)",
-                dynamic: "Doctors were the most demanding users — highly specific, time-poor, and used to paper. Early prototypes felt too 'tech-forward.' I redesigned the doctor app to mimic familiar clinical paper form patterns, reducing the learning curve significantly.",
-                win: "Doctor app usability scores jumped from 58% to 91% satisfaction after redesign.",
+                icon: MessageSquare,
+                label: "Client feedback that changed direction",
+                desc: "The AI homepage rejection happened in a formal client review — not in a design session. The feedback was direct: &apos;This feels like a chatbot product.&apos; That one sentence reframed the entire AI strategy.",
+                tag: "PIVOT",      color: AMBER,
               },
               {
-                person: "Developers",
-                dynamic: "Frontend team had concerns about animation complexity and responsive breakpoints across 6 products. I paired with engineers to create a shared CSS token system that made responsive layouts component-level decisions, not one-off overrides.",
-                win: "Shared token system cut frontend rework by an estimated 40%.",
+                icon: Code,
+                label: "Developer constraints that shaped design",
+                desc: "Three animation sequences were flagged as too complex for the sprint timeline. Each was redesigned in a paired session with the frontend developer — achieving the same UX intent within the available effort.",
+                tag: "CONSTRAINT", color: EMERALD,
               },
-            ].map(({ person, dynamic, win }) => (
-              <div key={person} className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-sm"
-                    style={{ background: ACCENT }}
-                  >{person[0]}</div>
-                  <p className="font-semibold text-sm text-[var(--text-primary)]">{person}</p>
+              {
+                icon: Layers,
+                label: "Design system evolution",
+                desc: "The component library went through two rounds of revision after the first product shipped to staging. Inconsistencies in the implementation revealed gaps in the original handoff documentation.",
+                tag: "LEARNING",   color: ACCENT2,
+              },
+              {
+                icon: GitBranch,
+                label: "The moment the direction changed",
+                desc: "Between Version 1 and Version 2 of the Patient App, the entire information architecture was restructured. Not because of new features — but because the first usability walkthrough showed clearly that the structure was wrong.",
+                tag: "REFLECTION", color: "#6366F1",
+              },
+            ].map(({ icon: Icon, label, desc, tag, color }) => (
+              <div key={label} className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}18` }}>
+                      <Icon size={13} style={{ color }} />
+                    </div>
+                    <p className="font-semibold text-sm text-[var(--text-primary)]">{label}</p>
+                  </div>
+                  <Tag text={tag} color={color} />
                 </div>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-3">{dynamic}</p>
-                <div className="flex items-start gap-2">
-                  <Star size={12} className="mt-0.5 shrink-0" style={{ color: ACCENT }} />
-                  <p className="text-xs text-[var(--text-secondary)] italic">{win}</p>
-                </div>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: desc }} />
               </div>
             ))}
           </div>
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 12 · CHALLENGES                                                */}
-        {/* ══════════════════════════════════════════════════════════════ */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="12" text="Challenges" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-8"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            The problems that tested every skill I had.
-          </h2>
-          <div className="space-y-4">
-            {[
-              {
-                challenge: "Designing 6 products simultaneously without losing consistency",
-                solution: "Built the design system first, before designing any product screen. Every product was a composition of shared components with product-specific adaptations. This made consistency structural, not dependent on manual checking.",
-              },
-              {
-                challenge: "Healthcare workflow complexity across stakeholder boundaries",
-                solution: "Created a master workflow map that showed every trigger, handoff, and dependency across all six products. Any new feature had to be validated against this map before design began — ensuring no unintended consequences.",
-              },
-              {
-                challenge: "Accessibility compliance across a highly varied user base",
-                solution: "Applied WCAG 2.1 AA as the baseline across all six products. Conducted accessibility audits at the end of every iteration. Resulted in 23 contrast corrections and improved keyboard navigation in the web portals.",
-              },
-              {
-                challenge: "Cross-platform data consistency with no real-time API yet",
-                solution: "Designed with optimistic UI patterns — the interface assumes successful operations and shows rollback states only when needed. This created a seamless experience while engineering caught up with real-time data infrastructure.",
-              },
-              {
-                challenge: "Scaling the design system to 6 products with different interaction contexts",
-                solution: "Established three layers in the design system: foundation (universal tokens), platform (mobile vs web patterns), and product (specific adaptations). Any layer could be modified without breaking the others.",
-              },
-            ].map(({ challenge, solution }) => (
-              <div key={challenge} className="flex gap-5 p-5 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
-                <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-500" />
-                <div>
-                  <p className="font-semibold text-sm text-[var(--text-primary)] mb-1.5">{challenge}</p>
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{solution}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 13 · FINAL SOLUTION                                            */}
-        {/* ══════════════════════════════════════════════════════════════ */}
-        <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="13" text="Final Solution" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            Six products. One coherent ecosystem.
-          </h2>
-          <p className="text-[var(--text-secondary)] mb-8 leading-relaxed">
-            The final platform delivered purpose-built, high-fidelity experiences for every stakeholder —
-            all sharing a unified design language and a connected data layer.
-          </p>
-
-          {/* Real healthcare screenshot as hero visual */}
-          <div className="rounded-2xl overflow-hidden border border-[var(--border)] shadow-xl mb-6"
-            style={{ boxShadow: `0 24px 64px rgba(14,165,233,0.18), 0 4px 16px rgba(0,0,0,0.1)` }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/healthcare.png" alt="Unified Healthcare Platform — Final Design" className="w-full h-auto object-cover block" draggable={false} />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { icon: Users, label: "Patient Mobile App", desc: "Appointments, records, prescriptions, and doctor communication", color: "#0EA5E9" },
-              { icon: Heart, label: "Doctor Mobile App", desc: "Consultation queue, patient history, scheduling, and prescriptions", color: "#7C3AED" },
-              { icon: Monitor, label: "Doctor Web Portal", desc: "Advanced management, analytics, and full practice operations", color: "#10B981" },
-              { icon: Building2, label: "Clinic Portal", desc: "Appointment management, staff coordination, and operations", color: "#F59E0B" },
-              { icon: Pill, label: "Pharmacy Portal", desc: "Prescription fulfillment, inventory, and order workflows", color: "#EF4444" },
-              { icon: Shield, label: "Super Admin Dashboard", desc: "Platform governance, monitoring, and user management", color: "#6366F1" },
-            ].map(({ icon: Icon, label, desc, color }) => (
-              <div key={label} className="p-4 rounded-2xl border flex items-start gap-3"
-                style={{ borderColor: `${color}25`, background: `${color}06` }}
-              >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${color}18` }}>
-                  <Icon size={16} style={{ color }} />
-                </div>
-                <div>
-                  <p className="font-semibold text-xs text-[var(--text-primary)] mb-0.5">{label}</p>
-                  <p className="text-xs text-[var(--text-secondary)] leading-snug">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 14 · OUTCOMES                                                  */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 14 · IMPACT — restructured by audience */}
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}
-          className="py-14 px-10 rounded-3xl text-center"
-          style={{ background: `linear-gradient(135deg, ${ACCENT}14 0%, ${ACCENT}06 60%, transparent 100%)`, border: `1px solid ${ACCENT}22` }}
-        >
-          <SectionLabel n="14" text="Outcomes" />
-          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-10"
-            style={{ fontSize: "clamp(26px, 3.8vw, 44px)" }}
-          >
-            A platform that replaced fragmentation with clarity.
+          className="py-14 px-10 rounded-3xl"
+          style={{ background: `linear-gradient(135deg, ${ACCENT}14 0%, ${ACCENT}06 60%, transparent 100%)`, border: `1px solid ${ACCENT}22` }}>
+          <SectionLabel n="14" text="Impact" />
+          <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-4"
+            style={{ fontSize: "clamp(26px, 3.8vw, 44px)" }}>
+            What changed — by perspective.
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            <Stat value="6" label="Interconnected Products Delivered" />
-            <Stat value="5" label="Stakeholder Types Unified" />
-            <Stat value="34" label="Manual Processes Automated" />
-            <Stat value="0" label="Design-to-Dev Rejects on Handoff" />
-            <Stat value="91%" label="Doctor Satisfaction in Usability Testing" />
-            <Stat value="1" label="Unified Design System Across All Products" />
+          <p className="text-[var(--text-secondary)] mb-10 leading-relaxed max-w-2xl">
+            Impact described by audience — based on what was designed and delivered, not on metrics that weren&apos;t formally measured.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              {
+                category: "Product",
+                icon: BarChart3,
+                color: ACCENT,
+                items: [
+                  "Unified ecosystem replacing five fragmented, disconnected workflows",
+                  "AI integrated into patient journeys as contextual assistance, not a gimmick",
+                  "Scalable platform architecture accepted by client — extensible for future features",
+                ],
+              },
+              {
+                category: "Users",
+                icon: Users,
+                color: "#7C3AED",
+                items: [
+                  "Patients: one app replacing WhatsApp + phone coordination for health management",
+                  "Doctors: patient history accessible before consultations, not after",
+                  "Clinical staff: familiar navigation reduced onboarding time",
+                ],
+              },
+              {
+                category: "Team",
+                icon: Heart,
+                color: EMERALD,
+                items: [
+                  "Shared design system: a common interaction language across all six products",
+                  "Annotated specs: developers could build without asking for clarification on states",
+                  "Pre-QA validation: visual issues resolved before reaching formal testing",
+                ],
+              },
+              {
+                category: "Business",
+                icon: TrendingUp,
+                color: AMBER,
+                items: [
+                  "AI repositioned: client&apos;s AI vision preserved within a trustworthy product structure",
+                  "All six products shipped to staging within sprint schedule",
+                  "Multi-platform design system: scalable for additional clinic deployments",
+                ],
+              },
+            ].map(({ category, icon: Icon, color, items }) => (
+              <div key={category} className="p-6 rounded-2xl border" style={{ borderColor: `${color}25`, background: `${color}06` }}>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}20` }}>
+                    <Icon size={18} style={{ color }} />
+                  </div>
+                  <p className="font-bold text-lg text-[var(--text-primary)]">{category}</p>
+                </div>
+                <ul className="space-y-2.5">
+                  {items.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-[var(--text-secondary)]">
+                      <ArrowUpRight size={12} className="mt-0.5 shrink-0" style={{ color }} />
+                      <span dangerouslySetInnerHTML={{ __html: item }} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </motion.section>
 
-        {/* ══════════════════════════════════════════════════════════════ */}
-        {/* 15 · REFLECTION                                                */}
-        {/* ══════════════════════════════════════════════════════════════ */}
+        {/* 15 · HOW THIS PROJECT CHANGED THE WAY I THINK (renamed) */}
         <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={FU}>
-          <SectionLabel n="15" text="Reflection" />
+          <SectionLabel n="15" text="Key Learnings" />
           <h2 className="font-display font-bold text-[var(--text-primary)] leading-tight mb-6"
-            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}
-          >
-            What this project taught me about designing at scale.
+            style={{ fontSize: "clamp(24px, 3.5vw, 38px)" }}>
+            How this project changed the way I think about product design.
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: ACCENT }}>What Worked Well</p>
-              <div className="space-y-3">
-                {[
-                  "Building the design system before any product screen — it made consistency inevitable",
-                  "The dependency map became the single most important artifact of the project",
-                  "Paired design reviews with engineers caught technical constraints before they became rework",
-                  "Splitting North Star vision from sprint-ready specs eliminated scope creep",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-2.5">
-                    <CheckCircle2 size={14} className="mt-0.5 shrink-0" style={{ color: ACCENT }} />
-                    <p className="text-sm text-[var(--text-secondary)]">{item}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-4 text-amber-500">What I Would Improve</p>
-              <div className="space-y-3">
-                {[
-                  "Invest more time in ethnographic research — especially shadowing clinical staff on actual work days",
-                  "Build a cross-product usability testing pipeline earlier in the process",
-                  "Create a dedicated design system governance process with versioning",
-                  "Design mobile-first even for web portals — clinic and pharmacy staff often access on tablets",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-2.5">
-                    <RefreshCw size={14} className="mt-0.5 shrink-0 text-amber-500" />
-                    <p className="text-sm text-[var(--text-secondary)]">{item}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="space-y-4 mb-10">
+            {[
+              {
+                n: "01", color: ACCENT,
+                title: "Rejections are product data",
+                text: "The AI homepage rejection was the most useful insight of the project. Where you place a feature is a product strategy decision. AI at the wrong moment in a user journey reduces trust — even when the feature itself is well-designed.",
+              },
+              {
+                n: "02", color: ACCENT2,
+                title: "Design systems are an infrastructure investment, not a design preference",
+                text: "The only way to get the design system approved was to frame it as a sprint-efficiency decision. Reusable components allowed screens across all six products to follow a shared interaction language — compounding value with every sprint.",
+              },
+              {
+                n: "03", color: EMERALD,
+                title: "The goal isn&apos;t to reduce complexity — it&apos;s to structure it",
+                text: "Progressive disclosure solved navigation without removing features. The design question isn&apos;t &apos;how do we simplify this?&apos; — it&apos;s &apos;who needs to see this complexity, when, and on which path?&apos;",
+              },
+              {
+                n: "04", color: AMBER,
+                title: "Pre-QA review is the highest-leverage moment in the sprint",
+                text: "Catching issues before QA — directly with the developer who built them — is faster, cheaper, and produces better output than escalating through a bug-tracking process.",
+              },
+              {
+                n: "05", color: "#6366F1",
+                title: "A single designer working at scale needs a system, not just skills",
+                text: "The design system was the only reason designing six products simultaneously without inconsistency was possible. Designers who build for scale don&apos;t just execute well — they build the infrastructure that makes consistent execution possible.",
+              },
+            ].map(({ n, title, text, color }) => (
+              <motion.div key={n} variants={FU}
+                className="flex gap-5 p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
+                <div className="text-2xl font-display font-black opacity-20 shrink-0 w-8 leading-none" style={{ color }}>{n}</div>
+                <div>
+                  <p className="font-semibold text-[var(--text-primary)] mb-2 leading-snug" dangerouslySetInnerHTML={{ __html: title }} />
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: text }} />
+                </div>
+              </motion.div>
+            ))}
           </div>
 
           <div className="p-8 rounded-2xl" style={{ background: `${ACCENT}0C`, border: `1px solid ${ACCENT}22` }}>
             <p className="text-base text-[var(--text-secondary)] leading-relaxed italic mb-3">
-              &ldquo;Designing a single great product is hard. Designing six products that feel like one coherent
-              platform taught me that the most valuable design work happens before any screen is created —
-              in the research, the architecture, and the systems thinking that holds everything together.&rdquo;
+              &ldquo;Designing six products that feel like one coherent platform — with an AI strategy that was initially rejected and then repositioned — taught me that the most valuable design work happens before any screen is created. In the research, the architecture, the framing of decisions, and the systems that hold everything together.&rdquo;
             </p>
             <p className="text-xs font-mono" style={{ color: ACCENT }}>— Ganesh Muniganti · Dimension Leap Healthcare Platform, 2025</p>
           </div>
@@ -1127,7 +1208,7 @@ export default function HealthcareCaseStudy() {
 
       </div>
 
-      {/* ── Next project ────────────────────────────────────────────────── */}
+      {/* Next project */}
       <section className="border-t border-[var(--border)] bg-[var(--bg-subtle)]">
         <div className="max-w-5xl mx-auto px-6 py-16">
           <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-6 text-center">Next Project</p>
@@ -1137,10 +1218,8 @@ export default function HealthcareCaseStudy() {
                 <p className="text-xs text-[var(--text-secondary)] mb-1">UX Research &amp; Product Design</p>
                 <p className="font-display font-bold text-xl text-[var(--text-primary)]">Enhancing PhonePe&apos;s Usability</p>
               </div>
-              <div
-                className="w-10 h-10 rounded-full border flex items-center justify-center transition-all group-hover:scale-110"
-                style={{ borderColor: ACCENT, color: ACCENT }}
-              >
+              <div className="w-10 h-10 rounded-full border flex items-center justify-center transition-all group-hover:scale-110"
+                style={{ borderColor: ACCENT, color: ACCENT }}>
                 <ArrowRight size={16} />
               </div>
             </div>
