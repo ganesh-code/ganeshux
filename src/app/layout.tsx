@@ -36,6 +36,11 @@ export const metadata: Metadata = {
     "User Research",
     "Figma",
   ],
+  icons: {
+    icon: "/fav.png",
+    shortcut: "/fav.png",
+    apple: "/fav.png",
+  },
   openGraph: {
     title: "Ganesh Muniganti — UX & Product Designer",
     description:

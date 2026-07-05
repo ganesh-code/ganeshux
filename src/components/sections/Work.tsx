@@ -150,43 +150,41 @@ function ProjectCard({
                 {/* 4: Impact metrics — most prominent after title */}
                 <div className="flex flex-col gap-2">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-tertiary)]">
-                    Impact
+                    Project Highlights
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {project.impact.slice(0, 3).map((metric) => {
-                      const m = metric.match(/^([\d.]+[+%★×x]?)\s+(.+)$/);
-                      return (
-                        <div
-                          key={metric}
-                          className="flex items-center gap-2 px-3 py-1.5 rounded-xl border"
-                          style={{
-                            backgroundColor: `${project.color}0C`,
-                            borderColor: `${project.color}28`,
-                          }}
-                        >
-                          <span
-                            className="text-sm font-bold leading-none tabular-nums"
-                            style={{ color: project.color }}
-                          >
-                            ↑ {m ? m[1] : ""}
-                          </span>
-                          <span className="text-xs font-medium text-[var(--text-secondary)]">
-                            {m ? m[2] : metric}
-                          </span>
-                        </div>
-                      );
-                    })}
+                    {project.impact.slice(0, 4).map((metric) => (
+                      <div
+                        key={metric}
+                        className="flex items-center px-3 py-1.5 rounded-xl border"
+                        style={{
+                          backgroundColor: `${project.color}0C`,
+                          borderColor: `${project.color}28`,
+                        }}
+                      >
+                        <span className="text-xs font-semibold" style={{ color: project.color }}>
+                          {metric}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* 5+6: Description + Tools + CTA */}
+                {/* 5+6: Description + Owned + Tools + CTA */}
                 <div className="flex flex-col gap-3">
                   <p className="text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-2">
                     {project.problem}
                   </p>
 
+                  {project.owned && (
+                    <p className="text-[11px] text-[var(--text-tertiary)] leading-relaxed">
+                      <span className="font-semibold text-[var(--text-secondary)]">Owned: </span>
+                      {project.owned}
+                    </p>
+                  )}
+
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border)]">
-                    {/* Tools — subtle, de-emphasised */}
+                    {/* Tools / capabilities */}
                     <div className="flex flex-wrap gap-1.5 opacity-50">
                       {project.tools.slice(0, 4).map((tool) => (
                         <span
@@ -203,7 +201,7 @@ function ProjectCard({
                       className="flex items-center gap-1.5 text-sm font-semibold shrink-0"
                       style={{ color: project.color }}
                     >
-                      View Case Study
+                      Explore Case Study
                       <ArrowUpRight size={15} />
                     </span>
                   </div>
@@ -301,15 +299,19 @@ export default function Work() {
       {/* ── Card stack ─────────────────────────────────────────── */}
       {isMobile ? (
         <div className="pb-8">
-          {projects.map((project, i) => (
-            <StackCard key={project.slug} project={project} index={i} isSticky={false} isMobile={true} />
-          ))}
+          {projects
+            .filter((p) => p.slug !== "dimension-leap")
+            .map((project, i) => (
+              <StackCard key={project.slug} project={project} index={i} isSticky={false} isMobile={true} />
+            ))}
         </div>
       ) : (
-        <div style={{ position: "relative", height: `${Math.max(150, projects.length * 75)}vh` }}>
-          {projects.map((project, i) => (
-            <StackCard key={project.slug} project={project} index={i} isSticky={true} isMobile={false} />
-          ))}
+        <div style={{ position: "relative", height: `${Math.max(150, projects.filter((p) => p.slug !== "dimension-leap").length * 75)}vh` }}>
+          {projects
+            .filter((p) => p.slug !== "dimension-leap")
+            .map((project, i) => (
+              <StackCard key={project.slug} project={project} index={i} isSticky={true} isMobile={false} />
+            ))}
         </div>
       )}
     </section>

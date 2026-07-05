@@ -2,6 +2,7 @@ import Hero from "@/components/sections/Hero";
 import HeroSticky from "@/components/sections/HeroSticky";
 import Work from "@/components/sections/Work";
 import About from "@/components/sections/About";
+import Education from "@/components/sections/Education";
 import ContactFooterBlock from "@/components/layout/ContactFooterBlock";
 
 /**
@@ -74,6 +75,11 @@ export default function HomePage() {
           </div>
 
           <About />
+
+          {/* Divider */}
+          <div className="container"><div className="h-px bg-[var(--border)]" /></div>
+
+          <Education />
         </div>
       </div>
 

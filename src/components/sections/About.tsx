@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion, useMotionValue, animate, PanInfo } from "framer-motion";
-import { AlignLeft, List } from "lucide-react";
+import { AlignLeft, List, FlaskConical, Code2, Layers, Zap } from "lucide-react";
 
 // ─── Content ────────────────────────────────────────────────────
 
@@ -15,18 +15,15 @@ interface Experience {
 
 const EXPERIENCES: Experience[] = [
   {
-    period:  "May 2025 – June 2025",
+    period:  "May 2025 – June 2026",
     role:    "Associate UX / Product Designer",
     company: "Dimension Leap",
     bullets: [
-      "Led end-to-end UX design for an AI-powered film pre-production platform serving writers, directors, producers, and agencies.",
-      "Designed workflows for 4+ user roles and created high-fidelity interfaces supporting complex film production processes.",
-      "Architected 6+ AI-powered workflows including story generation, script editing, auto-fill systems, scheduling automation, and call sheet automation.",
-      "Reduced manual effort for production teams by an estimated 35%.",
-      "Designed a dual healthcare ecosystem: Patient mobile application & Doctor web platform.",
-      "Conducted user research and usability testing across multiple product verticals.",
-      "Built scalable design systems and Figma component libraries reducing engineering handoff time by 20%.",
-      "Collaborated with Product Managers and Engineers across 5 product releases.",
+      "Led end-to-end UX design for an AI-powered film pre-production platform, defining user flows and high-fidelity screens for 4+ user roles (writers, directors, producers, agencies).",
+      "Architected 6+ automated workflows for AI-assisted story generation, script editing, auto-fill, scheduling, and call sheet automation, reducing production team manual effort by an estimated 35%.",
+      "Developed a dual healthcare ecosystem spanning 2 platforms: a patient-facing mobile app (onboarding, appointments, engagement) and a doctor-facing web app (lead management, subscriptions, operations).",
+      "Conducted user research and moderated usability testing across 3 product verticals; built a scalable Figma component library cutting engineer handoff time by 20%.",
+      "Partnered with 3+ product managers and engineers in agile sprints to convert ambiguous requirements into shippable, user-centric features across 5 releases.",
     ],
   },
   {
@@ -34,10 +31,9 @@ const EXPERIENCES: Experience[] = [
     role:    "UX Design Intern",
     company: "Banao Technologies",
     bullets: [
-      "Executed 100+ UX audits across e-commerce platforms, EV rental platforms, and social media applications.",
-      "Identified and resolved 350+ usability, accessibility, and functional issues.",
-      "Improved Hobbiecue application usability and accessibility, increasing task success rates by 30% and accessibility compliance by 25%.",
-      "Built a scalable design system reducing design inconsistencies by 40% and improving development handoff efficiency by 20%.",
+      "Executed 100+ UX audits (Visual, Functional, Accessibility, Usability) across e-commerce, EV rental, and social media platforms, identifying and resolving 350+ critical usability issues.",
+      "Improved Hobbiecue social media app navigation and accessibility, achieving a 30% increase in user task success rate and 25% improvement in accessibility compliance.",
+      "Built a scalable design system for Hobbiecue, reducing design inconsistencies by 40% and accelerating development handoffs by 20%.",
     ],
   },
 ];
@@ -64,6 +60,37 @@ const STATS = [
   { value: "100+", label: "UX Audits Conducted" },
   { value: "350+", label: "Usability Issues Identified" },
   { value: "5+",   label: "Product Releases Shipped" },
+];
+
+const VALUE_PROPS = [
+  {
+    icon: FlaskConical,
+    tag: "Product Strategy",
+    title: "Product Thinking",
+    description: "Solve business problems before interface problems. Research, stakeholder conversations, and workflow mapping shape every decision.",
+    proof: "Reframed AI from the homepage to contextual assistance.",
+  },
+  {
+    icon: Layers,
+    tag: "Design Systems",
+    title: "Systems Thinking",
+    description: "Build scalable foundations before features. I design reusable systems and component libraries before scaling products.",
+    proof: "Built the design system before feature work.",
+  },
+  {
+    icon: Code2,
+    tag: "Developer Collaboration",
+    title: "Engineering Collaboration",
+    description: "Design with implementation realities in mind, making developer handoffs clearer, implementation faster, and edge cases easier to solve.",
+    proof: "Reviewed implementations before QA.",
+  },
+  {
+    icon: Zap,
+    tag: "Product Quality",
+    title: "Product Ownership",
+    description: "Stay involved from discovery through QA—reviewing builds, validating implementation, and working with engineers until the shipped experience matches intent.",
+    proof: "Contributed beyond Figma through sprint reviews.",
+  },
 ];
 
 const FADE_UP = {
@@ -344,7 +371,7 @@ export default function About() {
         </div>
 
         {/* ── Experience + Skills ──────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-16 lg:gap-20">
+        <div id="experience" className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-16 lg:gap-20">
 
           {/* Experience timeline */}
           <motion.div
@@ -353,9 +380,13 @@ export default function About() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)] mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)] mb-4">
               Experience
             </p>
+            <h3 className="font-display font-bold text-[var(--text-primary)] leading-[1.1] tracking-tight mb-10"
+                style={{ fontSize: "clamp(28px, 3.5vw, 44px)" }}>
+              My professional journey.
+            </h3>
 
             <div className="space-y-0">
               {EXPERIENCES.map((exp, i) => (
@@ -446,6 +477,69 @@ export default function About() {
           </motion.div>
 
         </div>
+
+        {/* ── Why Me — value props ─────────────────────────────── */}
+        <div id="why-me" className="mt-20 pt-20 border-t border-[var(--border)]">
+          <motion.p
+            variants={FADE_UP}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)] mb-4"
+          >
+            How I Work
+          </motion.p>
+          <motion.h3
+            variants={FADE_UP}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="font-display font-bold text-[var(--text-primary)] leading-[1.1] tracking-tight mb-12"
+            style={{ fontSize: "clamp(28px, 3.5vw, 44px)" }}
+          >
+            How I approach product design.
+          </motion.h3>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+          >
+            {VALUE_PROPS.map(({ icon: Icon, tag, title, description, proof }) => (
+              <motion.div
+                key={title}
+                variants={FADE_UP}
+                className="group flex flex-col gap-4 p-5 rounded-2xl border border-[var(--border)]
+                           bg-[var(--bg-subtle)] hover:border-[var(--accent)]/40
+                           hover:bg-[var(--accent)]/[0.03] transition-all duration-300 min-h-[220px]"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0
+                                  bg-[var(--accent)]/10 group-hover:bg-[var(--accent)]/18
+                                  transition-colors duration-300">
+                    <Icon size={18} className="text-[var(--accent)]" />
+                  </div>
+                  <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[var(--accent)] px-2.5 py-1 rounded-full bg-[var(--accent)]/8">
+                    {tag}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h4 className="font-display font-bold text-[var(--text-primary)] text-lg leading-snug">
+                    {title}
+                  </h4>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{description}</p>
+                </div>
+                <div className="mt-auto pt-4 border-t border-[var(--border)] flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] shrink-0" />
+                  <p className="text-[11px] font-medium text-[var(--text-secondary)] italic leading-relaxed">{proof}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
       </div>
     </section>
   );

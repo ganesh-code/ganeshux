@@ -9,12 +9,14 @@ export interface Project {
   tools: string[];
   duration: string;
   role: string;
+  owned?: string;
   color: string;
   colorDark: string;
   gradient: string;
   heroImage: string;
   mockupImage: string;
   year: string;
+  nda?: boolean;
   sections: CaseStudySection[];
 }
 
@@ -47,6 +49,7 @@ export const projects: Project[] = [
     heroImage: "/pre-production.png",
     mockupImage: "/images/dimension-mockup.jpg",
     year: "2025",
+    nda: true,
     sections: [
       {
         title: "Overview",
@@ -68,26 +71,28 @@ export const projects: Project[] = [
   },
   {
     slug: "healthcare-platform",
-    title: "Unified Healthcare Platform",
-    type: "Healthcare · Enterprise UX",
-    tagline: "A connected ecosystem of 6 products serving patients, doctors, clinics, pharmacies, and administrators",
-    problem: "Healthcare operations were fragmented across disconnected systems. Patients struggled to manage appointments, doctors lacked visibility across patient interactions, clinics relied on manual processes, pharmacies had disconnected workflows, and administrators lacked centralized control.",
+    title: "From Booking App to Healthcare Platform",
+    type: "Aesthetic Healthcare SaaS · 0→1",
+    tagline: "Built an AI-powered multi-clinic healthcare platform from 0→1, transforming a single booking app into a connected ecosystem across five products.",
+    problem: "The project started as a single clinic booking app but evolved into a multi-clinic healthcare platform with disconnected workflows, multiple stakeholders, and no shared design foundation.",
     solution: "Designed a unified healthcare ecosystem comprising a Patient Mobile App, Doctor Mobile App, Doctor Web Portal, Clinic Management Portal, Pharmacy Management Portal, and Super Admin Dashboard — all connected through a shared data layer.",
     impact: [
-      "6 Interconnected Products Designed",
-      "5 Stakeholder Types Served",
-      "End-to-End Ecosystem Coverage",
-      "Unified Design System Across Platforms"
+      "6 Connected Products",
+      "5 Stakeholder Types",
+      "300+ Screens",
+      "0→1 Product Foundation",
     ],
-    tools: ["Figma", "Miro", "FigJam", "Maze", "Google Forms"],
-    duration: "2025",
+    tools: ["Design System", "AI UX", "Product Strategy", "Developer Handoff"],
+    duration: "12 Months",
     role: "Associate UX / Product Designer",
-    color: "#0EA5E9",
-    colorDark: "#38BDF8",
-    gradient: "from-[#0EA5E9] to-[#38BDF8]",
-    heroImage: "/healthcare.png",
-    mockupImage: "/healthcare.png",
+    owned: "Design System · AI Experience · Product Workflows · Developer Handoff",
+    color: "#7B4F35",
+    colorDark: "#C4936A",
+    gradient: "from-[#7B4F35] to-[#C4936A]",
+    heroImage: "/Healthcare Project/healthcare.png",
+    mockupImage: "/Healthcare Project/bannerHealthcareproject.png",
     year: "2025",
+    nda: true,
     sections: [
       {
         title: "The Challenge",

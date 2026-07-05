@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+
+import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, XCircle, AlertTriangle,
@@ -125,114 +125,104 @@ function SolutionCard({ icon: Icon, n, name, before, after, metric }: {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function PhonePeCaseStudy() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
     <>
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* HERO                                                           */}
+      {/* COVER — Notion-style full-width banner                       */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex flex-col justify-center overflow-hidden"
-        style={{ paddingTop: "100px", paddingBottom: "80px" }}
+
+      {/* Cover image — Back to Work floats on top */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ height: "clamp(200px, 32vh, 340px)", marginTop: "64px" }}
       >
-        {/* Background */}
-        <div className="absolute inset-0" style={{
-          background: `radial-gradient(ellipse 70% 70% at 60% 0%, ${ACCENT}1A 0%, transparent 60%),
-                       radial-gradient(ellipse 50% 50% at 10% 80%, ${ACCENT_LIGHT}0E 0%, transparent 60%)`
-        }} />
-        <div className="absolute inset-0 opacity-[0.025]" style={{
-          backgroundImage: `linear-gradient(${ACCENT} 1px, transparent 1px), linear-gradient(90deg, ${ACCENT} 1px, transparent 1px)`,
-          backgroundSize: "48px 48px"
-        }} />
-
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 max-w-6xl mx-auto px-6 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            {/* LEFT */}
-            <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-              <Link href="/#work"
-                className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-5 group transition-colors w-fit"
-              >
-                <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1 duration-200" />
-                Back to Work
-              </Link>
-
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-7"
-                style={{ background: `${ACCENT}18`, color: ACCENT, border: `1px solid ${ACCENT}28` }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-                UX Research &amp; Product Design
-              </div>
-
-              <h1 className="font-display font-black text-[var(--text-primary)] leading-[0.95] tracking-tight mb-5"
-                style={{ fontSize: "clamp(34px, 5.5vw, 72px)" }}
-              >
-                Enhancing
-                <br />
-                <span style={{
-                  background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_LIGHT})`,
-                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent"
-                }}>
-                  PhonePe&apos;s
-                </span>
-                <br />
-                Usability
-              </h1>
-
-              <p className="text-base md:text-lg text-[var(--text-secondary)] leading-relaxed mb-9">
-                Improving accessibility, navigation efficiency, and user engagement through
-                research-driven design decisions across core payment flows.
-              </p>
-
-              <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-sm">
-                {[
-                  { label: "Role", value: "UX Researcher & Designer" },
-                  { label: "Category", value: "UX Research & Product Design" },
-                  { label: "Duration", value: "4 Weeks" },
-                  { label: "Tools", value: "Figma · Miro · Google Forms" },
-                ].map(({ label, value }) => (
-                  <div key={label}>
-                    <span className="text-[var(--text-tertiary)] text-xs font-mono uppercase tracking-wider block mb-0.5">{label}</span>
-                    <span className="font-semibold text-[var(--text-primary)] text-sm leading-snug">{value}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* RIGHT — PhonePe screenshot */}
-            <motion.div
-              initial={{ opacity: 0, x: 40, scale: 0.96 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative hidden lg:block"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/phonepe.png"
+          alt="PhonePe UX Redesign"
+          className="w-full h-full object-cover object-center"
+          draggable={false}
+        />
+        {/* Floating back button on banner, aligned with page content margin */}
+        <div className="absolute inset-0 max-w-5xl mx-auto px-6 pointer-events-none">
+          <div className="relative w-full h-full">
+            <Link
+              href="/#work"
+              className="absolute top-4 left-0 inline-flex items-center gap-1.5 group transition-all duration-200 pointer-events-auto z-10"
+              style={{
+                background: "rgba(0,0,0,0.42)",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+                color: "rgba(255,255,255,0.92)",
+                fontSize: "13px",
+                padding: "6px 14px 6px 10px",
+                borderRadius: "999px",
+                border: "1px solid rgba(255,255,255,0.18)",
+              }}
             >
-              <div className="absolute -inset-8 rounded-3xl blur-3xl opacity-25"
-                style={{ background: `radial-gradient(ellipse, ${ACCENT}70 0%, transparent 70%)` }}
-              />
-              <div className="relative rounded-2xl overflow-hidden border border-white/10"
-                style={{ boxShadow: `0 32px 80px rgba(95,37,159,0.22), 0 8px 24px rgba(0,0,0,0.18)` }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/phonepe.png" alt="PhonePe UX Redesign" className="w-full h-auto object-cover block" draggable={false} />
-                <div className="absolute inset-x-0 bottom-0 h-20 pointer-events-none"
-                  style={{ background: `linear-gradient(to top, ${ACCENT}14, transparent)` }}
-                />
-              </div>
-            </motion.div>
+              <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-1 duration-200" />
+              Back to Work
+            </Link>
           </div>
-        </motion.div>
+        </div>
+      </div>
 
-        {/* Scroll cue */}
-        <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+      {/* Page title block — below the cover */}
+      <div className="max-w-5xl mx-auto px-6 pt-10 pb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="text-[10px] font-mono tracking-widest text-[var(--text-tertiary)]">SCROLL</span>
-          <div className="w-px h-10 bg-gradient-to-b from-[var(--accent)] to-transparent" />
+          <h1
+            className="font-display font-black text-[var(--text-primary)] leading-[1.15] tracking-tight mb-5"
+            style={{ fontSize: "clamp(24px, 2.8vw, 36px)" }}
+          >
+            Enhancing PhonePe&apos;s Usability
+          </h1>
+
+          <p
+            className="text-[var(--text-secondary)] leading-relaxed"
+            style={{ fontSize: "clamp(16px, 1.4vw, 20px)" }}
+          >
+            Improving accessibility, navigation efficiency, and user engagement through
+            research-driven design decisions across core payment flows.
+          </p>
+        </motion.div>
+      </div>
+
+
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* PROJECT OVERVIEW                                              */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <section className="max-w-5xl mx-auto px-6 mb-20">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FU}>
+          <p className="text-[10px] font-mono font-bold tracking-widest mb-5 text-[var(--text-tertiary)]">
+            PROJECT OVERVIEW
+          </p>
+          <div className="rounded-[20px] border border-[var(--border)] bg-[var(--bg-subtle)] p-8 md:p-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-8">
+              {[
+                { label: "Role",         value: "UX Researcher & Designer" },
+                { label: "Company",      value: "Self-Initiated" },
+                { label: "Timeline",     value: "4 Weeks" },
+                { label: "Team",         value: "Solo Project" },
+                { label: "Platform",     value: "Mobile (iOS / Android)" },
+                { label: "Industry",     value: "Fintech / Payments" },
+                { label: "Tools",        value: "Figma · Miro · Google Forms" },
+                { label: "Deliverables", value: "UX Research · UI Redesign · Prototype" },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <span className="text-[9px] font-mono font-bold tracking-widest block mb-1.5 text-[var(--text-tertiary)]">
+                    {label.toUpperCase()}
+                  </span>
+                  <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
       </section>
 

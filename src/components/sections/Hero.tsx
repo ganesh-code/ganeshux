@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Mail, Play } from "lucide-react";
+import { ArrowRight, Play, CalendarDays, Copy, Check } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 
 // ─── Verified Contact ────────────────────────────────────────────
-const EMAIL = "ganeshmuniganti27@gmail.com";
+const EMAIL     = "ganeshmuniganti27@gmail.com";
+const CALENDLY  = "https://calendly.com/ganeshmuniganti27";
 
 // ─── Animation Variants ─────────────────────────────────────────
 const containerVariants = {
@@ -21,7 +22,7 @@ const itemVariants = {
 
 export default function Hero() {
   const [isPlaying,   setIsPlaying]   = useState(false);
-  const [emailCopied, setEmailCopied] = useState(false);
+  const [copied,      setCopied]      = useState(false);
 
   const sectionRef    = useRef<HTMLElement>(null);
   const playCursorRef = useRef<HTMLDivElement>(null);
@@ -90,12 +91,6 @@ export default function Hero() {
     isPlayingRef.current = false;
     introVideoRef.current?.pause();
     gifVideoRef.current?.play().catch(console.error);
-  };
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText(EMAIL);
-    setEmailCopied(true);
-    setTimeout(() => setEmailCopied(false), 2000);
   };
 
   const scrollToWork = () => {
@@ -225,28 +220,35 @@ export default function Hero() {
             </MagneticButton>
 
             <MagneticButton>
-              <a
-                href={`mailto:${EMAIL}`}
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(EMAIL);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
                 className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full
-                           border border-white/30 text-white text-sm font-semibold
-                           bg-white/10 hover:bg-white/18 hover:border-white/55
+                           border border-white/40 text-white text-sm font-semibold
+                           bg-white/12 hover:bg-white/22 hover:border-white/65
                            backdrop-blur-sm transition-all duration-200"
               >
-                <Mail size={15} />
-                Get In Touch
-              </a>
+                {copied ? <Check size={15} /> : <Copy size={15} />}
+                {copied ? "Copied!" : "Copy Email"}
+              </button>
             </MagneticButton>
 
             <MagneticButton>
-              <button
-                onClick={copyEmail}
-                className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full
-                           border border-white/20 text-white/60 text-sm font-semibold
-                           bg-white/6 hover:bg-white/12 hover:text-white hover:border-white/40
+              <a
+                href={CALENDLY}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full
+                           border border-white/40 text-white text-sm font-semibold
+                           bg-white/12 hover:bg-white/22 hover:border-white/65
                            backdrop-blur-sm transition-all duration-200"
               >
-                {emailCopied ? "Copied!" : "Copy Email"}
-              </button>
+                <CalendarDays size={15} />
+                Book a Call
+              </a>
             </MagneticButton>
           </motion.div>
         </motion.div>

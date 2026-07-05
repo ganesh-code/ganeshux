@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowLeft, ArrowRight, CheckCircle2, XCircle, AlertTriangle,
@@ -102,10 +102,6 @@ function DecisionStory({ challenge, options, decision, tradeoff, outcome, whatCh
 // ── Main component ─────────────────────────────────────────────────────────────
 export default function DimensionLeapCaseStudy() {
   const [activeRole, setActiveRole] = useState<"writer" | "director" | "producer" | "agency">("writer");
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY       = useTransform(scrollYProgress, [0, 1],   ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   const roleContent = {
     writer: {
@@ -138,118 +134,112 @@ export default function DimensionLeapCaseStudy() {
   return (
     <>
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* HERO                                                          */}
+      {/* COVER — Notion-style full-width banner                       */}
       {/* ══════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center overflow-hidden"
-        style={{ paddingBottom: "80px", paddingTop: "120px" }}>
-        <div className="absolute inset-0" style={{
-          background: `radial-gradient(ellipse 80% 80% at 60% 0%, ${ACCENT}22 0%, transparent 60%),
-                       radial-gradient(ellipse 50% 50% at 100% 100%, ${ACCENT}0C 0%, transparent 70%)`,
-        }} />
-        <div className="absolute inset-0 opacity-[0.025]" style={{
-          backgroundImage: `linear-gradient(${ACCENT} 1px, transparent 1px), linear-gradient(90deg, ${ACCENT} 1px, transparent 1px)`,
-          backgroundSize: "60px 60px",
-        }} />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-10 container max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-              <Link href="/#work" className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-5 group transition-colors duration-200 w-fit">
-                <ArrowLeft size={14} className="transition-transform duration-200 group-hover:-translate-x-1" />
-                Back to Work
-              </Link>
-
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-8"
-                style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}30` }}>
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: ACCENT }} />
-                SaaS · Film Production · AI Workflows · 4 Roles
-              </div>
-
-              <h1 className="font-display font-black text-[var(--text-primary)] leading-[0.95] tracking-tight mb-4"
-                style={{ fontSize: "clamp(36px, 6vw, 76px)" }}>
-                AI-Powered Film<br />
-                <span style={{ background: `linear-gradient(135deg, ${ACCENT}, ${ACCENT_LIGHT})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  Pre-Production
-                </span>
-              </h1>
-
-              {/* Emotional hook */}
-              <p className="text-base font-semibold text-[var(--text-primary)] mb-4 leading-relaxed border-l-4 pl-4"
-                style={{ borderLeftColor: ACCENT }}>
-                Film productions ran on WhatsApp groups and six spreadsheets. The question wasn&apos;t whether to add AI — it was how to design AI that production professionals would actually trust.
-              </p>
-
-              <p className="text-base text-[var(--text-secondary)] leading-relaxed mb-10">
-                Designing workflows for a platform that transformed how productions manage scripts, schedules, call sheets, and cross-functional collaboration.
-              </p>
-
-              <div className="grid grid-cols-2 gap-y-5 gap-x-6 text-sm">
-                {[
-                  { label: "Role",     value: "Associate UX / Product Designer" },
-                  { label: "Company",  value: "Dimension Leap" },
-                  { label: "Duration", value: "May 2025 – June 2025" },
-                  { label: "Team",     value: "1 Designer · 3 Engineers · PM · CEO" },
-                ].map(({ label, value }) => (
-                  <div key={label}>
-                    <span className="text-[var(--text-tertiary)] text-xs font-mono uppercase tracking-wider block mb-0.5">{label}</span>
-                    <span className="font-semibold text-[var(--text-primary)] text-sm leading-snug">{value}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: 40, scale: 0.96 }} animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }} className="relative hidden lg:block">
-              <div className="absolute -inset-6 rounded-3xl blur-3xl opacity-30"
-                style={{ background: `radial-gradient(ellipse, ${ACCENT}60 0%, transparent 70%)` }} />
-              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
-                style={{ boxShadow: `0 32px 80px rgba(124,58,237,0.25), 0 8px 24px rgba(0,0,0,0.2)` }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/pre-production.png" alt="AI-Powered Film Pre-Production Platform — Dimension Leap"
-                  className="w-full h-auto object-cover block" draggable={false} />
-                <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
-                  style={{ background: `linear-gradient(to top, ${ACCENT}18, transparent)` }} />
-              </div>
-            </motion.div>
+      {/* Cover image — Back to Work floats on top */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ height: "clamp(200px, 32vh, 340px)", marginTop: "64px" }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/pre-production.png"
+          alt="AI-Powered Film Pre-Production Platform — Dimension Leap"
+          className="w-full h-full object-cover object-center"
+          draggable={false}
+        />
+        {/* Floating back button on banner, aligned with page content margin */}
+        <div className="absolute inset-0 max-w-5xl mx-auto px-6 pointer-events-none">
+          <div className="relative w-full h-full">
+            <Link
+              href="/#work"
+              className="absolute top-4 left-0 inline-flex items-center gap-1.5 group transition-all duration-200 pointer-events-auto z-10"
+              style={{
+                background: "rgba(0,0,0,0.42)",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+                color: "rgba(255,255,255,0.92)",
+                fontSize: "13px",
+                padding: "6px 14px 6px 10px",
+                borderRadius: "999px",
+                border: "1px solid rgba(255,255,255,0.18)",
+              }}
+            >
+              <ArrowLeft size={13} className="transition-transform group-hover:-translate-x-1 duration-200" />
+              Back to Work
+            </Link>
           </div>
-        </motion.div>
+        </div>
+      </div>
 
-        <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
-          <span className="text-[10px] font-mono tracking-widest text-[var(--text-tertiary)]">SCROLL</span>
-          <div className="w-px h-10 bg-gradient-to-b from-[var(--accent)] to-transparent" />
+      {/* Page title block — below the cover */}
+      <div className="max-w-5xl mx-auto px-6 pt-10 pb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h1
+            className="font-display font-black text-[var(--text-primary)] leading-[1.15] tracking-tight mb-5"
+            style={{ fontSize: "clamp(24px, 2.8vw, 36px)" }}
+          >
+            AI-Powered Film Pre-Production
+          </h1>
+
+          <p
+            className="text-[var(--text-secondary)] leading-relaxed"
+            style={{ fontSize: "clamp(16px, 1.4vw, 20px)" }}
+          >
+            Film productions ran on WhatsApp groups and six spreadsheets. The question wasn&apos;t
+            whether to add AI &mdash; it was how to design AI that production professionals would actually trust.
+          </p>
+        </motion.div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* PROJECT OVERVIEW                                              */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <section className="max-w-5xl mx-auto px-6 mb-20">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FU}>
+          <p className="text-[10px] font-mono font-bold tracking-widest mb-5 text-[var(--text-tertiary)]">
+            PROJECT OVERVIEW
+          </p>
+          <div className="rounded-[20px] border border-[var(--border)] bg-[var(--bg-subtle)] p-8 md:p-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-8">
+              {[
+                { label: "Role",         value: "Associate UX / Product Designer" },
+                { label: "Company",      value: "Dimension Leap" },
+                { label: "Timeline",     value: "May–Jun 2025 · ~2 Months" },
+                { label: "Team",         value: "1 Designer · 3 Devs · PM · CEO" },
+                { label: "Platform",     value: "Web (SaaS)" },
+                { label: "Industry",     value: "Film Production" },
+                { label: "Tools",        value: "Figma · FigJam · Notion" },
+                { label: "Deliverables", value: "UX · UI · Design System · Handoff" },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <span className="text-[9px] font-mono font-bold tracking-widest block mb-1.5 text-[var(--text-tertiary)]">
+                    {label.toUpperCase()}
+                  </span>
+                  <span className="text-sm font-semibold text-[var(--text-primary)] leading-snug">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/* PROJECT AT A GLANCE                                          */}
+      {/* PROJECT AT A GLANCE — Challenge / Decision / Lesson          */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <section className="border-y border-[var(--border)] bg-[var(--bg-subtle)]">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 pb-10 mb-10 border-b border-[var(--border)]">
-            {[
-              { label: "Role",          value: "Product Designer" },
-              { label: "Duration",      value: "~2 Months" },
-              { label: "Team",          value: "PM · 3 Devs · CEO · Client" },
-              { label: "Platform",      value: "Web (SaaS)" },
-              { label: "Tools",         value: "Figma · FigJam · Notion" },
-              { label: "Deliverables",  value: "UX · UI · Design System · Handoff" },
-            ].map(({ label, value }) => (
-              <motion.div key={label} variants={FU}>
-                <span className="text-[9px] font-mono font-bold tracking-widest block mb-1 text-[var(--text-tertiary)]">{label.toUpperCase()}</span>
-                <span className="text-xs font-semibold text-[var(--text-primary)] leading-snug">{value}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
             {[
               { icon: AlertTriangle, label: "Biggest Challenge",  text: "Designing role-specific experiences for four different mental models — writer, director, producer, agency — on a single platform, simultaneously.", color: RED    },
               { icon: GitBranch,     label: "Biggest Decision",   text: "Choosing a unified platform over plugins or chatbot-first AI — because the root problem was information fragmentation, not missing features.", color: ACCENT },
-              { icon: Lightbulb,     label: "Biggest Lesson",     text: "Designing for AI isn't about making the AI impressive — it's about making the user feel in control. AI that suggests and explains builds trust. AI that decides creates anxiety.", color: AMBER  },
+              { icon: Lightbulb,     label: "Biggest Lesson",     text: "Designing for AI isn’t about making the AI impressive — it’s about making the user feel in control. AI that suggests and explains builds trust. AI that decides creates anxiety.", color: AMBER  },
             ].map(({ icon: Icon, label, text, color }) => (
               <motion.div key={label} variants={FU} className="p-5 rounded-2xl border border-[var(--border)]"
                 style={{ borderColor: `${color}25`, background: `${color}06` }}>

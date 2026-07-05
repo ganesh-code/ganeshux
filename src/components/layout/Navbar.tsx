@@ -7,9 +7,11 @@ import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "Work",    href: "#work"           },
-  { label: "About",  href: "#about"          },
-  { label: "Contact",href: "#contact-anchor" },
+  { label: "About",      href: "#about"          },
+  { label: "Work",       href: "#work"           },
+  { label: "Experience", href: "#experience"     },
+  { label: "Education",  href: "#education"      },
+  { label: "Contact",    href: "#contact-anchor" },
 ];
 
 export default function Navbar() {
@@ -43,7 +45,7 @@ export default function Navbar() {
 
       // Active-section tracking (bottom-up)
       // Use contact-anchor (the 200vh wrapper) instead of sticky #contact
-      const ids = ["contact-anchor", "about", "work"];
+      const ids = ["contact-anchor", "education", "experience", "about", "work"];
       let current = "";
       for (const id of ids) {
         const el = document.getElementById(id);
