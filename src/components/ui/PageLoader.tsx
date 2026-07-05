@@ -97,16 +97,15 @@ export default function PageLoader() {
 
   return (
     <AnimatePresence>
-      {phase !== "done" && (
-        <motion.div
-          key="loader"
-          className="loader-root"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          aria-label="Loading portfolio"
-          aria-live="polite"
-        >
+      <motion.div
+        key="loader"
+        className="loader-root"
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+        aria-label="Loading portfolio"
+        aria-live="polite"
+      >
           {/* ── Curtain: slides up revealing the page ─── */}
           <motion.div
             className="loader-curtain"
@@ -170,8 +169,7 @@ export default function PageLoader() {
               style={{ width: `${progress}%` }}
             />
           </div>
-        </motion.div>
-      )}
+      </motion.div>
     </AnimatePresence>
   );
 }
