@@ -1112,7 +1112,7 @@ export default function HealthcareCaseStudy() {
             Back to Work
           </Link>
           <Link
-            href="/work/dimension-leap"
+            href="/work/phonepe-ux-redesign"
             className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors group"
           >
             Next Case Study

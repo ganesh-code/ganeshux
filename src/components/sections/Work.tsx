@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/data/projects";
@@ -20,18 +19,8 @@ function ProjectCard({
   index: number;
   isMobile: boolean;
 }) {
-  const motionRef = useRef<HTMLDivElement>(null);
-
-  const isInView = useInView(motionRef, { once: true, amount: 0.05 });
-
   return (
-    <motion.div
-      ref={motionRef}
-      className="container"
-      initial={{ opacity: 0, y: 16 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-    >
+    <div className="container">
       <div className="pb-8 md:pb-12">
         <Link
           href={`/work/${project.slug}`}
@@ -96,6 +85,8 @@ function ProjectCard({
                   className="absolute inset-0 w-full h-full object-cover"
                   onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
                   draggable={false}
+                  decoding="async"
+                  loading={index === 0 ? "eager" : "lazy"}
                 />
 
                 {/* Type badge */}
@@ -212,7 +203,7 @@ function ProjectCard({
           </div>
         </Link>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -240,6 +231,10 @@ function StackCard({
         position: "sticky",
         top: `${CARD_BASE_TOP + index * 16}px`,
         zIndex: index + 1,
+        // Promote to its own compositor layer — prevents repaint
+        // when sibling sticky cards slide over each other
+        willChange: "transform",
+        transform: "translateZ(0)",
       }}
     >
       {card}
@@ -249,8 +244,6 @@ function StackCard({
 
 // ─── Work Section ─────────────────────────────────────────────────────────────
 export default function Work() {
-  const headerRef      = useRef<HTMLDivElement>(null);
-  const isHeaderInView = useInView(headerRef, { once: true, amount: 0.4 });
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -277,12 +270,8 @@ export default function Work() {
       }}
     >
       {/* ── Section header ─────────────────────────────────────── */}
-      <div className="container pb-10 md:pb-16" ref={headerRef}>
-        <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
-        >
+      <div className="container pb-10 md:pb-16">
+        <div>
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent)] mb-4 md:mb-6">
             Selected Work
           </p>
@@ -293,7 +282,7 @@ export default function Work() {
             Projects that moved
             <br className="hidden sm:block" /> the needle.
           </h2>
-        </motion.div>
+        </div>
       </div>
 
       {/* ── Card stack ─────────────────────────────────────────── */}

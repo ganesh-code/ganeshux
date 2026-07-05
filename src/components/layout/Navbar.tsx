@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Moon, Sun, Menu, X, Home } from "lucide-react";
 
 const NAV_LINKS = [
-  { label: "About",      href: "#about"          },
   { label: "Work",       href: "#work"           },
+  { label: "About",      href: "#about"          },
   { label: "Experience", href: "#experience"     },
   { label: "Education",  href: "#education"      },
   { label: "Contact",    href: "#contact-anchor" },
@@ -133,14 +133,14 @@ export default function Navbar() {
             className="flex items-center gap-2.5 group"
             aria-label="Back to home"
           >
-            <div className="w-7 h-7 rounded-[8px] bg-[var(--accent)] flex items-center justify-center text-white text-xs font-bold font-display shrink-0">
-              G
+            <div className="w-7 h-7 rounded-[8px] bg-[var(--accent)] flex items-center justify-center text-white shrink-0">
+              <Home size={14} className="stroke-[2.5]" />
             </div>
             <span
               className="text-sm font-semibold transition-colors duration-200"
               style={{ color: onHero ? "#ffffff" : "var(--text-primary)" }}
             >
-              Ganesh
+              Home
             </span>
           </button>
 

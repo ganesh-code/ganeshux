@@ -17,6 +17,8 @@ export default function CustomCursor() {
     let ringY = -100;
     let isHovering = false;
     let rafId: number;
+    // Only run RAF when mouse actually moved — frees GPU during scroll
+    let dirty = false;
 
     // Use CSS transforms only — no React state, no re-renders
     const onMouseMove = (e: MouseEvent) => {
@@ -24,14 +26,21 @@ export default function CustomCursor() {
       mouseY = e.clientY;
       // Dot follows instantly
       dot.style.transform = `translate(${mouseX - 5}px, ${mouseY - 5}px)`;
+      dirty = true;
     };
 
     const animate = () => {
+      rafId = requestAnimationFrame(animate);
+      // Skip paint if mouse hasn't moved and ring has settled
+      if (!dirty) return;
       // Ring lerps toward mouse
       ringX += (mouseX - ringX) * 0.15;
       ringY += (mouseY - ringY) * 0.15;
       ring.style.transform = `translate(${ringX - 20}px, ${ringY - 20}px)`;
-      rafId = requestAnimationFrame(animate);
+      // Stop marking dirty once ring is within 0.5px of target
+      if (Math.abs(mouseX - ringX) < 0.5 && Math.abs(mouseY - ringY) < 0.5) {
+        dirty = false;
+      }
     };
 
     const setHover = (val: boolean) => {

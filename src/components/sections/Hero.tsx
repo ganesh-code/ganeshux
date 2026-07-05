@@ -93,6 +93,27 @@ export default function Hero() {
     gifVideoRef.current?.play().catch(console.error);
   };
 
+  // ── Pause background video when Hero is off-screen (scrolled under Work) ──
+  useEffect(() => {
+    const section = sectionRef.current;
+    const video   = gifVideoRef.current;
+    if (!section || !video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Threshold 0 — fires as soon as any pixel leaves/enters viewport
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   const scrollToWork = () => {
     document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -104,7 +125,7 @@ export default function Hero() {
       onClick={handleSectionClick}
       className="relative min-h-screen flex items-center pt-20 pb-12 md:pt-24 md:pb-16 overflow-hidden select-none"
     >
-      {/* ── GIF/ambient video — always in DOM, fades when intro plays ── */}
+      {/* ── GIF/ambient video — pauses when Hero scrolls off-screen ── */}
       <video
         ref={gifVideoRef}
         src="/videos/gifVideo.mp4"
@@ -112,10 +133,13 @@ export default function Hero() {
         loop
         muted
         playsInline
+        preload="auto"
         className="absolute inset-0 w-full h-full object-cover z-0"
         style={{
           opacity: isPlaying ? 0 : 1,
           transition: "opacity 0.8s ease",
+          // Keep on own GPU layer so pause/resume doesn't trigger layout
+          willChange: "opacity",
         }}
         aria-hidden="true"
       />
@@ -125,7 +149,7 @@ export default function Hero() {
         ref={introVideoRef}
         src="/videos/IntroVideo.mp4"
         playsInline
-        preload="auto"
+        preload="none"
         onEnded={handleIntroEnded}
         className="absolute inset-0 w-full h-full object-cover z-[1]"
         style={{

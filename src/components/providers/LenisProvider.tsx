@@ -1,35 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
-
+/**
+ * LenisProvider — disabled.
+ *
+ * Lenis smooth-scroll was removed because it fundamentally conflicts with
+ * CSS `position: sticky` used in the Hero→Work slide-over transition.
+ *
+ * Lenis maintains a *virtual* scroll position and applies CSS transforms,
+ * while `position: sticky` reads the *real* window.scrollY. During the
+ * Hero↔Work boundary these diverge, producing the "rubbery / laggy"
+ * feel on scroll up and down.
+ *
+ * Modern browsers (Chrome 114+, Safari 16+, Firefox 120+) provide
+ * GPU-composited native scroll that is indistinguishable from Lenis
+ * for standard page layouts. The sticky-based architecture benefits
+ * from native scroll, not virtual scroll.
+ */
 export function LenisProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    let lenis: InstanceType<typeof import("lenis").default> | null = null;
-    let rafId: number;
-
-    import("lenis").then(({ default: Lenis }) => {
-      lenis = new Lenis({
-        duration: 1.0,            // slightly snappier (was 1.2)
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        wheelMultiplier: 0.9,     // less aggressive
-        touchMultiplier: 1.8,
-        infinite: false,
-      });
-
-      // Single rAF, shared with nothing else
-      const raf = (time: number) => {
-        lenis?.raf(time);
-        rafId = requestAnimationFrame(raf);
-      };
-      rafId = requestAnimationFrame(raf);
-    });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenis?.destroy();
-    };
-  }, []);
-
   return <>{children}</>;
 }

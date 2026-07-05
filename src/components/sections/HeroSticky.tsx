@@ -37,6 +37,10 @@ export default function HeroSticky({ children }: { children: React.ReactNode }) 
           top: 0,
           height: "100vh",
           zIndex: 1,
+          // Promotes to GPU compositor layer — prevents repaint when
+          // the Work section slides over Hero during scroll
+          willChange: "transform",
+          transform: "translateZ(0)",
         }}
       >
         {children}

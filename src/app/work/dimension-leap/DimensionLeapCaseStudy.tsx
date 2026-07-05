@@ -826,21 +826,24 @@ export default function DimensionLeapCaseStudy() {
 
       </div>
 
-      {/* Next project */}
-      <section className="border-t border-[var(--border)] bg-[var(--bg-subtle)]">
-        <div className="max-w-5xl mx-auto px-6 py-16">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)] mb-6 text-center">Next Project</p>
-          <Link href="/work/healthcare-platform" className="block group max-w-lg mx-auto">
-            <div className="flex items-center justify-between p-6 rounded-2xl border border-[var(--border)] hover:border-[var(--accent)] hover:shadow-lg transition-all bg-[var(--bg)]">
-              <div>
-                <p className="text-xs text-[var(--text-secondary)] mb-1">Healthcare · Enterprise UX</p>
-                <p className="font-display font-bold text-xl text-[var(--text-primary)]">Unified Healthcare Platform</p>
-              </div>
-              <div className="w-10 h-10 rounded-full border flex items-center justify-center transition-all group-hover:scale-110"
-                style={{ borderColor: ACCENT, color: ACCENT }}>
-                <ArrowRight size={16} />
-              </div>
-            </div>
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* BOTTOM NAV                                                    */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <section className="border-t border-[var(--border)]">
+        <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Link
+            href="/#work"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors group"
+          >
+            <ArrowLeft size={15} className="transition-transform group-hover:-translate-x-1 duration-200" />
+            Back to Work
+          </Link>
+          <Link
+            href="/work/healthcare-platform"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors group"
+          >
+            Next Case Study
+            <ArrowRight size={15} className="transition-transform group-hover:translate-x-1 duration-200" />
           </Link>
         </div>
       </section>

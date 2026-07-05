@@ -90,7 +90,10 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Prevent rubber-band bounce that fights sticky sections */
   overscroll-behavior: none;
+  /* Explicit scroll timeline so sticky elements composite correctly */
+  scroll-behavior: auto;
 }
 
 body {
@@ -101,6 +104,8 @@ body {
   line-height: 1.65;
   overflow-x: hidden;
   cursor: none;
+  /* Isolate body paint from fixed/sticky layers */
+  isolation: isolate;
 }
 
 @media (hover: none) {
@@ -399,3 +404,38 @@ body {
   transition: width 0.06s linear;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   SCROLL PERFORMANCE
+   Promote fixed/sticky elements to their own GPU compositor
+   layers so they don't trigger main-thread repaints on scroll.
+───────────────────────────────────────────────────────────── */
+
+/* Navbar — fixed header always on GPU layer */
+header[class*="fixed"] {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Hero background video — decode on GPU, no layout impact */
+video {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Images inside cards — prevent layout-triggered repaints */
+img {
+  transform: translateZ(0);
+}
+
+/* Prevent scroll-chained repaints on the sliding Work panel */
+#work {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Content sections below the fold — skip paint until visible */
+#about,
+#education {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
+}
