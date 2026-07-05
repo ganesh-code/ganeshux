@@ -165,7 +165,7 @@ export default function HealthcareCaseStudy() {
             className="text-[var(--text-secondary)] leading-relaxed"
             style={{ fontSize: "clamp(16px, 1.4vw, 20px)" }}
           >
-            What began as a patient booking application evolved into a multi-product platform for aesthetic clinics. Along the way, the biggest product decision wasn't whether to use AI—it was deciding where AI genuinely belonged.
+            What began as a patient booking application evolved into a multi-product platform for aesthetic clinics. Along the way, the biggest product decision wasn&apos;t whether to use AI—it was deciding where AI genuinely belonged.
           </p>
         </motion.div>
       </div>
@@ -238,7 +238,7 @@ export default function HealthcareCaseStudy() {
             <div className="p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-subtle)]">
               <p className="text-[10px] font-mono font-bold tracking-widest mb-4" style={{ color: RED }}>ORIGINAL REQUEST</p>
               <p className="text-lg font-display font-bold text-[var(--text-primary)] mb-3">
-                "Build a patient booking app for our clinic."
+                &ldquo;Build a patient booking app for our clinic.&rdquo;
               </p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                 Designed for one clinic, one patient journey, and one operational workflow.
@@ -281,10 +281,10 @@ export default function HealthcareCaseStudy() {
           {/* Pull quote */}
           <div className="border-l-2 pl-6 py-2" style={{ borderColor: ACCENT }}>
             <p className="text-xl font-display font-semibold text-[var(--text-primary)] leading-snug italic mb-2">
-              "The scope expansion wasn't scope creep — it was a better problem definition."
+              &ldquo;The scope expansion wasn&apos;t scope creep — it was a better problem definition.&rdquo;
             </p>
             <p className="text-sm text-[var(--text-secondary)]">
-              A single-clinic app would have solved one customer's problem. Expanding it into a platform created a foundation that could support many clinics using the same system. That decision influenced every product and UX decision that followed.
+              A single-clinic app would have solved one customer&apos;s problem. Expanding it into a platform created a foundation that could support many clinics using the same system. That decision influenced every product and UX decision that followed.
             </p>
           </div>
         </motion.div>
@@ -438,7 +438,7 @@ export default function HealthcareCaseStudy() {
             <div className="p-5 rounded-2xl border" style={{ borderColor: `${ACCENT}25`, background: `${ACCENT}06` }}>
               <p className="text-[10px] font-mono font-bold tracking-widest mb-2" style={{ color: ACCENT }}>CALLOUT</p>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                <span className="font-semibold text-[var(--text-primary)]">A design system isn't a UI library — it's product infrastructure.</span>{" "}
+                <span className="font-semibold text-[var(--text-primary)]">A design system isn&apos;t a UI library — it&apos;s product infrastructure.</span>{" "}
                 Investing two weeks upfront saved months of inconsistency across five connected products.
               </p>
             </div>
@@ -734,7 +734,7 @@ export default function HealthcareCaseStudy() {
               </div>
               <div className="p-4 rounded-xl border" style={{ borderColor: `${ACCENT}25`, background: `${ACCENT}06` }}>
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                  <span className="font-semibold text-[var(--text-primary)]">This wasn't a design problem. It was a product logic problem.</span>{" "}
+                  <span className="font-semibold text-[var(--text-primary)]">This wasn&apos;t a design problem. It was a product logic problem.</span>{" "}
                   I caught it during flow review — not QA. Identifying it before development saved debugging time, prevented bad data in production, and fixed the business model before it went live.
                 </p>
               </div>
