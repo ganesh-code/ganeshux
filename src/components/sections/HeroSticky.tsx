@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * HeroSticky — pins the Hero section for 200vh of scroll budget.
@@ -14,7 +14,6 @@ import { useRef, useEffect, useState } from "react";
  * On mobile: sticky disabled for better scroll performance.
  */
 export default function HeroSticky({ children }: { children: React.ReactNode }) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -30,17 +29,13 @@ export default function HeroSticky({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div ref={containerRef} style={{ height: "200vh", position: "relative" }}>
+    <div style={{ height: "200vh", position: "relative" }}>
       <div
         style={{
           position: "sticky",
           top: 0,
           height: "100vh",
           zIndex: 1,
-          // Promotes to GPU compositor layer — prevents repaint when
-          // the Work section slides over Hero during scroll
-          willChange: "transform",
-          transform: "translateZ(0)",
         }}
       >
         {children}

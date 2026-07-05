@@ -5,10 +5,6 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/data/projects";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const CARD_BASE_TOP = 120;
-const VH_PER_CARD   = 55;
-
 // ─── ProjectCard ──────────────────────────────────────────────────────────────
 function ProjectCard({
   project,
@@ -21,25 +17,24 @@ function ProjectCard({
 }) {
   return (
     <div className="container">
-      <div className="pb-8 md:pb-12">
+      <div className="pb-8 md:pb-10">
         <Link
           href={`/work/${project.slug}`}
           aria-label={`View ${project.title} case study`}
           className="block"
         >
-          {/* ── CARD SHELL — border-color on hover, zero JS, zero reflow ── */}
+          {/* ── CARD SHELL ── */}
           <div
             style={{
               backgroundColor: "var(--bg)",
               boxShadow: `0 ${(index + 1) * 6}px ${(index + 1) * 28}px rgba(0,0,0,${0.06 + index * 0.025}), 0 1px 3px rgba(0,0,0,0.05)`,
             }}
-            className="relative rounded-2xl md:rounded-[28px] border border-[var(--border)] overflow-hidden cursor-pointer"
+            className="relative rounded-2xl md:rounded-[28px] border border-[var(--border)] overflow-hidden cursor-pointer transition-shadow duration-300 hover:shadow-xl"
           >
-
-            {/* ── Content wrapper — above shimmer ─────────────────── */}
+            {/* ── Content wrapper ─────────────────── */}
             <div className="relative z-[1] flex flex-col md:flex-row min-h-[260px]">
 
-              {/* LEFT: Thumbnail (40%) ──────────────────────────────── */}
+              {/* LEFT: Thumbnail (40%) ──────────────── */}
               <div
                 className="w-full md:w-[40%] lg:w-[38%] shrink-0 relative overflow-hidden bg-[var(--bg-subtle)] dark:bg-[var(--surface)]"
                 style={{ minHeight: isMobile ? "200px" : undefined }}
@@ -77,7 +72,7 @@ function ProjectCard({
                   </span>
                 </div>
 
-                {/* Real hero image — hidden via onError if absent */}
+                {/* Real hero image */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={project.heroImage}
@@ -111,10 +106,10 @@ function ProjectCard({
                 />
               </div>
 
-              {/* RIGHT: Content (60%) ──────────────────────────────── */}
+              {/* RIGHT: Content (60%) ──────────────── */}
               <div className="flex-1 px-6 py-7 sm:px-8 md:px-9 lg:px-10 md:py-9 lg:py-10 flex flex-col gap-5 justify-between min-w-0">
 
-                {/* 1+2+3: Title → Role·Duration → Tagline */}
+                {/* Title → Role · Duration → Tagline */}
                 <div className="flex flex-col gap-2.5">
                   <h3
                     className="font-display font-bold text-[var(--text-primary)] leading-tight tracking-tight"
@@ -138,7 +133,7 @@ function ProjectCard({
                   </p>
                 </div>
 
-                {/* 4: Impact metrics — most prominent after title */}
+                {/* Impact metrics */}
                 <div className="flex flex-col gap-2">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-tertiary)]">
                     Project Highlights
@@ -161,7 +156,7 @@ function ProjectCard({
                   </div>
                 </div>
 
-                {/* 5+6: Description + Owned + Tools + CTA */}
+                {/* Description + Tools + CTA */}
                 <div className="flex flex-col gap-3">
                   <p className="text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-2">
                     {project.problem}
@@ -175,7 +170,7 @@ function ProjectCard({
                   )}
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border)]">
-                    {/* Tools / capabilities */}
+                    {/* Tools */}
                     <div className="flex flex-wrap gap-1.5 opacity-50">
                       {project.tools.slice(0, 4).map((tool) => (
                         <span
@@ -207,41 +202,6 @@ function ProjectCard({
   );
 }
 
-// ─── StackCard — sticky or plain wrapper ──────────────────────────────────────
-function StackCard({
-  project,
-  index,
-  isSticky,
-  isMobile,
-}: {
-  project: (typeof projects)[0];
-  index: number;
-  isSticky: boolean;
-  isMobile: boolean;
-}) {
-  const card = <ProjectCard project={project} index={index} isMobile={isMobile} />;
-
-  if (!isSticky) {
-    return <div className="mb-6">{card}</div>;
-  }
-
-  return (
-    <div
-      style={{
-        position: "sticky",
-        top: `${CARD_BASE_TOP + index * 16}px`,
-        zIndex: index + 1,
-        // Promote to its own compositor layer — prevents repaint
-        // when sibling sticky cards slide over each other
-        willChange: "transform",
-        transform: "translateZ(0)",
-      }}
-    >
-      {card}
-    </div>
-  );
-}
-
 // ─── Work Section ─────────────────────────────────────────────────────────────
 export default function Work() {
   const [isMobile, setIsMobile] = useState(false);
@@ -253,9 +213,14 @@ export default function Work() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  const visibleProjects = projects.filter((p) => p.slug !== "dimension-leap");
+
   return (
     /**
-     * WORK PANEL — slides over the pinned Hero (desktop only)
+     * WORK PANEL — slides over the pinned Hero (desktop only).
+     * Cards are plain vertical — no inner sticky stacking.
+     * Sticky stacking was removed because it caused z-index glitches
+     * at the Hero↔Work boundary during reverse scroll.
      */
     <section
       id="work"
@@ -264,45 +229,35 @@ export default function Work() {
         zIndex: 20,
         marginTop: isMobile ? "0" : "-100vh",
         backgroundColor: "var(--bg)",
-        borderRadius: "0",
         boxShadow: isMobile ? "none" : "var(--shadow-lift)",
         paddingTop: isMobile ? "64px" : "80px",
       }}
     >
-      {/* ── Section header ─────────────────────────────────────── */}
+      {/* ── Section header ───────────────────────────────────── */}
       <div className="container pb-10 md:pb-16">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent)] mb-4 md:mb-6">
-            Selected Work
-          </p>
-          <h2
-            className="font-display font-bold text-[var(--text-primary)] leading-tight tracking-tight"
-            style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}
-          >
-            Projects that moved
-            <br className="hidden sm:block" /> the needle.
-          </h2>
-        </div>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--accent)] mb-4 md:mb-6">
+          Selected Work
+        </p>
+        <h2
+          className="font-display font-bold text-[var(--text-primary)] leading-tight tracking-tight"
+          style={{ fontSize: "clamp(28px, 4.5vw, 52px)" }}
+        >
+          Projects that moved
+          <br className="hidden sm:block" /> the needle.
+        </h2>
       </div>
 
-      {/* ── Card stack ─────────────────────────────────────────── */}
-      {isMobile ? (
-        <div className="pb-8">
-          {projects
-            .filter((p) => p.slug !== "dimension-leap")
-            .map((project, i) => (
-              <StackCard key={project.slug} project={project} index={i} isSticky={false} isMobile={true} />
-            ))}
-        </div>
-      ) : (
-        <div style={{ position: "relative", height: `${Math.max(150, projects.filter((p) => p.slug !== "dimension-leap").length * 75)}vh` }}>
-          {projects
-            .filter((p) => p.slug !== "dimension-leap")
-            .map((project, i) => (
-              <StackCard key={project.slug} project={project} index={i} isSticky={true} isMobile={false} />
-            ))}
-        </div>
-      )}
+      {/* ── Card list — plain vertical, no sticky stacking ─── */}
+      <div className="pb-8">
+        {visibleProjects.map((project, i) => (
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            index={i}
+            isMobile={isMobile}
+          />
+        ))}
+      </div>
     </section>
   );
 }
