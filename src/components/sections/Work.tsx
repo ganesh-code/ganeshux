@@ -226,10 +226,10 @@ export default function Work() {
       id="work"
       style={{
         position: "relative",
-        zIndex: 20,
         marginTop: isMobile ? "0" : "-100vh",
         backgroundColor: "var(--bg)",
-        boxShadow: isMobile ? "none" : "var(--shadow-lift)",
+        // Single 1px border — zero blur, zero repaint cost, clear visual edge
+        borderTop: isMobile ? "none" : "1px solid var(--border)",
         paddingTop: isMobile ? "64px" : "80px",
       }}
     >

@@ -50,9 +50,6 @@ export default function HomePage() {
           zIndex: 10,
           background: "var(--bg)",
           marginBottom: "-100vh",
-          // Shadow on top edge (for Work→Hero depth)
-          // and implied on bottom edge as layer exits over Contact
-          boxShadow: "0 -20px 80px rgba(0,0,0,0.10), 0 -1px 0 rgba(0,0,0,0.06)",
         }}
       >
         {/* Work slides over Hero */}

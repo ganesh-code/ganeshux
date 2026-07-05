@@ -93,25 +93,29 @@ export default function Hero() {
     gifVideoRef.current?.play().catch(console.error);
   };
 
-  // ── Pause background video when Hero is off-screen (scrolled under Work) ──
-  useEffect(() => {
-    const section = sectionRef.current;
-    const video   = gifVideoRef.current;
-    if (!section || !video) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Threshold 0 — fires as soon as any pixel leaves/enters viewport
-        if (entry.isIntersecting) {
+  // ── Pause background video when Work fully covers Hero ──────────────────
+  // IntersectionObserver doesn't work here because the Hero <section> is
+  // sticky — it stays in the viewport rect forever. Use scroll position:
+  // Work fully covers Hero once scrollY >= innerHeight (100vh).
+  useEffect(() => {
+    const video = gifVideoRef.current;
+    if (!video) return;
+
+    const onScroll = () => {
+      if (window.scrollY >= window.innerHeight * 0.9) {
+        // Work panel fully covers Hero — stop GPU decode
+        if (!video.paused) video.pause();
+      } else {
+        // Hero is visible again — resume
+        if (video.paused && !isPlayingRef.current) {
           video.play().catch(() => {});
-        } else {
-          video.pause();
         }
-      },
-      { threshold: 0 }
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollToWork = () => {
