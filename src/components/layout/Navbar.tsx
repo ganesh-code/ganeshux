@@ -198,7 +198,7 @@ export default function Navbar() {
 
             {/* Resume CTA */}
             <a
-              href="https://drive.google.com/file/d/1qN7eYP4iT87dGrI9E_vp_xKh6V7YB9dQ/view?usp=sharing"
+              href="https://drive.google.com/file/d/118M3dgXHCz_lN3NO3nNzAAA-lJR9U4Lw/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
@@ -261,7 +261,7 @@ export default function Navbar() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.22, duration: 0.28 }}
-              href="https://drive.google.com/file/d/1qN7eYP4iT87dGrI9E_vp_xKh6V7YB9dQ/view?usp=sharing"
+              href="https://drive.google.com/file/d/118M3dgXHCz_lN3NO3nNzAAA-lJR9U4Lw/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}

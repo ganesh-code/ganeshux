@@ -24,7 +24,7 @@ const NAV_LINKS = [
   { label: "Work",    href: "#work"    },
   { label: "About",   href: "#about"   },
   { label: "Contact", href: "#contact" },
-  { label: "Resume",  href: "https://drive.google.com/file/d/1qN7eYP4iT87dGrI9E_vp_xKh6V7YB9dQ/view?usp=sharing", external: true },
+  { label: "Resume",  href: "https://drive.google.com/file/d/118M3dgXHCz_lN3NO3nNzAAA-lJR9U4Lw/view?usp=sharing", external: true },
 ];
 
 const FADE_UP = {

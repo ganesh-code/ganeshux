@@ -102,9 +102,9 @@ const FADE_UP = {
 };
 
 const PROFILE_IMAGES = [
-  { url: "/Profile1.png", alt: "Ganesh Muniganti" },
-  { url: "/Profile2.png", alt: "Ganesh Muniganti" },
-  { url: "/Profile4.png", alt: "Ganesh Muniganti" },
+  { url: "/Profile1.jpg", alt: "Ganesh Muniganti" },
+  { url: "/Profile2.jpg", alt: "Ganesh Muniganti" },
+  { url: "/Profile4.jpg", alt: "Ganesh Muniganti" },
 ];
 
 // ─── Draggable Card ───────────────────────────────────────────────────

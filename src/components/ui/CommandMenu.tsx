@@ -58,7 +58,7 @@ export default function CommandMenu() {
       label: "Download Resume",
       description: "Get my latest CV",
       icon: <Download size={16} />,
-      action: () => { window.open("https://drive.google.com/file/d/1qN7eYP4iT87dGrI9E_vp_xKh6V7YB9dQ/view?usp=sharing", "_blank"); setOpen(false); },
+      action: () => { window.open("https://drive.google.com/file/d/118M3dgXHCz_lN3NO3nNzAAA-lJR9U4Lw/view?usp=sharing", "_blank"); setOpen(false); },
       category: "Actions",
     },
     {

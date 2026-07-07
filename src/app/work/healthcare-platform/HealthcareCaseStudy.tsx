@@ -118,7 +118,7 @@ export default function HealthcareCaseStudy() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/Healthcare Project/bannerHealthcareproject.png"
+          src="/Healthcare Project/bannerHealthcareproject.jpg"
           alt="Unified Healthcare Platform"
           className="w-full h-full object-contain object-center"
           draggable={false}

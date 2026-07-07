@@ -16,7 +16,14 @@ function ProjectCard({
   isMobile: boolean;
 }) {
   return (
-    <div className="container">
+    <div
+      className="container"
+      style={{
+        position: isMobile ? "static" : "sticky",
+        top: isMobile ? "auto" : `${90 + index * 32}px`,
+        zIndex: isMobile ? "auto" : index + 1,
+      }}
+    >
       <div className="pb-8 md:pb-10">
         <Link
           href={`/work/${project.slug}`}
@@ -43,7 +50,7 @@ function ProjectCard({
                 <div
                   className="absolute inset-0"
                   style={{
-                    background: `linear-gradient(140deg, ${project.color}28 0%, ${project.color}0E 60%, ${project.color}04 100%)`,
+                    background: `linear-gradient(140deg, ${project.color}45 0%, ${project.colorDark}1F 60%, ${project.color}0C 100%)`,
                   }}
                 />
 

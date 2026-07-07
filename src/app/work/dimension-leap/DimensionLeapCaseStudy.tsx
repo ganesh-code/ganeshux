@@ -144,7 +144,7 @@ export default function DimensionLeapCaseStudy() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/pre-production.png"
+          src="/pre-production.jpg"
           alt="AI-Powered Film Pre-Production Platform — Dimension Leap"
           className="w-full h-full object-cover object-center"
           draggable={false}
