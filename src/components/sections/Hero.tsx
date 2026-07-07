@@ -200,7 +200,7 @@ export default function Hero() {
             </div>
             <span className="text-white/30 hidden sm:inline" aria-hidden="true">·</span>
             <span className="text-sm font-semibold text-[var(--accent-light)]">
-              1.3+ Years Experience
+              2+ Years Experience
             </span>
           </motion.div>
 

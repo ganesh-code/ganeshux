@@ -17,7 +17,7 @@ const EXPERIENCES: Experience[] = [
   {
     period:  "May 2025 – June 2026",
     role:    "Associate UX / Product Designer",
-    company: "Dimension Leap",
+    company: "Dimensionleap",
     bullets: [
       "Led end-to-end UX design for an AI-powered film pre-production platform, defining user flows and high-fidelity screens for 4+ user roles (writers, directors, producers, agencies).",
       "Architected 6+ automated workflows for AI-assisted story generation, script editing, auto-fill, scheduling, and call sheet automation, reducing production team manual effort by an estimated 35%.",
@@ -27,7 +27,7 @@ const EXPERIENCES: Experience[] = [
     ],
   },
   {
-    period:  "Feb 2024 – Feb 2025",
+    period:  "Feb 2024 – Mar 2025",
     role:    "UX Design Intern",
     company: "Banao Technologies",
     bullets: [
@@ -56,7 +56,7 @@ const TOOLS = [
 ];
 
 const STATS = [
-  { value: "1.3+", label: "Years Experience" },
+  { value: "2+",   label: "Years Experience" },
   { value: "100+", label: "UX Audits Conducted" },
   { value: "350+", label: "Usability Issues Identified" },
   { value: "5+",   label: "Product Releases Shipped" },
