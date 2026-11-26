@@ -4,6 +4,8 @@
   "description": "Ganesh Muniganti Portfolio",
   "type": "module",
   "scripts": {
+    "build": "echo 'Build complete'",
+    "vercel-build": "echo 'Build complete'",
     "start": "node server.mjs",
     "dev": "node server.mjs",
     "serve": "npx serve -l 3000 ."
