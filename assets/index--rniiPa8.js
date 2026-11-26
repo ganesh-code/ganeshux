@@ -1048,7 +1048,7 @@ function PersonalAboutStory() {
                     })
                   }),
                   C.jsx("a", {
-                    href: "https://linkedin.com/in/ganesh-muniganti",
+                    href: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/",
                     target: "_blank",
                     rel: "noreferrer",
                     "aria-label": "LinkedIn",
@@ -1095,7 +1095,7 @@ function PersonalAboutStory() {
                     })
                   }),
                   C.jsx("a", {
-                    href: "/resume.pdf",
+                    href: "https://drive.google.com/file/d/118M3dgXHCz_lN3NO3nNzAAA-lJR9U4Lw/view?usp=sharing",
                     target: "_blank",
                     rel: "noreferrer",
                     "aria-label": "Resume",
