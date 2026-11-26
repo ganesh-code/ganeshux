@@ -1026,26 +1026,44 @@ function PersonalAboutStory() {
               C.jsxs("div", {
                 className: "par-hello-actions",
                 children: [
-                  C.jsx("a", {
-                    href: "mailto:ganeshmuniganti27@gmail.com",
-                    "aria-label": "Email ganeshmuniganti27@gmail.com",
-                    title: "ganeshmuniganti27@gmail.com",
-                    className: "par-hello-pill par-hello-pill--primary",
-                    children: C.jsxs("svg", {
-                      width: "20",
-                      height: "20",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      strokeWidth: "2",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      "aria-hidden": "true",
-                      children: [
-                        C.jsx("rect", { width: "20", height: "16", x: "2", y: "4", rx: "2" }),
-                        C.jsx("path", { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" })
-                      ]
-                    })
+                  C.jsxs("button", {
+                    type: "button",
+                    onClick: e => {
+                      e.preventDefault();
+                      navigator.clipboard?.writeText("ganeshmuniganti27@gmail.com");
+                      const btn = e.currentTarget;
+                      const txt = btn.querySelector(".par-hello-email-text");
+                      if (txt) {
+                        const orig = txt.textContent;
+                        txt.textContent = "Copied to clipboard!";
+                        setTimeout(() => { txt.textContent = orig; }, 2000);
+                      }
+                    },
+                    "aria-label": "Copy email ganeshmuniganti27@gmail.com",
+                    title: "Click to copy email",
+                    className: "par-hello-pill par-hello-pill--primary par-hello-email-cta",
+                    children: [
+                      C.jsx("span", {
+                        className: "par-hello-email-text",
+                        children: "ganeshmuniganti27@gmail.com"
+                      }),
+                      C.jsxs("svg", {
+                        width: "17",
+                        height: "17",
+                        viewBox: "0 0 24 24",
+                        fill: "none",
+                        stroke: "currentColor",
+                        strokeWidth: "2",
+                        strokeLinecap: "round",
+                        strokeLinejoin: "round",
+                        className: "par-hello-copy-icon",
+                        "aria-hidden": "true",
+                        children: [
+                          C.jsx("rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2" }),
+                          C.jsx("path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" })
+                        ]
+                      })
+                    ]
                   }),
                   C.jsx("a", {
                     href: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/",

@@ -5017,3 +5017,52 @@ html[data-theme-bg="dark"] .par-timeline-section .dock__item--mail {
   z-index: 0;
   display: block;
 }
+
+/* ──────────────── FULL EMAIL CTA PILL WITH COPY ICON ──────────────── */
+.par-hello-email-cta {
+  width: auto !important;
+  height: 46px !important;
+  padding: 0 1.25rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif) !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  cursor: pointer !important;
+  border-radius: 9999px !important;
+  user-select: all !important;
+  white-space: nowrap !important;
+  outline: none !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease !important;
+}
+
+.par-hello-email-cta .par-hello-email-text {
+  font-size: 0.92rem !important;
+  line-height: 1 !important;
+  font-weight: 600 !important;
+}
+
+.par-hello-email-cta svg.par-hello-copy-icon {
+  width: 17px !important;
+  height: 17px !important;
+  opacity: 0.85 !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.18s ease, opacity 0.18s ease !important;
+}
+
+.par-hello-email-cta:hover svg.par-hello-copy-icon {
+  opacity: 1 !important;
+  transform: scale(1.15) !important;
+}
+
+@media (max-width: 640px) {
+  .par-hello-email-cta {
+    padding: 0 1rem !important;
+    font-size: 0.82rem !important;
+  }
+  .par-hello-email-cta .par-hello-email-text {
+    font-size: 0.82rem !important;
+  }
+}

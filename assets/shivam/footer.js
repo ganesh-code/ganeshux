@@ -1,6 +1,6 @@
 /* ================= Footer: the desk, the flip book, the CV ================= */
 // fill these in: empty values show "coming soon" instead of opening a link
-const CONTACT = { email: "ganeshmuniganti@gmail.com", phone: "+91 93902 46685", whatsapp: "https://wa.me/919390246685", linkedin: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/", x: "ganesh_ux", behance: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/", config: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/", post: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/" }; // config: the Config post (windmill card); post: the post the desk polaroid opens
+const CONTACT = { email: "ganeshmuniganti27@gmail.com", phone: "+91 93902 46685", whatsapp: "https://wa.me/919390246685", linkedin: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/", x: "ganesh_ux", behance: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/", config: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/", post: "https://www.linkedin.com/in/ganesh-muniganti-4454b0267/" }; // config: the Config post (windmill card); post: the post the desk polaroid opens
 (() => {
   const toastEl = document.getElementById("ftoast"); let tt;
   const toast = m => { toastEl.textContent = m; toastEl.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove("on"), 2200); };
