@@ -1,11 +1,8 @@
 {
-  "framework": null,
-  "buildCommand": "echo 'Build complete'",
-  "outputDirectory": ".",
-  "cleanUrls": true,
+  "version": 2,
   "rewrites": [
     {
-      "source": "/((?!assets/|images/|stack-icons/|public/|.*\\..*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
